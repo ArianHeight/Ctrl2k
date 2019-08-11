@@ -254,6 +254,7 @@
     <ClInclude Include="Include\Ctrl 2kPCH.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Planning\GameEngine.cd" />
     <None Include="Shaders\Tiled\Ctrl 2k BrightPass.frag" />
     <None Include="Shaders\Tiled\Ctrl 2k BrightPass.vert" />
     <None Include="Shaders\Tiled\Ctrl 2k DirectionBlur.frag" />

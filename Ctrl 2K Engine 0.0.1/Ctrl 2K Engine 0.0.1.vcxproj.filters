@@ -58,6 +58,9 @@
     <Filter Include="Source\Audio">
       <UniqueIdentifier>{64b57ac2-fad3-43df-90a8-6bba7596de83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Planning">
+      <UniqueIdentifier>{04a90b95-d890-426b-bfe6-a3cf43997028}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -486,6 +489,9 @@
     </None>
     <None Include="Shaders\Tiled\Ctrl 2k textureNRender.vert">
       <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="..\Planning\GameEngine.cd">
+      <Filter>Planning</Filter>
     </None>
   </ItemGroup>
 </Project>
