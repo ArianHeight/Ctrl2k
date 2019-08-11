@@ -1,0 +1,24 @@
+name Project2.5
+
+rootdir map ../Map
+rootdir menu ../System
+rootdir entity ../EntityScripts
+
+mapScripts
+test.mp
+close
+
+entScripts
+close
+
+menuScripts
+close
+
+#connect test test2
+#close
+
+story 100
+
+stage 0
+player moveto test spawn
+close

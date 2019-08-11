@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B8614A66-3B78-4FAB-B05B-CC96152FBBAB}</ProjectGuid>
+    <RootNamespace>Ctrl2KEngine001</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)d</TargetName>
+    <IntDir>Bin\</IntDir>
+    <IncludePath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\include;$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SDL2-2.0.7\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\lib\x86;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2-2.0.7\lib\x86;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Debug\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>Bin\</IntDir>
+    <IncludePath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\include;$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SDL2-2.0.7\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\lib\x86;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2-2.0.7\lib\x86;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Debug\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_mixer.lib;SOILd.lib;glew32sd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_mixer.lib;SOIL.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Audio\AudioEngine.cpp" />
+    <ClCompile Include="Source\Audio\BGM.cpp" />
+    <ClCompile Include="Source\Audio\SFX.cpp" />
+    <ClCompile Include="Source\Audio\SoundTrack.cpp" />
+    <ClCompile Include="Source\Entity\Action.cpp" />
+    <ClCompile Include="Source\Entity\AIModule.cpp" />
+    <ClCompile Include="Source\Entity\Component.cpp" />
+    <ClCompile Include="Source\Entity\Entity.cpp" />
+    <ClCompile Include="Source\Entity\FSM.cpp" />
+    <ClCompile Include="Source\Entity\FSMState.cpp" />
+    <ClCompile Include="Source\Entity\GameObject.cpp" />
+    <ClCompile Include="Source\Entity\NonMovingShooter.cpp" />
+    <ClCompile Include="Source\Entity\PathFinding.cpp" />
+    <ClCompile Include="Source\Entity\Player.cpp" />
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Physics\DamageArea.cpp" />
+    <ClCompile Include="Source\Physics\PhysEngine.cpp" />
+    <ClCompile Include="Source\Physics\PhysEvent.cpp" />
+    <ClCompile Include="Source\Physics\PhysObject.cpp" />
+    <ClCompile Include="Source\Physics\Spawner.cpp" />
+    <ClCompile Include="Source\Render\AniFrame.cpp" />
+    <ClCompile Include="Source\Render\Animation.cpp" />
+    <ClCompile Include="Source\Render\Camera.cpp" />
+    <ClCompile Include="Source\Render\CollisionMap.cpp" />
+    <ClCompile Include="Source\Render\Particle.cpp" />
+    <ClCompile Include="Source\Render\ParticleEngine.cpp" />
+    <ClCompile Include="Source\Render\ScreenBuffer.cpp" />
+    <ClCompile Include="Source\Render\GameWindow.cpp" />
+    <ClCompile Include="Source\Render\Map.cpp" />
+    <ClCompile Include="Source\Render\RenderEngine.cpp" />
+    <ClCompile Include="Source\Render\Shader.cpp" />
+    <ClCompile Include="Source\Render\TBuffer.cpp" />
+    <ClCompile Include="Source\Render\Texture.cpp" />
+    <ClCompile Include="Source\Render\TileObject.cpp" />
+    <ClCompile Include="Source\System\AnimationManager.cpp" />
+    <ClCompile Include="Source\System\Assets.cpp" />
+    <ClCompile Include="Source\System\AudioManager.cpp" />
+    <ClCompile Include="Source\System\Controller.cpp" />
+    <ClCompile Include="Source\System\Font.cpp" />
+    <ClCompile Include="Source\System\FontChar.cpp" />
+    <ClCompile Include="Source\System\FontManager.cpp" />
+    <ClCompile Include="Source\System\Game.cpp" />
+    <ClCompile Include="Source\System\GameEvent.cpp" />
+    <ClCompile Include="Source\System\GUI\GUI.cpp" />
+    <ClCompile Include="Source\System\GUI\HUD.cpp" />
+    <ClCompile Include="Source\System\Lexer.cpp" />
+    <ClCompile Include="Source\System\MainEngine.cpp" />
+    <ClCompile Include="Source\System\MapManager.cpp" />
+    <ClCompile Include="Source\System\Parser.cpp" />
+    <ClCompile Include="Source\System\ProgramThread.cpp" />
+    <ClCompile Include="Source\System\SaveState.cpp" />
+    <ClCompile Include="Source\System\TextureManager.cpp" />
+    <ClCompile Include="Source\System\ThreadManager.cpp" />
+    <ClCompile Include="Source\System\Token.cpp" />
+    <ClCompile Include="Source\System\Widget\Button.cpp" />
+    <ClCompile Include="Source\System\Widget\StatusBar.cpp" />
+    <ClCompile Include="Source\System\Widget\Text.cpp" />
+    <ClCompile Include="Source\System\Widget\Widget.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Classes\Audio\AudioEngine.h" />
+    <ClInclude Include="Include\Classes\Audio\BGM.h" />
+    <ClInclude Include="Include\Classes\Audio\SFX.h" />
+    <ClInclude Include="Include\Classes\Audio\SoundTrack.h" />
+    <ClInclude Include="Include\Classes\Entity\Action.h" />
+    <ClInclude Include="Include\Classes\Entity\AIModule.h" />
+    <ClInclude Include="Include\Classes\Entity\Component.h" />
+    <ClInclude Include="Include\Classes\Entity\Entity.h" />
+    <ClInclude Include="Include\Classes\Entity\FSM.h" />
+    <ClInclude Include="Include\Classes\Entity\FSMState.h" />
+    <ClInclude Include="Include\Classes\Entity\GameObject.h" />
+    <ClInclude Include="Include\Classes\Entity\NonMovingShooter.h" />
+    <ClInclude Include="Include\Classes\Entity\PathFinding.h" />
+    <ClInclude Include="Include\Classes\Entity\Player.h" />
+    <ClInclude Include="Include\Classes\Enums.h" />
+    <ClInclude Include="Include\Classes\Physics\DamageArea.h" />
+    <ClInclude Include="Include\Classes\Physics\PhysEngine.h" />
+    <ClInclude Include="Include\Classes\Physics\PhysEvent.h" />
+    <ClInclude Include="Include\Classes\Physics\PhysObject.h" />
+    <ClInclude Include="Include\Classes\Physics\Spawner.h" />
+    <ClInclude Include="Include\Classes\Render\AniFrame.h" />
+    <ClInclude Include="Include\Classes\Render\Animation.h" />
+    <ClInclude Include="Include\Classes\Render\Camera.h" />
+    <ClInclude Include="Include\Classes\Render\CollisionMap.h" />
+    <ClInclude Include="Include\Classes\Render\Particle.h" />
+    <ClInclude Include="Include\Classes\Render\ParticleEngine.h" />
+    <ClInclude Include="Include\Classes\Render\ScreenBuffer.h" />
+    <ClInclude Include="Include\Classes\Render\GameWindow.h" />
+    <ClInclude Include="Include\Classes\Render\Map.h" />
+    <ClInclude Include="Include\Classes\Render\RenderEngine.h" />
+    <ClInclude Include="Include\Classes\Render\Shader.h" />
+    <ClInclude Include="Include\Classes\Render\TBuffer.h" />
+    <ClInclude Include="Include\Classes\Render\Texture.h" />
+    <ClInclude Include="Include\Classes\Render\TileObject.h" />
+    <ClInclude Include="Include\Classes\System\AnimationManager.h" />
+    <ClInclude Include="Include\Classes\System\Assets.h" />
+    <ClInclude Include="Include\Classes\System\AudioManager.h" />
+    <ClInclude Include="Include\Classes\System\Controller.h" />
+    <ClInclude Include="Include\Classes\System\GameEvent.h" />
+    <ClInclude Include="Include\Classes\System\Font.h" />
+    <ClInclude Include="Include\Classes\System\FontChar.h" />
+    <ClInclude Include="Include\Classes\System\FontManager.h" />
+    <ClInclude Include="Include\Classes\System\Game.h" />
+    <ClInclude Include="Include\Classes\System\GUI\GUI.h" />
+    <ClInclude Include="Include\Classes\System\GUI\HUD.h" />
+    <ClInclude Include="Include\Classes\System\Lexer.h" />
+    <ClInclude Include="Include\Classes\System\MainEngine.h" />
+    <ClInclude Include="Include\Classes\System\MapManager.h" />
+    <ClInclude Include="Include\Classes\System\Parser.h" />
+    <ClInclude Include="Include\Classes\System\ProgramThread.h" />
+    <ClInclude Include="Include\Classes\System\SaveState.h" />
+    <ClInclude Include="Include\Classes\System\TextureManager.h" />
+    <ClInclude Include="Include\Classes\System\ThreadManager.h" />
+    <ClInclude Include="Include\Classes\System\Token.h" />
+    <ClInclude Include="Include\Classes\System\Widgets\Button.h" />
+    <ClInclude Include="Include\Classes\System\Widgets\ItemSlot.h" />
+    <ClInclude Include="Include\Classes\System\Widgets\Slider.h" />
+    <ClInclude Include="Include\Classes\System\Widgets\StatusBar.h" />
+    <ClInclude Include="Include\Classes\System\Widgets\Text.h" />
+    <ClInclude Include="Include\Classes\System\Widgets\Widget.h" />
+    <ClInclude Include="Include\Ctrl 2kPCH.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Tiled\Ctrl 2k BrightPass.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k BrightPass.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k DirectionBlur.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k DirectionBlur.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k DownSample.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k DownSample.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k animationRender.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k lineRender.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k lineRender.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k ParallaxPass.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k ParallaxPass.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k PostProcess.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k PostProcess.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k textRender.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k textRender.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k textureNRender.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k textureNRender.vert" />
+    <None Include="Shaders\tiled\Ctrl 2k textureRender.frag" />
+    <None Include="Shaders\tiled\Ctrl 2k textureRender.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k widgetRender.frag" />
+    <None Include="Shaders\Tiled\Ctrl 2k widgetRender.vert" />
+    <None Include="Shaders\Tiled\Ctrl 2k widgetTexRender.frag" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

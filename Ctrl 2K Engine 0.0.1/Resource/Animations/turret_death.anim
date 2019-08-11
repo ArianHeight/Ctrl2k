@@ -1,0 +1,19 @@
+name = "turret_death";
+
+rootDir.texture = "../Texture";
+rootDir.audio = "../Audio";
+
+spriteSheet = "spritesheets/u2_death.png";
+atlasDim = 192, 64;
+repeat = false;
+
+rows = 1;
+//default values
+ptw = 64; //how many pixels in 1 in world space
+rowHeight = 64;
+sameFrameHeight = 64;
+sameFrameWidth = 64;
+totalTime = 0.75;
+sameFrameCount = 3;
+
+//row 0 automatically gets default values

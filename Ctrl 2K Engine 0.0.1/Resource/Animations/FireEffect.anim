@@ -1,0 +1,19 @@
+name = "FireEffect";
+
+rootDir.texture = "../Texture";
+rootDir.audio = "../Audio";
+
+spriteSheet = "spritesheets/FireEffect.png";
+atlasDim = 32, 8;
+repeat = false;
+
+rows = 1;
+//default values
+ptw = 96; //how many pixels in 1 in world space
+rowHeight = 8;
+sameFrameHeight = 8;
+sameFrameWidth = 8;
+totalTime = 0.25;
+sameFrameCount = 4;
+
+//row 0 automatically gets default values

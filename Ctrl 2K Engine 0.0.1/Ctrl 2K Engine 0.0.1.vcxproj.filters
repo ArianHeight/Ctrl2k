@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header\Render">
+      <UniqueIdentifier>{87ebca48-3f58-4159-97b9-f72e9e47a94b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Render">
+      <UniqueIdentifier>{dd341bb4-19e0-4ef4-8b94-e8b5f017a8c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Entity">
+      <UniqueIdentifier>{89529204-a93b-468d-94a3-4d1f38774561}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Entity">
+      <UniqueIdentifier>{3bc9f448-7622-4093-9bc6-72177ee0b03d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Physics">
+      <UniqueIdentifier>{f4dad5f5-27f9-4d98-8c36-56019e672bd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Physics">
+      <UniqueIdentifier>{581dd957-9363-4f5d-8e00-7a012ab18ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\System">
+      <UniqueIdentifier>{359de741-b041-4e55-9c59-27b25ea30912}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\System">
+      <UniqueIdentifier>{6ceb8343-de67-4dec-bf54-1536488f966d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Shaders">
+      <UniqueIdentifier>{f5f37b81-745d-4adf-a7d0-e912efd6b629}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\System\Widget">
+      <UniqueIdentifier>{ce396334-e1fc-444f-b1b1-62304c672320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\System\Widget">
+      <UniqueIdentifier>{03683739-49a9-44ad-af9c-208a7e74dbe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\System\GUI">
+      <UniqueIdentifier>{b9314c59-b85a-45a1-bce2-3375cecb763b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\System\GUI">
+      <UniqueIdentifier>{ad183df0-535f-4f24-8966-2d539e66fb2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Audio">
+      <UniqueIdentifier>{b32ef9df-97ec-4e5e-b153-3ee4ba8bdb8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Audio">
+      <UniqueIdentifier>{64b57ac2-fad3-43df-90a8-6bba7596de83}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\TBuffer.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\TileObject.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Camera.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\Player.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\Entity.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysEngine.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\CollisionMap.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Texture.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\TextureManager.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Map.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\MapManager.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Parser.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\FontChar.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Font.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\FontManager.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Animation.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\AniFrame.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\AnimationManager.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\DamageArea.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Widget\Widget.cpp">
+      <Filter>Source\System\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Widget\Text.cpp">
+      <Filter>Source\System\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Widget\StatusBar.cpp">
+      <Filter>Source\System\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\GUI\GUI.cpp">
+      <Filter>Source\System\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysObject.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysEvent.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\Action.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\FSM.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\FSMState.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\AIModule.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\NonMovingShooter.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\ProgramThread.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\ThreadManager.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Token.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\MainEngine.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\RenderEngine.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\GameObject.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\Component.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\GameWindow.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Shader.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Assets.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Game.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\ScreenBuffer.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\GameEvent.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Controller.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Audio\SoundTrack.cpp">
+      <Filter>Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Audio\SFX.cpp">
+      <Filter>Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Audio\BGM.cpp">
+      <Filter>Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\AudioManager.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Audio\AudioEngine.cpp">
+      <Filter>Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Lexer.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\SaveState.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\GUI\HUD.cpp">
+      <Filter>Source\System\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Particle.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\ParticleEngine.cpp">
+      <Filter>Source\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\Spawner.cpp">
+      <Filter>Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Widget\Button.cpp">
+      <Filter>Source\System\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity\PathFinding.cpp">
+      <Filter>Source\Entity</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Ctrl 2kPCH.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\TBuffer.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\TileObject.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\Camera.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\Player.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\Entity.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Physics\PhysEngine.h">
+      <Filter>Header\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\CollisionMap.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Enums.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\Texture.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\TextureManager.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\Map.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\MapManager.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Parser.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\FontChar.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Font.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\FontManager.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\Animation.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\AniFrame.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\AnimationManager.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Physics\DamageArea.h">
+      <Filter>Header\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Widgets\Button.h">
+      <Filter>Header\System\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Widgets\Slider.h">
+      <Filter>Header\System\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Widgets\StatusBar.h">
+      <Filter>Header\System\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Widgets\Widget.h">
+      <Filter>Header\System\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Widgets\Text.h">
+      <Filter>Header\System\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Widgets\ItemSlot.h">
+      <Filter>Header\System\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\GUI\GUI.h">
+      <Filter>Header\System\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Physics\PhysObject.h">
+      <Filter>Header\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Physics\PhysEvent.h">
+      <Filter>Header\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\Action.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\FSM.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\FSMState.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\AIModule.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\NonMovingShooter.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\ProgramThread.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\ThreadManager.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Token.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\MainEngine.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\RenderEngine.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\GameObject.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\Component.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\GameWindow.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\Shader.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Assets.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Game.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\ScreenBuffer.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\GameEvent.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Controller.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Audio\SoundTrack.h">
+      <Filter>Header\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Audio\SFX.h">
+      <Filter>Header\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Audio\BGM.h">
+      <Filter>Header\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\AudioManager.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Audio\AudioEngine.h">
+      <Filter>Header\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\Lexer.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\SaveState.h">
+      <Filter>Header\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\System\GUI\HUD.h">
+      <Filter>Header\System\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\Particle.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Render\ParticleEngine.h">
+      <Filter>Header\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Physics\Spawner.h">
+      <Filter>Header\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Classes\Entity\PathFinding.h">
+      <Filter>Header\Entity</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Tiled\Ctrl 2k BrightPass.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k BrightPass.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k DirectionBlur.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k DirectionBlur.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k DownSample.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k DownSample.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k ParallaxPass.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k ParallaxPass.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k PostProcess.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k PostProcess.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k textRender.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k textRender.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k widgetRender.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k widgetRender.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k widgetTexRender.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\tiled\Ctrl 2k textureRender.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\tiled\Ctrl 2k textureRender.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k animationRender.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k lineRender.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k lineRender.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k textureNRender.frag">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Tiled\Ctrl 2k textureNRender.vert">
+      <Filter>Resource\Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>

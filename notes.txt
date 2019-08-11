@@ -1,0 +1,17 @@
+- use fxaa to smooth lines??
+
+- dyanamic loading
+
+- finish the 3 animation-related classes by making audio stuff work
+
+- learn SDL audio stuff
+
+- add more graphics options
+
+- do dynamic lighting
+
+- write parser for entities
+
+-test by removing player
+-pls remember to print in fps from widget laters
+-working on aabb response
