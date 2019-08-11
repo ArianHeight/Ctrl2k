@@ -1,0 +1,18 @@
+# Naming conventions for variables
+# for data structures that contain other datatypes put a "_" before the data type is stated 
+# e.g ( vector_string ) # but using the shorthand of course :p 
+	
+	l = long
+	s = short 
+	u = unsigned
+
+# important data types 
+	i = int 
+	d = double 
+	f = float
+	c = char 
+	b = bool 
+	str = string 
+	ve = vector
+	cmp = Component # CUSTOM CLASS FROM PROJECT
+	gmobj = GameObject #CUSTOM CLASS FROM PROJECT	 
