@@ -4,7 +4,7 @@ Ctrl 2K 2D Game Engine
 
 */
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <Ctrl 2KPCH.h>
 
 /*
