@@ -70,18 +70,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)d</TargetName>
-    <IntDir>Bin\</IntDir>
+    <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
     <IncludePath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\include;$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SDL2-2.0.7\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\lib\x86;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2-2.0.7\lib\x86;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Debug\Win32;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IntDir>Bin\</IntDir>
+    <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
     <IncludePath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\include;$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SDL2-2.0.7\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\lib\x86;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2-2.0.7\lib\x86;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Debug\Win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\include;$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SDL2-2.0.7\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\lib\x64;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib\x64;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2-2.0.7\lib\x64;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib\x64;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Debug\x64;$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
+    <TargetName>$(ProjectName)d</TargetName>
+    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\include;$(SolutionDir)\Ctrl 2K Engine 0.0.1\Include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SDL2-2.0.7\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\src;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\include;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2_mixer-2.0.2\lib\x64;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SOIL for opengl 3.0 context and above\lib\x64;$(SolutionDir)Ctrl 2K Engine 0.0.1\Dependencies\SDL2-2.0.7\lib\x64;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\freeglut-3.0.0\lib\x64;$(SolutionDir)Ctrl 2k Engine 0.0.1\Dependencies\glew-2.0.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,6 +111,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_mixer.lib;SOILd.lib;glew32sd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -128,6 +143,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_mixer.lib;SOIL.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
