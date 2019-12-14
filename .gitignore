@@ -13,6 +13,9 @@
 *.userprefs
 
 # Build results
+/Release
+/Debug
+/Ctrl 2K Engine 0.0.1/Bin
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
