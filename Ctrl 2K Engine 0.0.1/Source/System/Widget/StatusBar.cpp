@@ -37,8 +37,8 @@ void StatusBar::update()
 {
 	Widget::update();
 
-	std::string tempName = "PosScreen";
-	Component* posScreen = this->getComponent(tempName); //grabs the parent's component and uses the position values from that
+	//std::string tempName = "PosScreen";
+	Component* posScreen = this->getComponent(3); //grabs the parent's component and uses the position values from that
 	FourPoints* hb = posScreen->getPhysicsObject()->getHB();
 	glm::vec2 sizeRatio = glm::abs(hb->tl - hb->br) / 2.0f;
 

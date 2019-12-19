@@ -414,14 +414,47 @@ void RenderEngine::useShader(std::string& name)
 	this->shaderPrograms.at(0).useShader(); //none found
 }
 
-void RenderEngine::render(Component *renderComponent)
-{
-	if (renderComponent->getType() != RENDERER)
-	{
+void RenderEngine::render(Component *renderComponent) {
+	if (renderComponent->getType() != RENDERER) {
 		return; //early return if not renderer
 	}
 	
-	renderComponent->renderBind(this); //draws to screen
+	GameObject* go = renderComponent->getGameObjectPtr();
+	if (!(go->checkForComponent(0))) { //guard check for if renderer has all equipped components
+		return; //early return for not fit for rendering
+	}
+
+	std::vector<Component*>& rQueue = go->getAllActiveComponents(VISUAL_DATA);
+	std::string atName; //animation/texture name
+	Component* vData = nullptr; //VisualData Class
+	Component* transform = go->getComponent(0); //Transformation Class
+	int index = 0;
+	RenderType type = TEXTURE; //default value to start off
+	Orientation direction = UP; //default value for direction used in animations
+
+	for (int i = 0; i < rQueue.size(); i++) { //iterates through all animations needed to be drawn
+		vData = rQueue[i]; //VisualData Class
+		type = vData->getCurrentRenderTarget(index);
+
+		switch (type) { //draws each according to type, doesn't do anything to NONE types
+		case TEXTURE:
+			this->drawTexture(index, transform->getDisplacement(), vData->getAR(), transform->getSize());
+			break;
+		case ANIMATION:
+			direction = transform->getDirection();
+			this->drawAnimation(index, vData->getTimerRef(), transform->getDisplacement(), 0.0f, direction); //remember to impliment directions later
+			break;
+		}
+	}
+}
+
+void RenderEngine::renderScene(GameObject* scene) {
+	this->rendererBuffer.clear();
+
+	scene->getAllActiveComponentsC(this->rendererBuffer, RENDERER);
+	for (auto it = this->rendererBuffer.begin(); it != this->rendererBuffer.end(); it++) {
+		this->render(*it);
+	}
 }
 
 void RenderEngine::updateScreen()

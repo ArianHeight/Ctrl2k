@@ -10,7 +10,7 @@ Button::Button(std::string name, glm::vec2 topLeft, glm::vec2 bottomRight, int t
 	Widget(name, topLeft, bottomRight, textureIndex), m_activation(activation)
 {
 	//cstr
-	this->getComponent(std::string("PosScreen"))->enableMCollision(); //enables collision with the mouse
+	this->getComponent(3)->enableMCollision(); //enables collision with the mouse
 }
 
 void Button::update()

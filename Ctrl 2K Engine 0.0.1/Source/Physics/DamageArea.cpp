@@ -17,23 +17,23 @@ DamageArea::DamageArea(GameObject* initiator, double &time, Component *dmg, Comp
 	this->m_immune.push_back(initiator); //no ownership
 	
 	//components
-	std::string tempName = "Position"; //sets transformation (data copy)
-	Component* Cptr = this->getComponent(tempName);
+	//std::string tempName = "Position"; //sets transformation (data copy)
+	Component* Cptr = this->getComponent(0);
 	Cptr->setDisp(transform->getDisplacement());
 	Cptr->setDirection(transform->getDirection());
-	tempName = "Last Position"; //sets last transformation
-	this->getComponent(tempName)->setDisp(Cptr->getDisplacement());
-	tempName = "Velocity"; //change in position every second
-	this->addComponent(tempName, velocity);
-	tempName = "Visual"; //for rendering data, visual is probably only for DA
-	this->addComponent(tempName, visual); //passes ownership
-	tempName = "Hitbox"; //for physobject, Hitbox is probably global for all which have one
-	this->addComponent(tempName, hb); //passes ownership
-	tempName = "Damage"; //for damage values
-	this->addComponent(tempName, dmg); //passes ownership
+	//tempName = "Last Position"; //sets last transformation
+	this->getComponent(1)->setDisp(Cptr->getDisplacement());
+	//tempName = "Velocity"; //change in position every second
+	this->addComponent(velocity, true); //3
+	//tempName = "Visual"; //for rendering data, visual is probably only for DA
+	this->addComponent(visual, true); //passes ownership 4
+	//tempName = "Hitbox"; //for physobject, Hitbox is probably global for all which have one
+	this->addComponent(hb, true); //passes ownership 5
+	//tempName = "Damage"; //for damage values
+	this->addComponent(dmg, true); //passes ownership 6
 
 	//properties
-	tempName = "DoesDamage";
+	std::string tempName = "DoesDamage";
 	this->addProperty(tempName);
 }
 
@@ -53,7 +53,7 @@ bool DamageArea::updateDA()
 	bool returnValue = this->updateTimer();
 
 	//does stuff
-	this->getComponent(std::string("Position"))->changeDisp(this->getComponent(std::string("Velocity"))->getDisplacement()); //updates position in accordance to velocity
+	this->getComponent(0)->changeDisp(this->getComponent(3)->getDisplacement()); //updates position in accordance to velocity
 
 	return returnValue;
 }
@@ -82,9 +82,9 @@ bool DamageArea::doDamage(GameObject *target)
 
 	//target->damageHealth(this->m_damage, this->m_givenEffects, this->m_pierce); //add crit chance in later
 	std::string tempName = "Statistics";
-	Component *targetStats = target->getComponent(tempName);
+	Component *targetStats = target->getComponent(4);
 	tempName = "Damage";
-	Component *dmgValue = this->getComponent(tempName);
+	Component *dmgValue = this->getComponent(6);
 
 	if (targetStats != nullptr && dmgValue != nullptr) //check if object actually has health
 	{

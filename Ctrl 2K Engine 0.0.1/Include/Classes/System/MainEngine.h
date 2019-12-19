@@ -24,6 +24,7 @@ private:
 	double m_secondCount{ 0 };
 
 	Game game;
+	GameObject sceneGraph;
 	Assets gameAssets;
 	PhysEngine physicsEngine;
 	RenderEngine renderingEngine;

@@ -26,7 +26,7 @@ Orientation Component::getDirection() { return UP; }
 glm::vec2 Component::getDirNormals() { return glm::vec2(0.0f, 1.0f); }
 
 //Renderer
-RenderType Component::renderBind(RenderEngine *rEngine) { return TEXTURE; }
+//RenderType Component::renderBind(RenderEngine *rEngine) { return TEXTURE; }
 
 //PhysComponent
 PhysObject* Component::getPhysicsObject() { return nullptr; }
@@ -180,50 +180,6 @@ Renderer::Renderer()
 	this->m_type = RENDERER;
 }
 
-RenderType Renderer::renderBind(RenderEngine *rEngine)
-{
-	if (!(this->object->checkForComponent(std::string("Position")))) //guard check for if renderer has all equipped components
-	{
-		return NONE; //early return for not fit for rendering
-	}
-
-	std::vector<std::string> *rQueue = this->object->getRenderQueue();
-	std::string atName; //animation/texture name
-	Component *vData = nullptr; //VisualData Class
-	Component *transform = this->object->getComponent(std::string("Position")); //Transformation Class
-	int index = 0;
-	RenderType type = TEXTURE; //default value to start off
-	Orientation direction = UP; //default value for direction used in animations
-
-	for (int i = 0; i < rQueue->size(); i++) //iterates through all animations needed to be drawn
-	{
-		atName = rQueue->at(i);
-		if (this->object->checkForComponent(atName)) //checks if component exists
-		{
-			//only if exists
-			vData = this->object->getComponent(atName); //VisualData Class
-			type = vData->getCurrentRenderTarget(index);
-		}
-		else
-		{
-			type = NONE; //doesn't exist
-		}
-
-		switch (type) //draws each according to type, doesn't do anything to NONE types
-		{
-		case TEXTURE:
-			rEngine->drawTexture(index, transform->getDisplacement(), vData->getAR(), transform->getSize());
-			break;
-		case ANIMATION:
-			direction = transform->getDirection();
-			rEngine->drawAnimation(index, vData->getTimerRef(), transform->getDisplacement(), 0.0f, direction); //remember to impliment directions later
-			break;
-		}
-	}
-
-	return type;
-}
-
 Renderer::~Renderer() {} //empty dstr
 /*
 end Renderer Class
@@ -235,11 +191,6 @@ Texture Renderer Class
 TextureRenderer::TextureRenderer()
 {
 	//empty cstr
-}
-
-RenderType TextureRenderer::renderBind(RenderEngine *rEngine)
-{
-	return TEXTURE;
 }
 
 TextureRenderer::~TextureRenderer() {} //empty dstr

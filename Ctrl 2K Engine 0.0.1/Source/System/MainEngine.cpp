@@ -7,7 +7,7 @@ Main part of game engine
 */
 
 CoreEngine::CoreEngine() :
-	game(Game(*this)), physicsEngine(&game, nullptr, this->m_secondsElapsed), gameAssets(Assets(*this)), 
+	game(Game(*this)), sceneGraph(), physicsEngine(&game, nullptr, this->m_secondsElapsed), gameAssets(Assets(*this)), 
 	renderingEngine(RenderEngine(*this)), particleEngine(ParticleEngine(*this)), soundEngine(*this), 
 	controlHandler(*this)
 {
@@ -92,12 +92,12 @@ bool CoreEngine::loadSaveState(SaveState *state)
 	GameObject *player = this->game.getPlayer(); //sets player states
 	if (player != nullptr)
 	{
-		Component *stats = player->getComponent(std::string("Statistics")); //sets state of player statistics
+		Component *stats = player->getComponent(4); //sets state of player statistics
 		stats->useHealth(stats->getHealth() - state->player_health);
 		stats->useStamina(stats->getStamina() - state->player_stamina);
 		stats->useMagic(stats->getMagic() - state->player_magic);
 
-		Component *pos = player->getComponent(std::string("Position")); //sets the player's position
+		Component *pos = player->getComponent(0); //sets the player's position
 		pos->setDisp(state->player_positionW);
 	}
 
@@ -115,12 +115,12 @@ bool CoreEngine::saveGame()
 	GameObject *player = this->game.getPlayer(); //saves player states
 	if (player != nullptr)
 	{
-		Component *stats = player->getComponent(std::string("Statistics")); //saves state of player statistics
+		Component *stats = player->getComponent(4); //saves state of player statistics
 		s.player_health = stats->getHealth();
 		s.player_stamina = stats->getStamina();
 		s.player_magic = stats->getMagic();
 
-		Component *pos = player->getComponent(std::string("Position")); //saves the player's position
+		Component *pos = player->getComponent(0); //saves the player's position
 		s.player_positionW = pos->getDisplacement();
 	}
 
@@ -211,6 +211,7 @@ void CoreEngine::displayUpdate()
 	//draws all entities
 	//glm::vec3 pos = glm::vec3(currentPlayer->getPos(), currentPlayer->getDepth());
 	this->game.render();
+	//this->renderingEngine.renderScene(this->game.getScene());
 	this->particleEngine.render();
 	/*
 	float hpPercent = glm::clamp(this->game.getPlayer()->getComponent(std::string("Statistics"))->getHealth() / 100.0f, 0.0f, 1.0f);
@@ -314,6 +315,8 @@ double CoreEngine::getFPS()
 CoreEngine::~CoreEngine()
 {
 	//dstr
+	this->sceneGraph.deleteGO(); //deletes all objects in game
+	this->sceneGraph.update();
 }
 
 /*

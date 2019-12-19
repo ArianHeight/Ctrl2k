@@ -44,6 +44,7 @@ public:
 	int getMapIndex(); //returns the index of the current map
 	int& getMapIndexRef(); //returns the index of the current map
 	GameObject* getPlayer(); //ownership is not passed
+	GameObject* getScene(); //ownership not passed
 };
 
 /*

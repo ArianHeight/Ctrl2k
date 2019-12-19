@@ -34,7 +34,7 @@ public:
 	virtual glm::vec2 getDirNormals();
 
 	//Renderer
-	virtual RenderType renderBind(RenderEngine *rEngine);
+	//virtual RenderType renderBind(RenderEngine *rEngine);
 
 	//PhysComponent
 	virtual PhysObject* getPhysicsObject();
@@ -118,7 +118,7 @@ public:
 	Renderer();
 	virtual ~Renderer();
 
-	virtual RenderType renderBind(RenderEngine *rEngine);
+	//virtual RenderType renderBind(RenderEngine *rEngine);
 protected:
 
 };
@@ -130,7 +130,7 @@ public:
 	TextureRenderer();
 	~TextureRenderer();
 
-	RenderType renderBind(RenderEngine *rEngine);
+	//RenderType renderBind(RenderEngine *rEngine);
 private:
 
 };
@@ -142,7 +142,7 @@ public:
 	AnimationRenderer();
 	~AnimationRenderer();
 
-	RenderType renderBind(RenderEngine *rEngine);
+	//RenderType renderBind(RenderEngine *rEngine);
 private:
 
 };

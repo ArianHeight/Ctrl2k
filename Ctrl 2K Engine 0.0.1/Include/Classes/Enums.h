@@ -80,8 +80,7 @@ struct ActiveEffect
 };
 
 //for component
-enum ComponentType
-{
+enum ComponentType {
 	TRANSFORMATION, //0
 	RENDERER, //1
 	PHYSOBJECT, //2
@@ -104,7 +103,9 @@ enum RenderType
 	TEXTURE, //0
 	ANIMATION, //1
 	TEXT, //2
-	NONE //3
+	MAP, //3
+	WIDGET, //4
+	NONE //5
 };
 
 //for entities

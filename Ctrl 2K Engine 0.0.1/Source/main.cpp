@@ -752,8 +752,8 @@ int main(int argc, char *argv[])
 	FourPoints rectangleOne {glm::vec2(-30.0f, 3.0f), glm::vec2(-29.5f, 3.0f), glm::vec2(-30.0f, -2.0f), glm::vec2(-29.5f, -2.0)};
 	FourPoints rectangleTwo {glm::vec2(-30.5f, 3.0f), glm::vec2(-30.0f, 3.0f), glm::vec2(-30.5f, -2.0f), glm::vec2(-30.0f, -2.0)};
 	//maps.addConnector(std::string("test"), std::string("test1"), rectangleTwo, rectangleOne);
-	maps.data(std::string("test"))->addComponent(std::string("tpOne"), new Connector(rectangleTwo, std::string("test1"), rectangleOne));
-	maps.data(std::string("test1"))->addComponent(std::string("tpZero"), new Connector(rectangleOne, std::string("test"), rectangleTwo));
+	maps.data(std::string("test"))->addComponent(new Connector(rectangleTwo, std::string("test1"), rectangleOne), true); //tpOne 3
+	maps.data(std::string("test1"))->addComponent(new Connector(rectangleOne, std::string("test"), rectangleTwo), true); //tpZero 3
 	maps.updateAllAdjMapIndices();
 	rectangleOne.tl = glm::vec2(0.0f);
 	rectangleOne.tr = glm::vec2(0.0f);
@@ -775,17 +775,17 @@ int main(int argc, char *argv[])
 	newTargetPlayer = currentPlayer;
 	Entity* shootingThing = new NonMovingShooter(ballTexture, gameEngine.getTimeRef(), std::string("Turret3"),
 		new RectangleHB(glm::vec2(0.0f), glm::vec2(1.6f), 45.0f), glm::vec2(0.0f, 10.0f), AGGRESSIVE, 0.0f, 0.0f, 0.0f, 15.0f, LEFT);
-	shootingThing->addComponent(std::string("Death"), new VisualData(ANIMATION, turretDeathTexture, glm::vec2(1.0f)));
-	shootingThing->addComponent(std::string("Idle"), new VisualData(TEXTURE, texture, glm::vec2(1.0f, 1.0f)));
+	shootingThing->addComponent(new VisualData(TEXTURE, texture, glm::vec2(1.0f, 1.0f)), true); //idle 6
+	shootingThing->addComponent(new VisualData(ANIMATION, turretDeathTexture, glm::vec2(1.0f))); //death 7
 	game.addObj(std::string("entity"), shootingThing);
 	/*entities.push_back(new NonMovingShooter(ballTexture, dmgAreas, gl_dSecondsElapsed, std::string("Turret3"), playerStats, std::vector<int>{texture, texture, texture}, glm::vec2(0.0f, 10.0f), 
 		FourPoints{glm::vec2(-0.8f, 0.8f), glm::vec2(0.8f, 0.8f), glm::vec2(-0.8f, -0.8f), glm::vec2(0.8f, -0.8f) }, 9999.99f, 0.96f, 1.0f, 1.0f, 15.0f, LEFT));*/
 	//currentPlayer->addArmour(100); //gives player 100 armour
 	activeCam->setTarget(currentPlayer);
 	headsUpDisplay->setTarget(currentPlayer);
-	currentPlayer->addComponent(std::string("Walking"), new VisualData(ANIMATION, victor, glm::vec2(0.5f, 1.0f)));
-	currentPlayer->addComponent(std::string("Idle"), new VisualData(ANIMATION, vicIdle, glm::vec2(0.5f, 1.0f)));
-	currentPlayer->addComponent(std::string("Death"), new VisualData(ANIMATION, vicIdle, glm::vec2(0.5f, 1.0f)));
+	currentPlayer->addComponent(new VisualData(ANIMATION, vicIdle, glm::vec2(0.5f, 1.0f)), true); //idle 6
+	currentPlayer->addComponent(new VisualData(ANIMATION, vicIdle, glm::vec2(0.5f, 1.0f))); //death 7
+	currentPlayer->addComponent(new VisualData(ANIMATION, victor, glm::vec2(0.5f, 1.0f))); //walking 8
 	game.addObj(std::string("entity"), currentPlayer);
 	game.setPlayer(currentPlayer);
 	/*

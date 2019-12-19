@@ -14,7 +14,7 @@ Camera::Camera(RenderEngine &engine, const std::string &name, glm::vec2 position
 //LERPs the position of camera from given camera center
 void Camera::calculateSelfMovement()
 {
-	Component *transform = this->targetObj->getComponent(std::string("Position")); //ptr to the transformation that holds the position
+	Component *transform = this->targetObj->getComponent(0); //ptr to the transformation that holds the position
 	glm::vec2 objPos = transform->getDisplacement();
 
 	this->m_pos = glm::mix(this->m_pos, objPos, this->m_timeRef * this->m_acceleration); //LERPS the position for "smooth" cam movement

@@ -27,7 +27,7 @@ void NonMovingShooter::updateOrientation(glm::vec2 &newDir)
 
 bool NonMovingShooter::inView(float angle)
 {
-	switch (this->getComponent(std::string("Position"))->getDirection()) //40 degree field of vision
+	switch (this->getComponent(0)->getDirection()) //40 degree field of vision
 	{
 	case UP:
 		if (angle >= 70 && 110 >= angle)
@@ -153,7 +153,7 @@ void NonMovingShooter::attack() //assumed that m_aggro is not nullptr
 			new DmgValue(27, 0.05f, 2.0f, 0.0f, 0.0f, 0.05f, 0.06f), 
 			new PhysComponent(new RectangleHB(glm::vec2(0.0f), glm::vec2(0.5f))), 
 			new VisualData(TEXTURE, this->m_shotTexture, glm::vec2(0.25f)), 
-			this->getComponent(std::string("Position")), new Transformation(this->m_playerNormal * 0.35f), 1.25));
+			this->getComponent(0), new Transformation(this->m_playerNormal * 0.35f), 1.25));
 		/*
 		this->m_dmgAreaRef.push_back(new DamageArea(this, this->m_timeRef, 0.0f, 0.0f, 30, this->getPos(),
 			FourPoints{ glm::vec2(-0.25f, 0.25f), glm::vec2(0.25f, 0.25f), glm::vec2(-0.25f, -0.25f), 

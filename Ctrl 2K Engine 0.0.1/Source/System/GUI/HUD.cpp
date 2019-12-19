@@ -41,7 +41,7 @@ void HUD::update()
 
 		if (this->targetObj != nullptr) //check if camera is centered on an object
 		{
-			Component *eData = this->targetObj->getComponent(std::string("Statistics"));
+			Component *eData = this->targetObj->getComponent(4);
 			if (eData != nullptr) //is and entity and has statistics to display
 			{
 				this->healthBar->setPercentage(eData->getHealth() / 100.0);

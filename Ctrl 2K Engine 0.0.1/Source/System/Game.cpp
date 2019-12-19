@@ -181,8 +181,8 @@ void Game::debugSetup()
 	FourPoints rectangleOne{ glm::vec2(-30.0f, 3.0f), glm::vec2(-29.5f, 3.0f), glm::vec2(-30.0f, -2.0f), glm::vec2(-29.5f, -2.0) };
 	FourPoints rectangleTwo{ glm::vec2(-30.5f, 3.0f), glm::vec2(-30.0f, 3.0f), glm::vec2(-30.5f, -2.0f), glm::vec2(-30.0f, -2.0) };
 	//maps.addConnector(std::string("test"), std::string("test1"), rectangleTwo, rectangleOne);
-	maps.data(std::string("test"))->addComponent(std::string("tpOne"), new Connector(rectangleTwo, std::string("test1"), rectangleOne));
-	maps.data(std::string("test1"))->addComponent(std::string("tpZero"), new Connector(rectangleOne, std::string("test"), rectangleTwo));
+	//maps.data(std::string("test"))->addComponent(std::string("tpOne"), new Connector(rectangleTwo, std::string("test1"), rectangleOne));
+	//maps.data(std::string("test1"))->addComponent(std::string("tpZero"), new Connector(rectangleOne, std::string("test"), rectangleTwo));
 	maps.updateAllAdjMapIndices();
 	rectangleOne.tl = glm::vec2(0.0f);
 	rectangleOne.tr = glm::vec2(0.0f);
@@ -201,7 +201,7 @@ void Game::debugSetup()
 	/*currentPlayer = new Player(dmgAreas, gl_dSecondsElapsed, std::string("Victor"), playerStats, std::vector<int>{victor, victor, victor}, glm::vec2(0.0),
 	FourPoints{glm::vec2(-0.5f, 0.5f), glm::vec2(0.5f, 0.5f), glm::vec2(-0.5f, -0.5f), glm::vec2(0.5f, -0.5f)}, 10.0f, 0.96f, 0.5f, 1.0f);*/
 	currentPlayer->usePlayer();
-	newTargetPlayer = currentPlayer;
+	newTargetPlayer = currentPlayer; /*
 	Entity* shootingThing = new NonMovingShooter(ballTexture, this->parentEngine.getTimeRef(), std::string("Turret3"),
 		new RectangleHB(glm::vec2(0.0f), glm::vec2(1.6f), 45.0f), glm::vec2(0.0f, 10.0f), AGGRESSIVE, 0.0f, 0.0f, 0.0f, 15.0f, LEFT);
 	shootingThing->addComponent(std::string("Turret3"), new VisualData(TEXTURE, texture, glm::vec2(1.0f, 1.0f)));
@@ -210,7 +210,7 @@ void Game::debugSetup()
 	FourPoints{glm::vec2(-0.8f, 0.8f), glm::vec2(0.8f, 0.8f), glm::vec2(-0.8f, -0.8f), glm::vec2(0.8f, -0.8f) }, 9999.99f, 0.96f, 1.0f, 1.0f, 15.0f, LEFT));*/
 	//currentPlayer->addArmour(100); //gives player 100 armour
 	activeCam->setTarget(currentPlayer);
-	currentPlayer->addComponent(std::string("victor_walk"), new VisualData(ANIMATION, victor, glm::vec2(0.5f, 1.0f)));
+	//currentPlayer->addComponent(std::string("victor_walk"), new VisualData(ANIMATION, victor, glm::vec2(0.5f, 1.0f)));
 	this->addObj(std::string("entity"), currentPlayer);
 	this->setPlayer(currentPlayer);
 }
@@ -223,7 +223,7 @@ CoreEngine& Game::getEngine()
 
 void Game::getAllPOs(std::vector<Component*> &output)
 {
-	this->globalActiveObjects->getAllComponentByTypeB(output, PHYSOBJECT);
+	this->globalActiveObjects->getAllActiveComponentsC(output, PHYSOBJECT);
 	/*
 	for (auto it = this->globalActiveObjects.begin(); it != this->globalActiveObjects.end(); it++)
 	{
@@ -249,6 +249,10 @@ int& Game::getMapIndexRef()
 GameObject* Game::getPlayer()
 {
 	return this->player;
+}
+
+GameObject* Game::getScene() {
+	return this->globalActiveObjects;
 }
 
 Game::~Game()

@@ -24,9 +24,12 @@ protected:
 	GUI *displayingHud = nullptr; //may be null or may not, points to a hud that will grab data off this obj to display
 	bool m_delete{ false }; //delete var for queue
 
-	std::vector<std::string> m_renderQueue; //all visualdata classes about to be rendered
+	std::vector<std::vector<Component*>> m_activeComponents; //all components that are active(accessed with corresponding type)
+	//std::vector<std::string> m_renderQueue; //all visualdata classes about to be rendered
 	std::vector<GameObject*> m_children; //all children classes
-	std::map<std::string, Component*> m_components; //all components
+	//TODO change this to a vector for simple use maybe idk
+	//std::map<std::string, Component*> m_components; //all components
+	std::vector<Component*> m_components;
 	std::vector<std::string> m_inputs; //all inputs per frame
 	std::vector<std::string> m_properties; //properties which the engines will use to define how obj interacts with the world
 
@@ -41,7 +44,7 @@ public:
 	void setLinkHud(GUI *h); //links to the displaying hud
 	bool isHudLinked(); //is the hud locked onto this obj
 
-	void addComponent(std::string &name, Component *component); //adds a component to the object
+	int addComponent(Component *component, bool active = false); //adds a component to the object, returns the index
 	void addChild(GameObject *obj); //adds a child object to the GO
 	void clearChildrenPtr(int lvl = 0); //deletes all children ***Just The PTR NOT With The Actual Object***!!! This is DANGEROUS AND IS ONLY MEANT FOR USE IN MAP OBJECTS!!!
 	void deleteGO(); //queues for delete
@@ -61,11 +64,10 @@ public:
 	//accessors
 	virtual std::string getName();
 	bool getDelete();
-	Component* getComponent(std::string &name); //grabs component depending on string
-	int checkForComponent(std::string &name); //checks if component exist in class
-	std::vector<std::string>* getRenderQueue(); //returns the current queue for rendering
-	void getAllComponentByType(std::vector<Component*> &output, ComponentType type); //appends ptrs of all components of one type into a std::vector ref
-	void getAllComponentByTypeB(std::vector<Component*> &output, ComponentType type); //appends ptrs of all components of one type into a std::vector ref from all children and itself
+	Component* getComponent(int index); //grabs component depending on index
+	int checkForComponent(int index); //checks if component exist in class
+	std::vector<Component*>& getAllActiveComponents(ComponentType type); //returns all current active components of type in this object
+	void getAllActiveComponentsC(std::vector<Component*> &output, ComponentType type); //appends ptrs of all active components of one type(from all children as well as this obj) into a std::vector ref
 	GameObject* getChild(std::string &name); //no ownership passed
 };
 

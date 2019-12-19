@@ -15,7 +15,7 @@ Widget::Widget(std::string name, glm::vec2 topLeft, glm::vec2 bottomRight, int t
 	//cstr
 	std::string temp = ""; //temporary var for names
 
-	temp = "PosScreen"; //screen position
+	//temp = "PosScreen"; //screen position
 	FourPoints hb;
 	hb.tl = this->m_posTLParent;
 	hb.br = this->m_posBRParent;
@@ -23,7 +23,7 @@ Widget::Widget(std::string name, glm::vec2 topLeft, glm::vec2 bottomRight, int t
 	hb.tr.y = hb.tl.y;
 	hb.bl.x = hb.tl.x;
 	hb.bl.y = hb.br.y;
-	this->addComponent(temp, new PhysComponent(new RectangleHB(hb), true, false));
+	this->addComponent(new PhysComponent(new RectangleHB(hb), true, false)); //3
 
 	this->update();
 }
@@ -33,8 +33,8 @@ void Widget::render()
 {
 	if (this->m_textureBufferIndex != -1)
 	{
-		std::string tempName = "PosScreen";
-		FourPoints* hb = this->getComponent(tempName)->getPhysicsObject()->getHB();
+		//std::string tempName = "PosScreen";
+		FourPoints* hb = this->getComponent(3)->getPhysicsObject()->getHB();
 		this->game->getEngine().getRenderEngine().drawTextureN(this->m_textureBufferIndex, hb->tl, hb->br/*, glm::vec4(1.0f)*/);
 		//drawTexture(this->m_textureBufferIndex, hb->tl, hb->br, glm::vec4(1.0f));
 	}
@@ -42,16 +42,16 @@ void Widget::render()
 
 void Widget::update()
 {
-	std::string tempName = "PosScreen";
+	//std::string tempName = "PosScreen";
 	if (this->m_parent != nullptr)
 	{
-		if (this->m_parent->checkForComponent(tempName)) //if this is not in the parent
+		if (this->m_parent->checkForComponent(3)) //if this is not in the parent
 		{
-			Component* posScreen = this->m_parent->getComponent(tempName); //grabs the parent's component and uses the position values from that
+			Component* posScreen = this->m_parent->getComponent(3); //grabs the parent's component and uses the position values from that
 			FourPoints* hbParent = posScreen->getPhysicsObject()->getHB();
 			glm::vec2 sizeRatio = glm::abs(hbParent->tl - hbParent->br) / 2.0f;
 
-			Component* thisScreen = this->getComponent(tempName); //the position component of this object
+			Component* thisScreen = this->getComponent(3); //the position component of this object
 			FourPoints* thisHB = thisScreen->getPhysicsObject()->getHB();
 
 			thisHB->tl = hbParent->tl - (glm::vec2(-1, 1) - this->m_posTLParent) * sizeRatio; //scales and updates the positions of the widget
@@ -79,12 +79,12 @@ accessors
 
 glm::vec2 Widget::getTopLeftPos()
 {
-	return this->m_parent->getComponent(std::string("PosScreen"))->getPhysicsObject()->getHB()->tl;
+	return this->m_parent->getComponent(3)->getPhysicsObject()->getHB()->tl;
 }
 
 glm::vec2 Widget::getBottomRightPos()
 {
-	return this->m_parent->getComponent(std::string("PosScreen"))->getPhysicsObject()->getHB()->br;
+	return this->m_parent->getComponent(3)->getPhysicsObject()->getHB()->br;
 }
 
 int Widget::getTextureIndex()

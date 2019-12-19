@@ -54,20 +54,20 @@ Entity::Entity(double &time, std::string &name, PhysObject *hitbox, glm::vec2 po
 {
 	//adds components
 	std::string tempName = "Position";
-	Component *transform = this->getComponent(tempName); //ptr to transformation component
+	Component *transform = this->getComponent(0); //ptr to transformation component
 	transform->setDisp(position);
 
-	tempName = "Mainbody";
+	//tempName = "Mainbody"; 3
 	this->m_mainbody = new PhysComponent(hitbox); //ptr to hitbox
-	this->addComponent(tempName, this->m_mainbody);
+	this->addComponent(this->m_mainbody, true);
 
-	tempName = "Statistics";
+	//tempName = "Statistics"; 4
 	this->m_statistics = new EntityData(name, 100.0f, 100.0f, 100.0f, true, 2.0f, 1.0f, 1.0f);
-	this->addComponent(tempName, this->m_statistics); //adds it to components
+	this->addComponent(this->m_statistics, true); //adds it to components
 
-	tempName = "Movement";
+	//tempName = "Movement"; 5
 	this->m_movement = new MoveData(speedOne, speedTwo, speedThree);
-	this->addComponent(tempName, this->m_movement);
+	this->addComponent(this->m_movement, true);
 
 	//adds properties
 	tempName = "CollisionOn";
@@ -77,7 +77,7 @@ Entity::Entity(double &time, std::string &name, PhysObject *hitbox, glm::vec2 po
 
 void Entity::updateOrientation(glm::vec2 &newDir)
 {
-	Component* transform = this->m_components.at(std::string("Position"));
+	Component* transform = this->m_components[0];
 
 	if (newDir.x > 0.7) //right side
 	{
@@ -135,7 +135,7 @@ void Entity::move(Orientation newDir)
 
 void Entity::move(glm::vec2 direction)
 {
-	Component *transform = this->getComponent(std::string("Position"));
+	Component *transform = this->getComponent(0);
 
 	//updates orientation
 	this->updateOrientation(direction);
@@ -190,19 +190,19 @@ void Entity::processInput()
 	bool left = (inVectorAndRemove(std::string("MOVE_LEFT"), this->m_inputs));
 	bool right = (inVectorAndRemove(std::string("MOVE_RIGHT"), this->m_inputs));
 	int directions = int(up) + int(down) + int(left) + int(right);
-
+	
 	if (directions == 4 || directions == 0) //animation stuff
 	{
-		if (this->m_renderQueue[0] != "Idle")
+		if (this->m_activeComponents[VISUAL_DATA][0] != this->m_components[6]) //IDLE
 		{
-			this->m_renderQueue[0] = "Idle";
+			this->m_activeComponents[VISUAL_DATA][0] = this->m_components[6]; //IDLE
 		}
 	}
 	else
 	{
-		if (this->m_renderQueue[0] != "Walking")
+		if (this->m_activeComponents[VISUAL_DATA][0] != this->m_components[8]) //WALKING
 		{
-			this->m_renderQueue[0] = "Walking";
+			this->m_activeComponents[VISUAL_DATA][0] = this->m_components[8]; //WALKING
 		}
 	}
 
@@ -267,7 +267,7 @@ void Entity::processInput()
 
 void Entity::engineMove(glm::vec3 distance)
 {
-	Component *transform = this->getComponent(std::string("Position")); //ptr to transformation component
+	Component *transform = this->getComponent(0); //ptr to transformation component
 
 	transform->changeDisp(glm::vec2(distance.x, distance.y));
 	/*
@@ -292,7 +292,7 @@ void Entity::engineMove(glm::vec3 distance)
 
 void Entity::engineMove(Manifest distance)
 {
-	Component *transform = this->getComponent(std::string("Position")); //ptr to transformation component
+	Component *transform = this->getComponent(0); //ptr to transformation component
 
 	transform->changeDisp(distance.magnitude * distance.normal * this->m_movement->getSpeed() * (float)this->m_timeRef);
 	/*
@@ -317,13 +317,13 @@ void Entity::engineMove(Manifest distance)
 
 bool Entity::updateHealth() //false for dead, true for alive
 {
-	Component *status = this->getComponent(std::string("Statistics"));
+	Component *status = this->getComponent(4);
 
 	//health gate to death
 	if (status->getHealth() < 0.0f)
 	{
 		status->setDeathState(true);
-		this->m_renderQueue[0] = "Death";
+		this->m_activeComponents[VISUAL_DATA][0] = this->m_components[7]; //DEATH
 		return false;
 	}
 
@@ -332,7 +332,7 @@ bool Entity::updateHealth() //false for dead, true for alive
 
 void Entity::update()
 {
-	Component *transform = this->getComponent(std::string("Position")); //ptr to transformation component
+	Component *transform = this->getComponent(0); //ptr to transformation component
 
 	this->updateLastPos();
 	this->updateTimers();
@@ -352,8 +352,8 @@ void Entity::update()
 
 void Entity::updateLastPos()
 {
-	Component *transform = this->getComponent(std::string("Position")); //ptr to transformation component
-	*(this->getComponent(std::string("Last Position"))) = *transform;
+	Component *transform = this->getComponent(0); //ptr to transformation component
+	*(this->getComponent(1)) = *transform;
 }
 
 void Entity::updateTimers()
@@ -365,9 +365,9 @@ void Entity::updateTimers()
 
 void Entity::updateAnimationTimer()
 {
-	if (this->m_renderQueue.size() != 0)
+	if (this->m_activeComponents[VISUAL_DATA].size() != 0)
 	{
-		this->getComponent(this->m_renderQueue[0])->getTimerRef() += this->m_timeRef;
+		this->m_activeComponents[VISUAL_DATA][0]->getTimerRef() += this->m_timeRef;
 	}
 }
 
@@ -386,7 +386,7 @@ void Entity::updateAI()
 
 glm::vec2 Entity::getPos()
 {
-	Component *transform = this->getComponent(std::string("Position")); //ptr to transformation component
+	Component *transform = this->getComponent(0); //ptr to transformation component
 	return transform->getDisplacement();
 }
 
@@ -397,7 +397,7 @@ glm::vec2 Entity::getLastMove()
 
 glm::vec2 Entity::getLastPos()
 {
-	return this->getComponent(std::string("Last Position"))->getDisplacement();
+	return this->getComponent(1)->getDisplacement();
 }
 
 float Entity::getDepth()
@@ -417,7 +417,7 @@ std::string Entity::getName()
 
 float Entity::getSize()
 {
-	return this->getComponent(std::string("Position"))->getSize();
+	return this->getComponent(0)->getSize();
 }
 
 FourPoints* Entity::getHitboxPtr()
@@ -442,15 +442,15 @@ int Entity::getMagic()
 
 Orientation Entity::getDirection()
 {
-	return this->getComponent(std::string("Position"))->getDirection();
+	return this->getComponent(0)->getDirection();
 }
 
 int Entity::getActiveAnimation()
 {
 	int returnValue;
-	if (this->m_renderQueue.size() != 0)
+	if (this->m_activeComponents[VISUAL_DATA].size() != 0)
 	{
-		this->getComponent(this->m_renderQueue[0])->getCurrentRenderTarget(returnValue);
+		this->m_activeComponents[VISUAL_DATA][0]->getCurrentRenderTarget(returnValue);
 	}
 	else
 	{
@@ -461,9 +461,9 @@ int Entity::getActiveAnimation()
 
 double& Entity::getAnimationTimerRef()
 { 
-	if (this->m_renderQueue.size() != 0)
+	if (this->m_activeComponents[VISUAL_DATA].size() != 0)
 	{
-		return this->getComponent(this->m_renderQueue[0])->getTimerRef();
+		return this->m_activeComponents[VISUAL_DATA][0]->getTimerRef();
 	}
 	return this->m_timeRef;
 }
@@ -480,13 +480,13 @@ bool Entity::getIsAggro()
 
 void Entity::setPos(glm::vec2 target)
 {
-	Component *transform = this->getComponent(std::string("Position")); //ptr to transformation component
+	Component *transform = this->getComponent(0); //ptr to transformation component
 	transform->setDisp(target);
 }
 
 void Entity::setPos(glm::vec3 target)
 {
-	Component *transform = this->getComponent(std::string("Position")); //ptr to transformation component
+	Component *transform = this->getComponent(0); //ptr to transformation component
 	transform->setDisp(glm::vec2(target.x, target.y));
 	//this->m_depth = target.z;
 }

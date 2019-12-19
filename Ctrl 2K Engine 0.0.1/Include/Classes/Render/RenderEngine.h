@@ -27,6 +27,7 @@ private:
 	ScreenBuffer *sBuffer; //needs to be recreated if res is changed
 	Camera activeCam;
 	std::vector<Shader> shaderPrograms;
+	std::vector<Component*> rendererBuffer;
 	//Camera activeCam;
 
 	void activateWindow(); //these must be run before any rendering can be done!!
@@ -46,6 +47,7 @@ public:
 	void addShader(Shader &shaderobj); //adds shader to render engine
 	void useShader(std::string& name);
 	void render(Component *renderComponent); //renders by reading a passed component obj
+	void renderScene(GameObject* scene); //render everything in the scenegraph
 	void updateScreen(); //switches the double buffer
 
 	void resizeWindow(int newX, int newY); //updates the window size

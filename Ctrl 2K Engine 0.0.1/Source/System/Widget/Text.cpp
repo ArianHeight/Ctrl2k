@@ -23,8 +23,8 @@ Text::Text(std::string name, FontManager &fonts, glm::vec2 &spxw, int index, std
 
 void Text::render()
 {
-	std::string tempName = "PosScreen";
-	Component* posScreen = this->getComponent(tempName); //grabs the parent's component and uses the position values from that
+	//std::string tempName = "PosScreen";
+	Component* posScreen = this->getComponent(3); //grabs the parent's component and uses the position values from that
 	FourPoints* hb = posScreen->getPhysicsObject()->getHB();
 
 	if (this->m_textOrientation == 0) //left
@@ -154,8 +154,8 @@ void Text::setColour(glm::vec4 colour)
 
 void Text::recalculateCenter()
 {
-	std::string tempName = "PosScreen";
-	Component* posScreen = this->getComponent(tempName); //grabs the parent's component and uses the position values from that
+	//std::string tempName = "PosScreen";
+	Component* posScreen = this->getComponent(3); //grabs the parent's component and uses the position values from that
 	FourPoints* hb = posScreen->getPhysicsObject()->getHB();
 
 	this->m_centeredPosScreen = (hb->tl + hb->br) / 2.0f;

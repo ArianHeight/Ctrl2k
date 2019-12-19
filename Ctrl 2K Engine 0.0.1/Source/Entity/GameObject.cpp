@@ -24,35 +24,34 @@ game object
 GameObject::GameObject()
 {
 	//cstr
+	this->m_activeComponents = std::vector<std::vector<Component*>>(7);
 	this->initComponents(); //intializes vital components engine requires
-	this->m_renderQueue.push_back("");
 }
 
-void GameObject::addComponent(std::string &name, Component *component)
+int GameObject::addComponent(Component *component, bool active)
 {
 	component->setGameObject(this);
-	if (component->getType() == VISUAL_DATA) //this is temp and for debug!!
+	this->m_components.push_back(component);
+	if (active) //this is temp and for debug!!
 	{
-		this->m_renderQueue[0] = name;
+		this->m_activeComponents[component->getType()].push_back(component);
 	}
-	this->m_components.insert(std::pair<std::string, Component*>(name, component));
+
+	return this->m_components.size() - 1;
 }
 
 void GameObject::initComponents()
 {
 	std::string temp = ""; //temporary var for names
 
-	//transformation
-	temp = "Position";
-	this->addComponent(temp, new Transformation());
+	//transformation 0
+	this->addComponent(new Transformation(), true);
 
-	//last transformation
-	temp = "Last Position";
-	this->addComponent(temp, new Transformation());
+	//last transformation 1
+	this->addComponent(new Transformation(), true);
 
-	//main renderer
-	temp = "Main Renderer";
-	this->addComponent(temp, new Renderer());
+	//main renderer 2
+	this->addComponent(new Renderer(), true);
 }
 
 void GameObject::removeFromCam()
@@ -151,19 +150,20 @@ void GameObject::update()
 
 void GameObject::render() 
 {
+	
 	if (this->game != nullptr) //nullptr guard, does the actual rendering
 	{
 		RenderEngine &rEngine = this->game->getEngine().getRenderEngine(); //reference to render engine being used
-		Component* c = this->m_components.at("Main Renderer");
+		Component* c = this->m_components[2];
 		rEngine.render(c); //renders
 	}
 
 	//debug will move to update later
-	if (this->m_renderQueue.size() > 0)
+	if (this->m_activeComponents[VISUAL_DATA].size() > 0)
 	{
 		try
 		{
-			this->m_components.at(this->m_renderQueue[0])->getTimerRef() += this->game->getEngine().getTime(); //only render first thing in queue
+			this->m_activeComponents[VISUAL_DATA][0]->getTimerRef() += this->game->getEngine().getTime(); //only render first thing in queue
 		}
 		catch (std::out_of_range)
 		{
@@ -231,12 +231,12 @@ bool GameObject::getDelete()
 	return this->m_delete;
 }
 
-Component* GameObject::getComponent(std::string &name)
+Component* GameObject::getComponent(int index)
 {
 	Component *returnValue = nullptr;
 	try
 	{
-		returnValue = this->m_components.at(name);
+		returnValue = this->m_components[index];
 	}
 	catch (std::out_of_range)
 	{
@@ -246,34 +246,23 @@ Component* GameObject::getComponent(std::string &name)
 	return returnValue;
 }
 
-int GameObject::checkForComponent(std::string &name)
+int GameObject::checkForComponent(int index)
 {
-	return this->m_components.count(name);
+	return index < this->m_components.size() && index >= 0;
 }
 
-std::vector<std::string>* GameObject::getRenderQueue()
-{
-	return &(this->m_renderQueue);
+std::vector<Component*>& GameObject::getAllActiveComponents(ComponentType type) {
+	return this->m_activeComponents[type];
 }
 
-void GameObject::getAllComponentByType(std::vector<Component*> &output, ComponentType type)
-{
-	for (auto it = this->m_components.begin(); it != this->m_components.end(); it++) //iteration
-	{
-		if (it->second->getType() == type) //check for type match
-		{
-			output.push_back(it->second);
-		}
+void GameObject::getAllActiveComponentsC(std::vector<Component*> &output, ComponentType type) {
+	std::vector<Component*>& activeComponents = this->getAllActiveComponents(type);
+
+	for (auto it = activeComponents.begin(); it != activeComponents.end(); it++) { //iteration
+		output.push_back(*it);
 	}
-}
-
-void GameObject::getAllComponentByTypeB(std::vector<Component*> &output, ComponentType type)
-{
-	this->getAllComponentByType(output, type); //returns its own types
-
-	for (int i = 0; i < this->m_children.size(); i++) //returns the child types
-	{
-		this->m_children[i]->getAllComponentByTypeB(output, type);
+	for (auto it = this->m_children.begin(); it != this->m_children.end(); it++) { //returns the child types
+		(*it)->getAllActiveComponentsC(output, type);
 	}
 }
 
@@ -293,13 +282,10 @@ GameObject* GameObject::getChild(std::string &name)
 GameObject::~GameObject()
 {
 	//clean up
-	for (auto it = this->m_components.begin(); it != this->m_components.end(); it++)
-	{
-		if (it->second != nullptr)
-		{
-			delete it->second;
-			it->second = nullptr;
-		}
+	this->m_activeComponents.clear();
+	for (auto it = this->m_components.begin(); it != this->m_components.end(); it++) { //clears all components
+		delete (*it);
+		*it = nullptr;
 	}
 	this->m_components.clear();
 

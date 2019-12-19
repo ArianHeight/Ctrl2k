@@ -69,8 +69,8 @@ void PhysEngine::backgroundCollision()
 	for (int i = 0; i < size; i++) //processes the list of physcomponents colliding with the map
 	{
 		hitbox = this->m_backgroundColliding[i];
-		position = hitbox->getGameObjectPtr()->getComponent(cPos); //gets displacement
-		if (position->getDisplacement() != hitbox->getGameObjectPtr()->getComponent(lPos)->getDisplacement()) //only updates if moved
+		position = hitbox->getGameObjectPtr()->getComponent(0); //gets displacement
+		if (position->getDisplacement() != hitbox->getGameObjectPtr()->getComponent(1)->getDisplacement()) //only updates if moved
 		//if (true)
 		{
 			//updates test values
@@ -114,7 +114,7 @@ void PhysEngine::buildCollisionList(bool &mapChange, int &newMap)
 	{
 		//updates testing values
 		object = this->m_hitboxList[index];
-		transform = object->getGameObjectPtr()->getComponent(pos);
+		transform = object->getGameObjectPtr()->getComponent(0);
 		testPos = transform->getDisplacement();
 
 		//hitbox against hitbox checking
@@ -145,9 +145,9 @@ void PhysEngine::buildCollisionList(bool &mapChange, int &newMap)
 			tempName = "ParticleSpawnOnCollision";
 			if (object->getGameObjectPtr()->hasProperty(tempName))
 			{
-				spawnPos = object->getGameObjectPtr()->getComponent(pos)->getDisplacement();
+				spawnPos = object->getGameObjectPtr()->getComponent(0)->getDisplacement();
 				//this->m_game->getEngine().getParticleEngine().addEffect(new ExplosiveFX(spawnPos, 0.2, -0.00001, 0.1f, 9));
-				this->m_game->getEngine().getParticleEngine().addEffect(new SparkFX(spawnPos, 0.1, object->getGameObjectPtr()->getComponent(std::string("Velocity"))->getDisplacement(), 5));
+				this->m_game->getEngine().getParticleEngine().addEffect(new SparkFX(spawnPos, 0.1, object->getGameObjectPtr()->getComponent(3)->getDisplacement(), 5));
 			}
 		}
 		else
@@ -158,8 +158,7 @@ void PhysEngine::buildCollisionList(bool &mapChange, int &newMap)
 		//player only, check against connector hitboxes
 		if (object->getGameObjectPtr()->isCamLinked())
 		{
-			std::vector<Component*> connectors;
-			this->playgroundTile->getAllComponentByType(connectors, CONNECTOR);
+			std::vector<Component*>& connectors = this->playgroundTile->getAllActiveComponents(CONNECTOR);
 			for (int i = 0; i < connectors.size(); i++)
 			{
 				if (this->aabbCheck(testPos, connectors[i]->getSelfHB()))
@@ -249,14 +248,14 @@ void PhysEngine::updateParticleFX(ParticleEffect *vfx)
 void PhysEngine::spawnExplosiveParticleFx(PhysEvent *e, bool invert)
 {
 	glm::vec2 position;
-	std::string name = "Position";
+	//std::string name = "Position";
 	if (!invert)
 	{
-		position = e->hbOne->getGameObjectPtr()->getComponent(name)->getDisplacement();
+		position = e->hbOne->getGameObjectPtr()->getComponent(0)->getDisplacement();
 	}
 	else
 	{
-		position = e->hbTwo->getGameObjectPtr()->getComponent(name)->getDisplacement();
+		position = e->hbTwo->getGameObjectPtr()->getComponent(0)->getDisplacement();
 	}
 
 	this->m_game->getEngine().getParticleEngine().addEffect(new ExplosiveFX(position, 0.1, -0.00001, 0.1f, 9));
@@ -270,13 +269,13 @@ void PhysEngine::spawnSparkParticleFx(PhysEvent *e, bool invert)
 	std::string nameTwo = "Velocity";
 	if (!invert)
 	{
-		position = e->hbOne->getGameObjectPtr()->getComponent(name)->getDisplacement();
-		velocity = e->hbOne->getGameObjectPtr()->getComponent(nameTwo)->getDisplacement();
+		position = e->hbOne->getGameObjectPtr()->getComponent(0)->getDisplacement();
+		velocity = e->hbOne->getGameObjectPtr()->getComponent(3)->getDisplacement();
 	}
 	else
 	{
-		position = e->hbTwo->getGameObjectPtr()->getComponent(name)->getDisplacement();
-		velocity = e->hbTwo->getGameObjectPtr()->getComponent(nameTwo)->getDisplacement();
+		position = e->hbTwo->getGameObjectPtr()->getComponent(0)->getDisplacement();
+		velocity = e->hbTwo->getGameObjectPtr()->getComponent(3)->getDisplacement();
 	}
 
 	this->m_game->getEngine().getParticleEngine().addEffect(new SparkFX(position, 0.1, velocity, 5));
@@ -551,9 +550,9 @@ bool PhysEngine::collision(Component *one, Component *two)
 	PhysType tTwo = twoO->getType();
 
 	//position
-	std::string temp = "Position"; //temporary string for storing names
-	Component *oneT = one->getGameObjectPtr()->getComponent(temp);
-	Component *twoT = two->getGameObjectPtr()->getComponent(temp);
+	//std::string temp = "Position"; //temporary string for storing names
+	Component *oneT = one->getGameObjectPtr()->getComponent(0);
+	Component *twoT = two->getGameObjectPtr()->getComponent(0);
 
 	if (tOne == RECTANGLE && tTwo == tOne) //aabb against aabb, also fastest algorithmn
 	{
@@ -625,14 +624,14 @@ void PhysEngine::aabbResponse(PhysEvent *e)
 	}
 
 	//position
-	std::string temp = "Position"; //temporary string for storing names
-	Component *oneT = e->hbOne->getGameObjectPtr()->getComponent(temp);
-	Component *twoT = e->hbTwo->getGameObjectPtr()->getComponent(temp);
+	//std::string temp = "Position"; //temporary string for storing names
+	Component *oneT = e->hbOne->getGameObjectPtr()->getComponent(0);
+	Component *twoT = e->hbTwo->getGameObjectPtr()->getComponent(0);
 
 	//last pos
-	temp = "Last Position";
-	Component *oneLT = e->hbOne->getGameObjectPtr()->getComponent(temp);
-	Component *twoLT = e->hbTwo->getGameObjectPtr()->getComponent(temp);
+	//temp = "Last Position";
+	Component *oneLT = e->hbOne->getGameObjectPtr()->getComponent(1);
+	Component *twoLT = e->hbTwo->getGameObjectPtr()->getComponent(1);
 
 	//needed for calculations, one and two FP are hitboxes scaled to size and in world position
 	FourPoints *fPPtr = one->getHB();
@@ -699,9 +698,9 @@ void PhysEngine::circleResponse(PhysEvent *e)
 	}
 
 	//for transformation
-	std::string tempName = "Position";
-	Component *oneT = e->hbOne->getGameObjectPtr()->getComponent(tempName);
-	Component *twoT = e->hbTwo->getGameObjectPtr()->getComponent(tempName);
+	//std::string tempName = "Position";
+	Component *oneT = e->hbOne->getGameObjectPtr()->getComponent(0);
+	Component *twoT = e->hbTwo->getGameObjectPtr()->getComponent(0);
 
 	glm::vec2 distance = two->getCenter() + twoT->getDisplacement() - one->getCenter() - oneT->getDisplacement(); //distance from one to two
 	//float absDistance = glm::sqrt(distance.x * distance.x + distance.y * distance.y); //pythagorean

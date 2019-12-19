@@ -16,8 +16,8 @@ Player::Player(double &time, std::string &name, PhysObject *hitbox, glm::vec2 po
 
 void Player::attack()
 {
-	std::string n = "Position";
-	Component *pos = this->getComponent(n);
+	//std::string n = "Position";
+	Component *pos = this->getComponent(0);
 
 	this->addChild(new MeleeDmgArea(this, this->m_timeRef,
 		new DmgValue(27, 0.05f, 2.0f, 0.0f, 0.0f, 0.05f, 0.06f),
