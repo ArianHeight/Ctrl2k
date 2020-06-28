@@ -353,7 +353,11 @@ void Entity::update()
 void Entity::updateLastPos()
 {
 	Component *transform = this->getComponent(0); //ptr to transformation component
-	*(this->getComponent(1)) = *transform;
+	Component* t = this->getComponent(1);
+
+	t->setDisp(transform->getDisplacement());
+	t->setDirection(transform->getDirection());
+	t->setSize(transform->getSize());
 }
 
 void Entity::updateTimers()

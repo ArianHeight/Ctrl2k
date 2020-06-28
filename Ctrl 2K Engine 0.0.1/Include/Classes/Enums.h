@@ -87,7 +87,8 @@ enum ComponentType {
 	VISUAL_DATA, //3
 	ENTITY_DATA, //4
 	MOVE_DATA, //5
-	CONNECTOR //6
+	CONNECTOR, //6
+	DMG_VALUE //7
 };
 
 //for physobject

@@ -15,60 +15,60 @@ also an abstract class
 class Component
 {
 public:
-	Component();
+	Component(const ComponentType& type);
 	virtual ~Component();
 
-	ComponentType getType(); //returns type of component
-	void setGameObject(GameObject *obj); //sets the link to parent object, same across all child classes of component
-	GameObject* getGameObjectPtr(); //returns bound gameobject
+	const ComponentType getType() const; //returns type of component
+	void setGameObject(GameObject* const obj); //sets the link to parent object, same across all child classes of component
+	GameObject* const getGameObjectPtr() const; //returns bound gameobject
 
 	//Transformation
-	virtual void setDisp(glm::vec2 newDisp);
-	virtual void changeDisp(glm::vec2 deltaDisp);
-	virtual void setSize(float newSize);
-	virtual void changeSize(float deltaSize);
-	virtual void setDirection(Orientation d);
-	virtual glm::vec2 getDisplacement();
-	virtual float getSize();
-	virtual Orientation getDirection();
-	virtual glm::vec2 getDirNormals();
+	virtual void setDisp(const glm::vec2& newDisp);
+	virtual void changeDisp(const glm::vec2& deltaDisp);
+	virtual void setSize(const float& newSize);
+	virtual void changeSize(const float& deltaSize);
+	virtual void setDirection(const Orientation& d);
+	virtual const glm::vec2 getDisplacement() const;
+	virtual const float getSize() const;
+	virtual const Orientation getDirection() const;
+	virtual const glm::vec2 getDirNormals() const;
 
 	//Renderer
 	//virtual RenderType renderBind(RenderEngine *rEngine);
 
 	//PhysComponent
-	virtual PhysObject* getPhysicsObject();
-	virtual bool canCollide();
-	virtual bool inScreenPos();
-	virtual bool hasMouseCollision();
+	virtual PhysObject* const getPhysicsObject() const;
+	virtual const bool canCollide() const;
+	virtual const bool inScreenPos() const;
+	virtual const bool hasMouseCollision() const;
 	virtual void enableMCollision();
 
 	//Connector
 	virtual std::string getTarget();
-	virtual FourPoints* getSelfHB();
-	virtual FourPoints* getTargetHB();
+	virtual FourPoints* const getSelfHB();
+	virtual FourPoints* const getTargetHB();
 
 	//VisualData
-	virtual RenderType getCurrentRenderTarget(int &targetIndex);
-	virtual double& getTimerRef();
-	virtual glm::vec2 getAR();
+	virtual const RenderType getCurrentRenderTarget(int& targetIndex) const;
+	virtual double& const getTimerRef();
+	virtual const glm::vec2 getAR() const;
 
 	//EntityData
-	virtual bool useHealth(float amount);
-	virtual bool useStamina(float amount);
-	virtual bool useMagic(float amount);
-	virtual void setDeathState(bool state);
-	virtual float getHealth();
-	virtual float getStamina();
-	virtual float getMagic();
-	virtual bool getDeathState();
+	virtual const bool useHealth(const float& amount);
+	virtual const bool useStamina(const float& amount);
+	virtual const bool useMagic(const float& amount);
+	virtual void setDeathState(const bool& state);
+	virtual const float getHealth() const;
+	virtual const float getStamina() const;
+	virtual const float getMagic() const;
+	virtual const bool getDeathState() const;
 
 	//DmgValue
-	virtual int outputDmg(glm::bvec3 &strikeProperties);
+	virtual const int outputDmg(glm::bvec3& strikeProperties);
 
 protected:
-	GameObject* object = nullptr;
-	ComponentType m_type;
+	GameObject* m_object = nullptr;
+	const ComponentType m_type;
 };
 
 /*
@@ -87,28 +87,28 @@ different varieties of components
 class Transformation : public Component
 {
 public:
-	Transformation(glm::vec2 disp = glm::vec2(0.0f), float s = 1.0f, Orientation d = UP);
+	Transformation(const glm::vec2& disp = glm::vec2(0.0f), const float& s = 1.0f, const Orientation& d = UP);
 	~Transformation();
 
 	//mutators
-	void setDisp(glm::vec2 newDisp) override;
-	void changeDisp(glm::vec2 deltaDisp) override;
-	void setSize(float newSize) override;
-	void changeSize(float deltaSize) override;
-	void setDirection(Orientation d) override;
+	void setDisp(const glm::vec2& newDisp) override;
+	void changeDisp(const glm::vec2& deltaDisp) override;
+	void setSize(const float& newSize) override;
+	void changeSize(const float& deltaSize) override;
+	void setDirection(const Orientation& d) override;
 
 	//accessors
-	glm::vec2 getDisplacement() override;
-	float getSize() override;
-	Orientation getDirection() override;
-	glm::vec2 getDirNormals();
+	glm::vec2 const getDisplacement() const override;
+	float const getSize() const override;
+	Orientation const getDirection() const override;
+	glm::vec2 const getDirNormals() const;
 
 	//op override
 	Transformation& operator=(Transformation& input); //bound GameObject does not change!!!!!
 private:
-	glm::vec2 displacement;
-	float size;
-	Orientation dir;
+	glm::vec2 m_displacement;
+	float m_size;
+	Orientation m_dir;
 };
 
 //can be passed to render engine for rendering
@@ -151,16 +151,16 @@ private:
 class PhysComponent : public Component
 {
 public:
-	PhysComponent(PhysObject *obj, bool screenPos = false, bool collision = true, bool mCollision = false); //the phys object passed to this cstr is also passing ownership
+	PhysComponent(PhysObject* const obj, const bool& screenPos = false, const bool& collision = true, const bool& mCollision = false); //the phys object passed to this cstr is also passing ownership
 	~PhysComponent(); //will delete phys object
 
-	PhysObject* getPhysicsObject(); //returns a ptr to the physobject
-	bool canCollide(); //returns whether or not no-clip is turned on
-	bool inScreenPos(); //returns whether or not the physobject is already in screen space coordinates or not
-	bool hasMouseCollision(); //returns whether or not the physobject can collide with mouse
-	void enableMCollision(); //enables mouse collision
+	PhysObject* const getPhysicsObject() const override; //returns a ptr to the physobject
+	const bool canCollide() const override; //returns whether or not no-clip is turned on
+	const bool inScreenPos() const override; //returns whether or not the physobject is already in screen space coordinates or not
+	const bool hasMouseCollision() const override; //returns whether or not the physobject can collide with mouse
+	void enableMCollision() override; //enables mouse collision
 private:
-	PhysObject *hitbox;
+	PhysObject* m_hitbox;
 	bool m_collision; //whether or no collision is turned on
 	bool m_screenPos; //in screen pos or not
 	bool m_mouseCollision; //whether or not can collide with mouse
@@ -170,12 +170,12 @@ private:
 class Connector : public Component
 {
 public:
-	Connector(FourPoints &selfHB, std::string &targetName, FourPoints &targetHB); //first hitbox is connector area for this obj
+	Connector(const FourPoints &selfHB, const std::string &targetName, const FourPoints &targetHB); //first hitbox is connector area for this obj
 	~Connector();
 
-	std::string getTarget();
-	FourPoints* getSelfHB();
-	FourPoints* getTargetHB();
+	std::string getTarget() override;
+	FourPoints* const getSelfHB() override;
+	FourPoints* const getTargetHB() override;
 private:
 	FourPoints m_selfHB;
 	FourPoints m_targetHB;
@@ -186,12 +186,12 @@ private:
 class VisualData : public Component 
 {
 public:
-	VisualData(RenderType type, int i, glm::vec2 aspectRatio);
+	VisualData(const RenderType& type, const int& i, const glm::vec2& aspectRatio);
 	~VisualData();
 
-	RenderType getCurrentRenderTarget(int &targetIndex); //returns either texture, animation, or otherwise. target name will be set to the target's name
-	double& getTimerRef(); //returns ref to animation timer
-	glm::vec2 getAR(); //returns the aspect ratio of animation/texture
+	const RenderType getCurrentRenderTarget(int& targetIndex) const override; //returns either texture, animation, or otherwise. target name will be set to the target's name
+	double& const getTimerRef() override; //returns ref to animation timer
+	const glm::vec2 getAR() const override; //returns the aspect ratio of animation/texture
 private:
 	std::string m_name;
 	RenderType m_renderType;
@@ -204,21 +204,22 @@ private:
 class EntityData : public Component
 {
 public:
-	EntityData(std::string& name, float mHealth, float mStamina, float mMagic, bool interval, float hps, float sps, float mps);
+	EntityData(const std::string& name, const float& mHealth, const float& mStamina,
+		const float& mMagic, const bool& interval, const float& hps, const float& sps, const float& mps);
 	~EntityData();
 
 	void update(double &time);
-	virtual bool useHealth(float amount); //returns false if entity has no health to kill, in this case entity will still use the health and end up with negative
-	virtual bool useStamina(float amount); //returns false if not enough stamina to use
-	virtual bool useMagic(float amount); //returns false if not enough magic to use
-	virtual void setDeathState(bool state);
+	virtual const bool useHealth(const float& amount) override; //returns false if entity has no health to kill, in this case entity will still use the health and end up with negative
+	virtual const bool useStamina(const float& amount) override; //returns false if not enough stamina to use
+	virtual const bool useMagic(const float& amount) override; //returns false if not enough magic to use
+	virtual void setDeathState(const bool& state) override;
 
 	//accessors
-	virtual float getHealth();
-	virtual float getStamina();
-	virtual float getMagic();
-	virtual bool getDeathState();
-	std::string getName();
+	virtual const float getHealth() const override;
+	virtual const float getStamina() const override;
+	virtual const float getMagic() const override;
+	virtual const bool getDeathState() const override;
+	std::string getName() const;
 private:
 	std::string m_name; //name of entity
 
@@ -252,11 +253,11 @@ private:
 class MoveData : public Component
 {
 public:
-	MoveData(float speedOne, float speedTwo, float speedThree);
+	MoveData(const float& speedOne, const float& speedTwo, const float& speedThree);
 	~MoveData();
 
-	void setMovement(int newMove);
-	float getSpeed();
+	void setMovement(const int& newMove);
+	const float getSpeed();
 private:
 	int m_movement{ 1 }; //0 1 2 is walking running sprinting
 	float m_walkSpeed;
@@ -268,10 +269,11 @@ private:
 class DmgValue : public Component
 {
 public:
-	DmgValue(int baseDamage, float critChance, float critMultiplier, float pierceChance, float pierceMultiplier, float bluntChance, float bluntMultiplier);
+	DmgValue(const int& baseDamage, const float& critChance, const float& critMultiplier, 
+		const float& pierceChance, const float& pierceMultiplier, const float& bluntChance, const float& bluntMultiplier);
 	~DmgValue();
 
-	int outputDmg(glm::bvec3 &strikeProperties); //does damage calculations, strikeProperties.x = critcal strike, .y = piercing hit. .z = blunt strike
+	const int outputDmg(glm::bvec3& strikeProperties) override; //does damage calculations, strikeProperties.x = critcal strike, .y = piercing hit. .z = blunt strike
 private:
 	Spawner m_rng; //using mt19937
 

@@ -6,66 +6,63 @@ Component class
 
 */
 
-Component::Component() {} //empty cstr
+Component::Component(const ComponentType& type) : m_type(type) {} //empty cstr
 
-ComponentType Component::getType()
-{
-	return this->m_type;
+const ComponentType Component::getType() const {
+	return m_type;
 }
 
 //returns a bunch of default values, this is set up for the child classes
 //Transformation
-void Component::setDisp(glm::vec2 newDisp) {}
-void Component::changeDisp(glm::vec2 deltaDisp) {}
-void Component::setSize(float newSize) {}
-void Component::changeSize(float deltaSize) {}
-void Component::setDirection(Orientation d) {}
-glm::vec2 Component::getDisplacement() { return glm::vec2(0.0f); }
-float Component::getSize() { return 0.0f; }
-Orientation Component::getDirection() { return UP; }
-glm::vec2 Component::getDirNormals() { return glm::vec2(0.0f, 1.0f); }
+void Component::setDisp(const glm::vec2& newDisp) {}
+void Component::changeDisp(const glm::vec2& deltaDisp) {}
+void Component::setSize(const float& newSize) {}
+void Component::changeSize(const float& deltaSize) {}
+void Component::setDirection(const Orientation& d) {}
+const glm::vec2 Component::getDisplacement() const { return glm::vec2(0.0f); }
+const float Component::getSize() const { return 0.0f; }
+const Orientation Component::getDirection() const { return UP; }
+const glm::vec2 Component::getDirNormals() const { return glm::vec2(0.0f, 1.0f); }
 
 //Renderer
 //RenderType Component::renderBind(RenderEngine *rEngine) { return TEXTURE; }
 
 //PhysComponent
-PhysObject* Component::getPhysicsObject() { return nullptr; }
-bool Component::canCollide() { return false; }
-bool Component::inScreenPos() { return false; }
-bool Component::hasMouseCollision() { return false; }
+PhysObject* const Component::getPhysicsObject() const { return nullptr; }
+const bool Component::canCollide() const { return false; }
+const bool Component::inScreenPos() const { return false; }
+const bool Component::hasMouseCollision() const { return false; }
 void Component::enableMCollision() {  }
 
 //Connector
 std::string Component::getTarget() { return ""; }
-FourPoints* Component::getSelfHB() { return nullptr; }
-FourPoints* Component::getTargetHB() { return nullptr; }
+FourPoints* const Component::getSelfHB() { return nullptr; }
+FourPoints* const Component::getTargetHB() { return nullptr; }
 
 //VisualData
-RenderType Component::getCurrentRenderTarget(int &targetIndex) { return TEXTURE; }
-double& Component::getTimerRef() { double d = 0.0; return d; } //will cause error
-glm::vec2 Component::getAR() { return glm::vec2(1.0f); }
+const RenderType Component::getCurrentRenderTarget(int& targetIndex) const { return TEXTURE; }
+double& const Component::getTimerRef() { double d = 0.0; return d; } //will cause error
+const glm::vec2 Component::getAR() const { return glm::vec2(1.0f); }
 
 //Entity Data
-bool Component::useHealth(float amount) { return false; }
-bool Component::useStamina(float amount) { return false; }
-bool Component::useMagic(float amount) { return false; }
-void Component::setDeathState(bool state) {}
-float Component::getHealth() { return 0.0f; }
-float Component::getStamina() { return 0.0f; }
-float Component::getMagic() { return 0.0f; }
-bool Component::getDeathState() { return true; }
+const bool Component::useHealth(const float& amount) { return false; }
+const bool Component::useStamina(const float& amount) { return false; }
+const bool Component::useMagic(const float& amount) { return false; }
+void Component::setDeathState(const bool& state) {}
+const float Component::getHealth() const { return 0.0f; }
+const float Component::getStamina() const { return 0.0f; }
+const float Component::getMagic() const { return 0.0f; }
+const bool Component::getDeathState() const { return true; }
 
 //DmgValue
-int Component::outputDmg(glm::bvec3 &strikeProperties) { return 0; }
+const int Component::outputDmg(glm::bvec3& strikeProperties) { return 0; }
 
-void Component::setGameObject(GameObject *obj)
-{
-	this->object = obj;
+void Component::setGameObject(GameObject* const obj) {
+	m_object = obj;
 }
 
-GameObject* Component::getGameObjectPtr()
-{
-	return this->object;
+GameObject* const Component::getGameObjectPtr() const {
+	return m_object;
 }
 
 Component::~Component() {} //empty dstr
@@ -85,58 +82,47 @@ rest of the child classes of component
 /*
 Transformation Class
 */
-Transformation::Transformation(glm::vec2 disp, float s, Orientation d) :
-	displacement(disp), size(s), dir(d)
-{
-	this->m_type = TRANSFORMATION; //sets type
+Transformation::Transformation(const glm::vec2& disp, const float& s, const Orientation& d) :
+	Component(TRANSFORMATION), m_displacement(disp), m_size(s), m_dir(d) {
+	
 }
 
 //mutators
-void Transformation::setDisp(glm::vec2 newDisp)
-{
-	this->displacement = newDisp;
+void Transformation::setDisp(const glm::vec2& newDisp) {
+	m_displacement = newDisp;
 }
 
-void Transformation::changeDisp(glm::vec2 deltaDisp)
-{
-	this->displacement += deltaDisp;
+void Transformation::changeDisp(const glm::vec2& deltaDisp) {
+	m_displacement += deltaDisp;
 }
 
-void Transformation::setSize(float newSize)
-{
-	this->size = newSize;
+void Transformation::setSize(const float& newSize) {
+	m_size = newSize;
 }
 
-void Transformation::changeSize(float deltaSize)
-{
-	this->size += deltaSize;
+void Transformation::changeSize(const float& deltaSize) {
+	m_size += deltaSize;
 }
 
-void Transformation::setDirection(Orientation d)
-{
-	this->dir = d;
+void Transformation::setDirection(const Orientation& d) {
+	m_dir = d;
 }
 
 //accessors
-glm::vec2 Transformation::getDisplacement()
-{
-	return this->displacement;
+const glm::vec2 Transformation::getDisplacement() const {
+	return m_displacement;
 }
 
-float Transformation::getSize()
-{
-	return this->size;
+const float Transformation::getSize() const {
+	return m_size;
 }
 
-Orientation Transformation::getDirection()
-{
-	return this->dir;
+const Orientation Transformation::getDirection() const {
+	return m_dir;
 }
 
-glm::vec2 Transformation::getDirNormals()
-{
-	switch (this->dir)
-	{
+const glm::vec2 Transformation::getDirNormals() const {
+	switch (m_dir) {
 	case UP:
 		break;
 	case DOWN:
@@ -158,11 +144,10 @@ glm::vec2 Transformation::getDirNormals()
 	return glm::vec2(0.0f, 1.0f);
 }
 
-Transformation& Transformation::operator=(Transformation& input)
-{
-	this->setDisp(input.getDisplacement());
-	this->setDirection(input.getDirection());
-	this->setSize(input.getSize());
+Transformation& Transformation::operator=(Transformation& input) {
+	setDisp(input.getDisplacement());
+	setDirection(input.getDirection());
+	setSize(input.getSize());
 
 	return *this;
 }
@@ -175,10 +160,7 @@ end Transformation Class
 /*
 Renderer Class
 */
-Renderer::Renderer()
-{
-	this->m_type = RENDERER;
-}
+Renderer::Renderer() : Component(RENDERER) {}
 
 Renderer::~Renderer() {} //empty dstr
 /*
@@ -188,8 +170,7 @@ end Renderer Class
 /*
 Texture Renderer Class
 */
-TextureRenderer::TextureRenderer()
-{
+TextureRenderer::TextureRenderer() {
 	//empty cstr
 }
 
@@ -201,44 +182,34 @@ end Texture Renderer Class
 /*
 PhysComponent Class
 */
-PhysComponent::PhysComponent(PhysObject *obj, bool screenPos, bool collision, bool mCollision) :
-	hitbox(obj), m_screenPos(screenPos), m_collision(collision), m_mouseCollision(mCollision)
-{
-	this->m_type = PHYSOBJECT; //cstr
+PhysComponent::PhysComponent(PhysObject* const obj, const bool& screenPos, const bool& collision, const bool& mCollision) :
+	Component(PHYSOBJECT), m_hitbox(obj), m_screenPos(screenPos), m_collision(collision), m_mouseCollision(mCollision) {}
+
+PhysObject* const PhysComponent::getPhysicsObject() const {
+	return m_hitbox;
 }
 
-PhysObject* PhysComponent::getPhysicsObject()
-{
-	return this->hitbox;
-}
-
-bool PhysComponent::canCollide()
-{
+const bool PhysComponent::canCollide() const {
 	return m_collision;
 }
 
-bool PhysComponent::inScreenPos()
-{
-	return this->m_screenPos;
+const bool PhysComponent::inScreenPos() const {
+	return m_screenPos;
 }
 
-bool PhysComponent::hasMouseCollision()
-{
-	return this->m_mouseCollision;
+const bool PhysComponent::hasMouseCollision() const {
+	return m_mouseCollision;
 }
 
-void PhysComponent::enableMCollision()
-{
-	this->m_mouseCollision = true;
+void PhysComponent::enableMCollision() {
+	m_mouseCollision = true;
 }
 
-PhysComponent::~PhysComponent()
-{
+PhysComponent::~PhysComponent() {
 	//dstr
-	if (this->hitbox != nullptr) //ptr guard
-	{
-		delete this->hitbox;
-		this->hitbox = nullptr;
+	if (m_hitbox != nullptr) { //ptr guard
+		delete m_hitbox;
+		m_hitbox = nullptr;
 	}
 }
 /*
@@ -248,26 +219,19 @@ end PhysComponent Class
 /*
 Connector Class
 */
-Connector::Connector(FourPoints &selfHB, std::string &targetName, FourPoints &targetHB) :
-	m_selfHB(selfHB), m_targetName(targetName), m_targetHB(targetHB)
-{
-	//cstr
-	this->m_type = CONNECTOR;
+Connector::Connector(const FourPoints &selfHB, const std::string &targetName, const FourPoints &targetHB) :
+	Component(CONNECTOR), m_selfHB(selfHB), m_targetName(targetName), m_targetHB(targetHB) {}
+
+std::string Connector::getTarget() {
+	return m_targetName;
 }
 
-std::string Connector::getTarget()
-{
-	return this->m_targetName;
+FourPoints* const Connector::getSelfHB() {
+	return &(m_selfHB);
 }
 
-FourPoints* Connector::getSelfHB()
-{
-	return &(this->m_selfHB);
-}
-
-FourPoints* Connector::getTargetHB()
-{
-	return &(this->m_targetHB);
+FourPoints* const Connector::getTargetHB() {
+	return &(m_targetHB);
 }
 
 Connector::~Connector() {}
@@ -278,26 +242,19 @@ end Connector Class
 /*
 Visual Data Class
 */
-VisualData::VisualData(RenderType type, int i, glm::vec2 aspectRatio) :
-	m_renderType(type), index(i), ar(aspectRatio)
-{
-	//empty cstr
-	this->m_type = VISUAL_DATA;
-}
+VisualData::VisualData(const RenderType& type, const int& i, const glm::vec2& aspectRatio) :
+	Component(VISUAL_DATA), m_renderType(type), index(i), ar(aspectRatio) {}
 
-RenderType VisualData::getCurrentRenderTarget(int &targetIndex)
-{
+const RenderType VisualData::getCurrentRenderTarget(int& targetIndex) const {
 	targetIndex = index;
 	return this->m_renderType;
 }
 
-double& VisualData::getTimerRef()
-{
+double& const VisualData::getTimerRef() {
 	return this->m_timer;
 }
 
-glm::vec2 VisualData::getAR()
-{
+const glm::vec2 VisualData::getAR() const {
 	return this->ar;
 }
 
@@ -309,32 +266,24 @@ end Visual Data Class
 /*
 EntityData Class
 */
-EntityData::EntityData(std::string& name, float mHealth, float mStamina, float mMagic, bool interval, float hps, float sps, float mps) :
-	m_maxHealth(mHealth), m_health(mHealth), m_maxStamina(mStamina), m_stamina(mStamina), m_maxMagic(mMagic), m_magic(mMagic), 
-	m_interval(interval), m_hps(hps), m_sps(sps), m_mps(mps), m_name(name)
-{
-	//cstr
-	this->m_type = ENTITY_DATA;
-}
+EntityData::EntityData(const std::string& name, const float& mHealth, const float& mStamina, const float& mMagic,
+	const bool& interval, const float& hps, const float& sps, const float& mps) :
+	Component(ENTITY_DATA), m_maxHealth(mHealth), m_health(mHealth), m_maxStamina(mStamina), m_stamina(mStamina), 
+	m_maxMagic(mMagic), m_magic(mMagic), m_interval(interval), m_hps(hps), m_sps(sps), m_mps(mps), m_name(name) {}
 
-void EntityData::updateValue(double &timer, double &time, float &spu, float &value) //all in seconds except value is in units
-{
+void EntityData::updateValue(double &timer, double &time, float &spu, float &value) { //all in seconds except value is in units
 	timer += time;
 
-	while (timer >= spu)
-	{
+	while (timer >= spu) {
 		value++; //increment
 		timer -= spu;
 	}
 }
 
 //*****requires optimizing for sure!!!
-void EntityData::update(double &time)
-{
-	if (!this->m_isDead) //only updates if not dead
-	{
-		switch (this->m_interval)
-		{
+void EntityData::update(double &time) {
+	if (!this->m_isDead) { //only updates if not dead
+		switch (this->m_interval) {
 		case true: //interval regen, does things by seconds
 			this->updateValue(this->m_healthTimer, time, this->m_hps, this->m_health);
 			this->updateValue(this->m_staminaTimer, time, this->m_sps, this->m_stamina);
@@ -353,16 +302,13 @@ void EntityData::update(double &time)
 	this->m_magic = glm::min(this->m_magic, this->m_maxMagic);
 }
 
-bool EntityData::useHealth(float amount)
-{
+const bool EntityData::useHealth(const float& amount) {
 	this->m_health -= amount;
 	return (this->m_health >= 0);
 }
 
-bool EntityData::useStamina(float amount)
-{
-	if (this->m_stamina < amount)
-	{
+const bool EntityData::useStamina(const float& amount) {
+	if (this->m_stamina < amount) {
 		return false;
 	}
 
@@ -370,10 +316,8 @@ bool EntityData::useStamina(float amount)
 	return true;
 }
 
-bool EntityData::useMagic(float amount)
-{
-	if (this->m_magic < amount)
-	{
+const bool EntityData::useMagic(const float& amount) {
+	if (this->m_magic < amount) {
 		return false;
 	}
 
@@ -381,39 +325,32 @@ bool EntityData::useMagic(float amount)
 	return true;
 }
 
-void EntityData::setDeathState(bool state)
-{
+void EntityData::setDeathState(const bool& state) {
 	this->m_isDead = state;
 }
 
 //accessors
-float EntityData::getHealth()
-{
+const float EntityData::getHealth() const {
 	return this->m_health;
 }
 
-float EntityData::getStamina()
-{
+const float EntityData::getStamina() const {
 	return this->m_stamina;
 }
 
-float EntityData::getMagic()
-{
+const float EntityData::getMagic() const {
 	return this->m_magic;
 }
 
-bool EntityData::getDeathState()
-{
+const bool EntityData::getDeathState() const {
 	return this->m_isDead;
 }
 
-std::string EntityData::getName()
-{
+std::string EntityData::getName() const {
 	return this->m_name;
 }
 
-EntityData::~EntityData()
-{
+EntityData::~EntityData() {
 	//dstr
 }
 /*
@@ -423,30 +360,23 @@ end EntityData Class
 /*
 MoveData Class
 */
-MoveData::MoveData(float speedOne, float speedTwo, float speedThree) :
-	m_walkSpeed(speedOne), m_runSpeed(speedTwo), m_sprintSpeed(speedThree)
-{
-	this->m_type = MOVE_DATA; //cstr
-}
+MoveData::MoveData(const float& speedOne, const float& speedTwo, const float& speedThree) :
+	Component(MOVE_DATA), m_walkSpeed(speedOne), m_runSpeed(speedTwo), m_sprintSpeed(speedThree) {}
 
-void MoveData::setMovement(int newMove)
-{
-	if (newMove >= 0 && newMove <= 2)
-	{
-		this->m_movement = newMove;
+void MoveData::setMovement(const int& newMove) {
+	if (newMove >= 0 && newMove <= 2) {
+		m_movement = newMove;
 	}
 }
 
-float MoveData::getSpeed()
-{
-	switch (this->m_movement)
-	{
+const float MoveData::getSpeed() {
+	switch (m_movement) {
 	case 0:
-		return this->m_walkSpeed;
+		return m_walkSpeed;
 	case 1:
-		return this->m_runSpeed;
+		return m_runSpeed;
 	case 2:
-		return this->m_sprintSpeed;
+		return m_sprintSpeed;
 	}
 
 	return 0.0f;
@@ -460,61 +390,52 @@ end MoveData Class
 /*
 DmgValue Class
 */
-DmgValue::DmgValue(int baseDamage, float critChance, float critMultiplier, float pierceChance, float pierceMultiplier, float bluntChance, float bluntMultiplier) :
-	m_base(baseDamage), m_critChance(critChance), m_critMulti(critMultiplier), m_pierceChance(pierceChance), m_pierceMulti(pierceMultiplier), m_bluntChance(bluntChance), m_bluntMulti(bluntMultiplier)
-{
+DmgValue::DmgValue(const int& baseDamage, const float& critChance, const float& critMultiplier, 
+	const float& pierceChance, const float& pierceMultiplier, const float& bluntChance, const float& bluntMultiplier) :
+	Component(DMG_VALUE), m_base(baseDamage), m_critChance(critChance), m_critMulti(critMultiplier), 
+	m_pierceChance(pierceChance), m_pierceMulti(pierceMultiplier), m_bluntChance(bluntChance), m_bluntMulti(bluntMultiplier) {
 	//cstr
-	if (this->m_critChance > 1.0f) //clamping values
-	{
-		this->m_critChance = 1.0f;
+	if (m_critChance > 1.0f) { //clamping values
+		m_critChance = 1.0f;
 	}
-	else if (this->m_critChance < 0.0f)
-	{
-		this->m_critChance = 0.0f;
+	else if (m_critChance < 0.0f) {
+		m_critChance = 0.0f;
 	}
-	if (this->m_pierceChance > 1.0f) //clamping values
-	{
-		this->m_pierceChance = 1.0f;
+	if (m_pierceChance > 1.0f) { //clamping values
+		m_pierceChance = 1.0f;
 	}
-	else if (this->m_pierceChance < 0.0f)
-	{
-		this->m_pierceChance = 0.0f;
+	else if (m_pierceChance < 0.0f) {
+		m_pierceChance = 0.0f;
 	}
-	if (this->m_bluntChance > 1.0f) //clamping values
-	{
-		this->m_bluntChance = 1.0f;
+	if (m_bluntChance > 1.0f) { //clamping values
+		m_bluntChance = 1.0f;
 	}
-	else if (this->m_bluntChance < 0.0f)
-	{
-		this->m_bluntChance = 0.0f;
+	else if (m_bluntChance < 0.0f) {
+		m_bluntChance = 0.0f;
 	}
 }
 
-int DmgValue::outputDmg(glm::bvec3 &strikeProperties)
-{
+const int DmgValue::outputDmg(glm::bvec3& strikeProperties) {
 	//sets basic values
 	strikeProperties.x = false;
 	strikeProperties.y = false;
 	strikeProperties.z = false;
-	float totalDmg = this->m_base;
+	float totalDmg = m_base;
 
 	//chance calculations
-	float percentage = this->m_rng.spawn(0.0f, 1.0f);
-	if (percentage < this->m_critChance) //critical strike = true
-	{
-		totalDmg *= this->m_critMulti;
+	float percentage = m_rng.spawn(0.0f, 1.0f);
+	if (percentage < m_critChance) { //critical strike = true
+		totalDmg *= m_critMulti;
 		strikeProperties.x = true;
 	}
-	percentage = this->m_rng.spawn(0.0f, 1.0f);
-	if (percentage < this->m_pierceChance) //piercing hit = true
-	{
-		totalDmg += this->m_base * this->m_pierceMulti;
+	percentage = m_rng.spawn(0.0f, 1.0f);
+	if (percentage < m_pierceChance) { //piercing hit = true
+		totalDmg += m_base * m_pierceMulti;
 		strikeProperties.y = true;
 	}
-	percentage = this->m_rng.spawn(0.0f, 1.0f);
-	if (percentage < this->m_bluntChance) //blunt strike = true
-	{
-		totalDmg += this->m_base * this->m_pierceMulti;
+	percentage = m_rng.spawn(0.0f, 1.0f);
+	if (percentage < m_bluntChance) { //blunt strike = true
+		totalDmg += m_base * m_pierceMulti;
 		strikeProperties.z = true;
 	}
 

@@ -54,9 +54,9 @@ public:
 	void changeResolution(int newX, int newY); //change the resolution
 	//void resetCameraClamp(); //called when clamp values need to be updated - either after map change or a res change
 
-	void drawTexture(int textureIndex, glm::vec2& pos, glm::vec2& aspectRatio, float size, float depth = 0.0f); //draws a texture into world space
+	void drawTexture(int textureIndex, const glm::vec2& pos, const glm::vec2& aspectRatio, float size, float depth = 0.0f); //draws a texture into world space
 	void drawTextureN(int textureIndex, glm::vec2& topLeft, glm::vec2& bottomRight, float depth = 0.0f); //draw texture with normalized coordinates in screen space(0 - 1)
-	void drawAnimation(int animationIndex, double &animTime, glm::vec2& pos, float depth = 0.0f, Orientation dir = UP); //draws an animation into world space
+	void drawAnimation(int animationIndex, double &animTime, const glm::vec2& pos, float depth = 0.0f, Orientation dir = UP); //draws an animation into world space
 	void drawLine(glm::vec2& wp, glm::vec2& wpt, glm::vec3& colour); //draws a line into world space
 	void drawString(int fontIndex, std::string &string, glm::vec2 cursor, float size = 64.0f, glm::vec4 colour = glm::vec4(1.0f)); //draws a string onto the screen, left-aligned
 	void drawStringInBox(int fontIndex, std::string& string, glm::vec2 cursor, float width, float size = 64.0f, glm::vec4 colour = glm::vec4(1.0f)); //draws a string in a box, left-aligned 

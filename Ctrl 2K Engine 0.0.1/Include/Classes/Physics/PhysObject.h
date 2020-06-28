@@ -1,9 +1,9 @@
 #pragma once
 
 //pre-declaration of helper functions
-FourPoints& operator+(FourPoints &in, glm::vec2 &change);
-FourPoints& operator-(FourPoints &in, glm::vec2 &change);
-FourPoints operator*(FourPoints &one, const float &two);
+const FourPoints& operator+(const FourPoints& in, const glm::vec2& change);
+const FourPoints& operator-(const FourPoints& in, const glm::vec2& change);
+const FourPoints& operator*(const FourPoints& one, const float& two);
 
 /*
 

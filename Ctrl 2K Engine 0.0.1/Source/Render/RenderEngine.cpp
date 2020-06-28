@@ -213,7 +213,7 @@ basic draw methods
 
 */
 
-void RenderEngine::drawTexture(int textureIndex, glm::vec2& pos, glm::vec2& aspectRatio, float size, float depth)
+void RenderEngine::drawTexture(int textureIndex, const glm::vec2& pos, const glm::vec2& aspectRatio, float size, float depth)
 {
 	Shader* s = this->getShader(std::string("textureRendering")); //temp ptr to shader
 	TextureManager &tm = this->parentEngine.getAssets().getTM(); //temp ref to texture manager
@@ -258,7 +258,7 @@ void RenderEngine::drawTextureN(int textureIndex, glm::vec2& topLeft, glm::vec2&
 	this->drawQuad();
 }
 
-void RenderEngine::drawAnimation(int animationIndex, double &animTime, glm::vec2& pos, float depth, Orientation dir)
+void RenderEngine::drawAnimation(int animationIndex, double &animTime, const glm::vec2& pos, float depth, Orientation dir)
 {
 	Shader* s = this->getShader(std::string("animationRendering")); //temporary ptr
 	AnimationManager &am = this->parentEngine.getAssets().getAM(); //temporary reference to animation manager

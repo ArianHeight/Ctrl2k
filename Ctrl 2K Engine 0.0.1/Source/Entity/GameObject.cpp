@@ -24,7 +24,7 @@ game object
 GameObject::GameObject()
 {
 	//cstr
-	this->m_activeComponents = std::vector<std::vector<Component*>>(7);
+	this->m_activeComponents = std::vector<std::vector<Component*>>(8);
 	this->initComponents(); //intializes vital components engine requires
 }
 
