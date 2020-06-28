@@ -143,9 +143,6 @@ StatusBar *staminaBar = nullptr;
 StatusBar *manaBar = nullptr;
 
 //callbacks
-void mouseHandle(SDL_Event &event);
-void mouseClick(SDL_Event &event);
-void displayUpdate();
 void resizeWindow(int w, int h);
 
 //updates gl_dSecondsElapsed every frame to make it seconds elapsed since last frame
@@ -205,7 +202,7 @@ void drawScreenQuad()
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
 }
-
+/*
 //draws a line on screen
 void drawScreenLine()
 {
@@ -227,7 +224,7 @@ void drawScreenLine()
 	glLineWidth(3.0);
 	glDrawArrays(GL_LINES, 0, 2);
 	glBindVertexArray(0);
-}
+}*/
 
 //draws string to window, left-aligned. function used for text class
 void drawString(int fontIndex, std::string &string, glm::dvec2 cursor, float size = 64.0f, glm::vec4 colour = glm::vec4(1.0f))
@@ -330,31 +327,6 @@ void drawTexture(int textureIndex, glm::dvec2 topLeft, glm::dvec2 bottomRight, g
 	glDisable(GL_BLEND);
 }
 
-//loads texture from filepath
-GLuint loadTexture(const std::string& file, bool mips = true)
-{
-	GLuint textureID;
-	if (mips)
-	{
-		textureID = SOIL_load_OGL_texture(file.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y); //loads texture into OGL(openGL)
-	}
-	else
-	{
-		textureID = SOIL_load_OGL_texture(file.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y); //loads texture into OGL(openGL)
-	}
-
-	//sets texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	//unbind texture
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	return textureID;
-}
-
 //updates everything when the active map changes
 void playerAreaChange(int index)
 {
@@ -453,128 +425,6 @@ void windowAspectChange()
 	gl_tBuffer = new TBuffer(rEngine.getMainWindow()->getWindowWidthRef() * rEngine.getMainWindow()->getParallaxToWindowRef(), rEngine.getMainWindow()->getWindowHeightRef() * rEngine.getMainWindow()->getParallaxToWindowRef());
 }
 
-void mouseHandle(SDL_Event &event)
-{
-
-}
-
-void mouseClick(SDL_Event &event)
-{
-
-}
-
-//runs every frame to refresh the screen
-void displayUpdate()
-{
-	glm::vec2 cameraPos = activeCam->getPos();
-	glm::vec2 mapPos = glm::vec2(0.0f);
-
-	//glBindFramebuffer(GL_FRAMEBUFFER, gl_tBuffer->m_tBuffer);
-	//glViewport(0, 0, gl_tBuffer->m_width, gl_tBuffer->m_height);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, rEngine.getMainWindow()->getWindowWidthRef(), rEngine.getMainWindow()->getWindowHeightRef());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//rEngine.drawMap(activePlaygroundIndex); //draws the map
-	
-	//draws all entities
-	glm::vec3 pos = glm::vec3(currentPlayer->getPos(), currentPlayer->getDepth());
-	game.render();
-	/*
-	glActiveTexture(GL_TEXTURE0);
-	textures.bind(victor);
-	glUniform1i(entityTexture, 0);
-	glUniform3f(entityWD, pos.x, pos.y, currentPlayer->getDepth());
-	glUniform2f(entityVD, cameraPos.x, cameraPos.y);
-	glUniform1f(entityWS, 1.0);
-	glUniform1i(entityDBool, 0);
-	glUniform2f(entityAR, 1.0 / 2.0, 1.0);
-	glUniform2f(entityUnitScreenRatio, rEngine.getMainWindow()->getPixelToWindowRef().x, rEngine.getMainWindow()->getPixelToWindowRef().y);
-	glUniform4f(entityTLBR, 0.0f, 1.0f, 1.0f, 0.0f);
-	drawScreenQuad();*/
-	
-	//parallax effect on map, may or may not keep
-	/*
-	glBindTexture(GL_TEXTURE_2D, 0);
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, rEngine.getMainWindow()->getWindowWidthRef(), rEngine.getMainWindow()->getWindowHeightRef());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(parallaxPass);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, gl_tBuffer->m_tAlbedo);
-	glUniform1i(parallaxAlbedo, 0);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, gl_tBuffer->m_tDepth);
-	glUniform1f(parallaxScale, rEngine.getMainWindow()->getParallaxToWindowRef());
-	glUniform1i(parallaxDepth, 1);
-	glUniform1i(parallaxBool, 1);
-	//glUniform1f(parallaxWeight, 1.0);
-	drawScreenQuad();*/
-
-	//std::string fps = "Fps: " + std::to_string(framesPerSecond);
-	//fpsWidget.drawWidget(); //draws fps counter
-	//rEngine.drawText(&fpsWidget);
-
-	//updates HUD this code is temporary
-	/*
-	std::string foo = std::to_string(cameraPos.x) + ", " + std::to_string(cameraPos.y);
-	drawString(gameFont, foo, glm::vec2(-1.0f, 0.72f), 60.0f, glm::vec4(0.0f, 0.75f, 0.75f, 1.0f));
-	foo = std::to_string(currentPlayer->getPos().x) + ", " + std::to_string(currentPlayer->getPos().y);
-	drawString(gameFont, foo, glm::vec2(-1.0f, 0.67f), 60.0f, glm::vec4(0.75f, 0.75f, 0.0f, 1.0f));*/
-
-	//stress test
-	//loremIpsum.drawWidget();
-	//rEngine.drawText(&loremIpsum);
-
-	float hpPercent = glm::clamp(currentPlayer->getHealth() / 100.0f, 0.0f, 1.0f);
-	healthBar->setPercentage(hpPercent);
-	//healthBar->drawWidget();
-	staminaBar->setPercentage(currentPlayer->getStamina() / 100.0);
-	//staminaBar->drawWidget();
-	manaBar->setPercentage(currentPlayer->getMagic() / 100.0);
-	//manaBar->drawWidget();
-	//headsUpDisplay->render();
-	//rEngine.drawGUI(&headsUpDisplay);
-
-	//for debugging, creates and draws line damage areas to test accuracy in game
-	/*
-	if (testArea == nullptr && CTRL_Kf)
-	{
-		testArea = new DamageArea(nullptr, gl_dSecondsElapsed, 0.0f, 0.0f, 20, glm::vec2(10.0f, 0.0f), 3.0f, 0.0f, 3.14f, 15.0, glm::vec2(-3.0f, 0.0f));
-		testAreaTwo = new DamageArea(nullptr, gl_dSecondsElapsed, 0.0f, 0.0f, 20, glm::vec2(-10.0f, 0.0f), 3.0f, 3.14f, -3.14f, 15.0, glm::vec2(4.0f, 0.0f));
-		dmgAreas.push_back(new DamageArea(nullptr, gl_dSecondsElapsed, 0.0f, 0.0f, 30, glm::vec2(0.0f, 0.0f),
-			FourPoints{ glm::vec2(-0.25f, 0.25f), glm::vec2(0.25f, 0.25f), glm::vec2(-0.25f, -0.25f), glm::vec2(0.25f, -0.25f) }, 2.0, glm::vec2(0.0f, 5.0f), ballTexture));
-		if (activeCam->getTarget() == entities[1])
-		{
-			activeCam->setTarget(currentPlayer);
-		}
-		else
-		{
-			activeCam->setTarget(entities[1]);
-		}
-	}
-	else if (testArea != nullptr)
-	{
-		testArea->updateDA(); //draws test area one
-		rEngine.drawLine(testArea);
-		testAreaTwo->updateDA(); //draws test area two
-		rEngine.drawLine(testAreaTwo);
-
-		if (physicsEngine.lineIntersectCheck(testArea, testAreaTwo))
-		{
-			//drawString(gameFont, std::string("hit detected"), glm::vec2(5.0f, 11.4f), 0.4f, glm::vec4(0.0f, 1.0f, 1.0f, 1.0f));
-			std::cout << "hit" << std::endl;
-			delete testArea;
-			delete testAreaTwo;
-			testArea = nullptr;
-			testAreaTwo = nullptr;
-		}
-	}*/
-
-	rEngine.updateScreen(); //refreshes window
-}
 
 //resizes the window, will add that in someday
 void resizeWindow(int w, int h)
@@ -671,9 +521,7 @@ void gameLoop()
 			}
 		}
 
-		//idle(); //global updates + physics updates + AI updates
 		gameEngine.idle();
-		//displayUpdate(); //render
 		gameEngine.displayUpdate();
 	}
 }
