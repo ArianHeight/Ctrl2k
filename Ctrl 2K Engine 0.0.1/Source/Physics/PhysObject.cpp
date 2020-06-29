@@ -1,7 +1,7 @@
 #include <Ctrl 2kPCH.h>
 
 //adjustment functions for adjusting positions of a hitbox
-const FourPoints& operator+(const FourPoints &in, const glm::vec2 &change)
+const FourPoints operator+(const FourPoints &in, const glm::vec2 &change)
 {
 	FourPoints out = in;
 	out.tl += change;
@@ -11,7 +11,7 @@ const FourPoints& operator+(const FourPoints &in, const glm::vec2 &change)
 	return out;
 }
 
-const FourPoints& operator-(const FourPoints &in, const glm::vec2 &change)
+const FourPoints operator-(const FourPoints &in, const glm::vec2 &change)
 {
 	FourPoints out = in;
 	out.tl -= change;
@@ -21,7 +21,7 @@ const FourPoints& operator-(const FourPoints &in, const glm::vec2 &change)
 	return out;
 }
 
-const FourPoints& operator*(const FourPoints &one, const float &two)
+const FourPoints operator*(const FourPoints &one, const float &two)
 {
 	return FourPoints{ one.tl * two, one.tr * two, one.bl * two, one.br * two };
 }
