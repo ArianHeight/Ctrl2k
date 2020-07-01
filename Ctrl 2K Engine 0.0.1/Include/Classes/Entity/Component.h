@@ -19,7 +19,7 @@ public:
 	virtual ~Component();
 
 	const ComponentType getType() const; //returns type of component
-	void setGameObject(GameObject* const obj); //sets the link to parent object, same across all child classes of component
+	void setGameObject(GameObject* const& obj); //sets the link to parent object, same across all child classes of component
 	GameObject* const getGameObjectPtr() const; //returns bound gameobject
 
 	//Transformation
@@ -170,7 +170,7 @@ private:
 class Connector : public Component
 {
 public:
-	Connector(const FourPoints &selfHB, const std::string &targetName, const FourPoints &targetHB); //first hitbox is connector area for this obj
+	Connector(const FourPoints& selfHB, const std::string& targetName, const FourPoints& targetHB); //first hitbox is connector area for this obj
 	~Connector();
 
 	std::string getTarget() override;

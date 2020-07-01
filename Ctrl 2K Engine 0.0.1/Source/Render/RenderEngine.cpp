@@ -424,7 +424,7 @@ void RenderEngine::render(Component *renderComponent) {
 		return; //early return for not fit for rendering
 	}
 
-	std::vector<Component*>& rQueue = go->getAllActiveComponents(VISUAL_DATA);
+	const std::vector<Component*>& rQueue = go->getAllActiveComponents(VISUAL_DATA);
 	std::string atName; //animation/texture name
 	Component* vData = nullptr; //VisualData Class
 	Component* transform = go->getComponent(0); //Transformation Class

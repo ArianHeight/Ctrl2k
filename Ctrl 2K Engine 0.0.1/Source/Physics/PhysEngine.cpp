@@ -18,7 +18,7 @@ float specialCross(glm::vec2 one, glm::vec2 two)
 
 //helper function
 template <typename T>
-bool inVector(T in, std::vector<T>& theList);
+const bool inVector(const T& in, const std::vector<T>& theList);
 
 /*
 main physics engine
@@ -158,7 +158,7 @@ void PhysEngine::buildCollisionList(bool &mapChange, int &newMap)
 		//player only, check against connector hitboxes
 		if (object->getGameObjectPtr()->isCamLinked())
 		{
-			std::vector<Component*>& connectors = this->playgroundTile->getAllActiveComponents(CONNECTOR);
+			const std::vector<Component*>& connectors = this->playgroundTile->getAllActiveComponents(CONNECTOR);
 			for (int i = 0; i < connectors.size(); i++)
 			{
 				if (this->aabbCheck(testPos, connectors[i]->getSelfHB()))

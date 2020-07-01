@@ -2,7 +2,7 @@
 
 //helper function
 template <typename T>
-bool inVector(T in, std::vector<T>& theList);
+const bool inVector(const T& in, const std::vector<T>& theList);
 
 /*
 

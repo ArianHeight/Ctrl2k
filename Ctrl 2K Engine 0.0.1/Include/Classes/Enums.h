@@ -22,6 +22,8 @@ struct Manifest
 	float depthChange;
 };
 
+typedef std::vector<int> Indices; //a vector of indices
+
 //for tile object
 enum TileType
 {
@@ -88,7 +90,8 @@ enum ComponentType {
 	ENTITY_DATA, //4
 	MOVE_DATA, //5
 	CONNECTOR, //6
-	DMG_VALUE //7
+	DMG_VALUE, //7
+	CT_SIZE //ALWAYS LAST IN ENUM = size of enum
 };
 
 //for physobject

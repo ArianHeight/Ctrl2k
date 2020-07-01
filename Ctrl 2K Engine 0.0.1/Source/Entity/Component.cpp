@@ -57,7 +57,7 @@ const bool Component::getDeathState() const { return true; }
 //DmgValue
 const int Component::outputDmg(glm::bvec3& strikeProperties) { return 0; }
 
-void Component::setGameObject(GameObject* const obj) {
+void Component::setGameObject(GameObject* const& obj) {
 	m_object = obj;
 }
 
