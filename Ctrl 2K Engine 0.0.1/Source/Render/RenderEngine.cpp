@@ -424,7 +424,7 @@ void RenderEngine::render(Component *renderComponent) {
 		return; //early return for not fit for rendering
 	}
 
-	const std::vector<Component*>& rQueue = go->getAllActiveComponents(VISUAL_DATA);
+	const Indices& rQueue = go->getAllActiveComponentIndices(VISUAL_DATA);
 	std::string atName; //animation/texture name
 	Component* vData = nullptr; //VisualData Class
 	Component* transform = go->getComponent(0); //Transformation Class
@@ -433,7 +433,7 @@ void RenderEngine::render(Component *renderComponent) {
 	Orientation direction = UP; //default value for direction used in animations
 
 	for (int i = 0; i < rQueue.size(); i++) { //iterates through all animations needed to be drawn
-		vData = rQueue[i]; //VisualData Class
+		vData = go->getComponent(rQueue[i]); //VisualData Class
 		type = vData->getCurrentRenderTarget(index);
 
 		switch (type) { //draws each according to type, doesn't do anything to NONE types

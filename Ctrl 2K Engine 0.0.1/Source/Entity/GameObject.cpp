@@ -12,6 +12,20 @@ const bool inVector(const T& in, const std::vector<T>& theList) {
 	return false;
 }
 
+//removes the element with corresponding index from the array
+//NO BOUNDS CHECKING HERE!!!
+//ASSUME that index will always be in range
+template <typename T>
+inline void unorderedRemove(const int& index, std::vector<T>& arr) {
+	if (arr.size() == 1) { //only element is indexed element, pop it
+		arr.pop_back();
+	}
+
+	//move last element in arr to index and pop back
+	arr[index] = arr.back();
+	arr.pop_back();
+}
+
 /*
 
 game object
@@ -20,18 +34,42 @@ game object
 
 GameObject::GameObject() {
 	//cstr
-	this->m_activeComponents = std::vector<std::vector<Component*>>(CT_SIZE);
+	this->m_activeComponents = std::vector<Indices>(CT_SIZE);
 	this->initComponents(); //intializes vital components engine requires
 }
 
+void GameObject::activateComponent(const int& index) {
+	if (index < 0 || index >= m_components.size()) { //bound guard
+		return;
+	}
+
+	Component* const& c = m_components[index];
+	c->setActiveIndex(m_activeComponents.size());
+	m_activeComponents[c->getType()].push_back(index);
+}
+
+void GameObject::disableComponent(const int& index) {
+	if (index < 0 || index >= m_components.size()) { //bound guard
+		return;
+	}
+
+	int id = m_components[index]->getActiveIndex();
+	Indices& ac = m_activeComponents[m_components[index]->getType()];
+	if (id >= 0 && id < ac.size()) { //bound guard
+		unorderedRemove(id, ac);
+	}
+}
+
 int GameObject::addComponent(Component* const& component, const bool& active) {
+	int id = m_components.size();
+
 	component->setGameObject(this);
 	this->m_components.push_back(component);
 	if (active) { //this is temp and for debug!!
-		this->m_activeComponents[component->getType()].push_back(component);
+		activateComponent(id);
 	}
 
-	return this->m_components.size() - 1;
+	return id;
 }
 
 void GameObject::initComponents() {
@@ -131,7 +169,7 @@ void GameObject::render() {
 	//debug will move to update later
 	if (this->m_activeComponents[VISUAL_DATA].size() > 0) {
 		try {
-			this->m_activeComponents[VISUAL_DATA][0]->getTimerRef() += this->game->getEngine().getTime(); //only render first thing in queue
+			m_components[m_activeComponents[VISUAL_DATA][0]]->getTimerRef() += this->game->getEngine().getTime(); //only render first thing in queue
 		}
 		catch (std::out_of_range) {
 			//do nothing
@@ -186,7 +224,7 @@ bool GameObject::getDelete() {
 	return this->m_delete;
 }
 
-Component* GameObject::getComponent(const int& index) {
+Component* const& GameObject::getComponent(const int& index) {
 	Component *returnValue = nullptr;
 	try {
 		returnValue = this->m_components[index];
@@ -202,15 +240,15 @@ const int GameObject::checkForComponent(const int& index) {
 	return index < this->m_components.size() && index >= 0;
 }
 
-const std::vector<Component*>& GameObject::getAllActiveComponents(const ComponentType& type) {
-	return this->m_activeComponents[type];
+const Indices& GameObject::getAllActiveComponentIndices(const ComponentType& type) {
+	return m_activeComponents[type];
 }
 
 void GameObject::getAllActiveComponentsC(std::vector<Component*> &output, const ComponentType& type) {
-	const std::vector<Component*>& activeComponents = this->getAllActiveComponents(type);
+	const Indices& activeComponents = this->getAllActiveComponentIndices(type);
 
 	for (auto it = activeComponents.begin(); it != activeComponents.end(); it++) { //iteration
-		output.push_back(*it);
+		output.push_back(m_components[*it]);
 	}
 	for (auto it = this->m_children.begin(); it != this->m_children.end(); it++) { //returns the child types
 		(*it)->getAllActiveComponentsC(output, type);

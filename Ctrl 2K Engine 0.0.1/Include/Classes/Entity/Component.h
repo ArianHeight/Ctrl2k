@@ -21,6 +21,8 @@ public:
 	const ComponentType getType() const; //returns type of component
 	void setGameObject(GameObject* const& obj); //sets the link to parent object, same across all child classes of component
 	GameObject* const getGameObjectPtr() const; //returns bound gameobject
+	void setActiveIndex(const int& index);
+	const int getActiveIndex();
 
 	//Transformation
 	virtual void setDisp(const glm::vec2& newDisp);
@@ -69,6 +71,7 @@ public:
 protected:
 	GameObject* m_object = nullptr;
 	const ComponentType m_type;
+	int m_activeIndex; //index of this component in parent's m_activeComponents, -1 if not active
 };
 
 /*

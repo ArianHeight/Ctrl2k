@@ -24,8 +24,7 @@ protected:
 	GUI *displayingHud = nullptr; //may be null or may not, points to a hud that will grab data off this obj to display
 	bool m_delete{ false }; //delete var for queue
 
-	std::vector<std::vector<Component*>> m_activeComponents; //all components that are active(accessed with corresponding type)
-	//std::vector<Indices> m_activeComponents; //vector of a vector of all indices to components that are active(accessed with corresponding type)
+	std::vector<Indices> m_activeComponents; //vector of a vector of all indices to components that are active(accessed with corresponding type)
 	std::vector<GameObject*> m_children; //all children classes
 	std::vector<Component*> m_components;
 	std::vector<std::string> m_inputs; //all inputs per frame
@@ -42,6 +41,8 @@ public:
 	void setLinkHud(GUI* const& h); //links to the displaying hud
 	bool isHudLinked(); //is the hud locked onto this obj
 
+	void activateComponent(const int& index); //puts the component index into m_activeComponents[type]
+	void disableComponent(const int& index); //removes the component index from m_activeComponents[type]
 	int addComponent(Component* const& component, const bool& active = false); //adds a component to the object, returns the index
 	void addChild(GameObject* const& obj); //adds a child object to the GO
 	void clearChildrenPtr(const int& lvl = 0); //deletes all children ***Just The PTR NOT With The Actual Object***!!! This is DANGEROUS AND IS ONLY MEANT FOR USE IN MAP OBJECTS!!!
@@ -62,9 +63,9 @@ public:
 	//accessors
 	virtual std::string getName();
 	bool getDelete();
-	Component* getComponent(const int& index); //grabs component depending on index
+	Component* const& getComponent(const int& index); //grabs component depending on index
 	const int checkForComponent(const int& index); //checks if component exist in class
-	const std::vector<Component*>& getAllActiveComponents(const ComponentType& type); //returns all current active components of type in this object
+	const Indices& getAllActiveComponentIndices(const ComponentType& type); //returns all current active components of type in this object
 	void getAllActiveComponentsC(std::vector<Component*> &output, const ComponentType& type); //appends ptrs of all active components of one type(from all children as well as this obj) into a std::vector ref
 	GameObject* getChild(const std::string& name); //no ownership passed
 };

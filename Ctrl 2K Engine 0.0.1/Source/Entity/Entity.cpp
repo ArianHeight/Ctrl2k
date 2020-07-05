@@ -193,16 +193,18 @@ void Entity::processInput()
 	
 	if (directions == 4 || directions == 0) //animation stuff
 	{
-		if (this->m_activeComponents[VISUAL_DATA][0] != this->m_components[6]) //IDLE
+		if (this->m_activeComponents[VISUAL_DATA][0] != 6) //IDLE
 		{
-			this->m_activeComponents[VISUAL_DATA][0] = this->m_components[6]; //IDLE
+			disableComponent(m_activeComponents[VISUAL_DATA][0]);
+			activateComponent(6); //IDLE
 		}
 	}
 	else
 	{
-		if (this->m_activeComponents[VISUAL_DATA][0] != this->m_components[8]) //WALKING
+		if (this->m_activeComponents[VISUAL_DATA][0] != 8) //WALKING
 		{
-			this->m_activeComponents[VISUAL_DATA][0] = this->m_components[8]; //WALKING
+			disableComponent(m_activeComponents[VISUAL_DATA][0]);
+			activateComponent(8); //WALKING
 		}
 	}
 
@@ -323,7 +325,8 @@ bool Entity::updateHealth() //false for dead, true for alive
 	if (status->getHealth() < 0.0f)
 	{
 		status->setDeathState(true);
-		this->m_activeComponents[VISUAL_DATA][0] = this->m_components[7]; //DEATH
+		disableComponent(m_activeComponents[VISUAL_DATA][0]);
+		activateComponent(7); //DEATH
 		return false;
 	}
 
@@ -371,7 +374,7 @@ void Entity::updateAnimationTimer()
 {
 	if (this->m_activeComponents[VISUAL_DATA].size() != 0)
 	{
-		this->m_activeComponents[VISUAL_DATA][0]->getTimerRef() += this->m_timeRef;
+		m_components[m_activeComponents[VISUAL_DATA][0]]->getTimerRef() += this->m_timeRef;
 	}
 }
 
@@ -454,7 +457,7 @@ int Entity::getActiveAnimation()
 	int returnValue;
 	if (this->m_activeComponents[VISUAL_DATA].size() != 0)
 	{
-		this->m_activeComponents[VISUAL_DATA][0]->getCurrentRenderTarget(returnValue);
+		m_components[m_activeComponents[VISUAL_DATA][0]]->getCurrentRenderTarget(returnValue);
 	}
 	else
 	{
@@ -467,7 +470,7 @@ double& Entity::getAnimationTimerRef()
 { 
 	if (this->m_activeComponents[VISUAL_DATA].size() != 0)
 	{
-		return this->m_activeComponents[VISUAL_DATA][0]->getTimerRef();
+		return m_components[m_activeComponents[VISUAL_DATA][0]]->getTimerRef();
 	}
 	return this->m_timeRef;
 }

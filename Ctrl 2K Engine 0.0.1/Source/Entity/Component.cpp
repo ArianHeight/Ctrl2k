@@ -65,6 +65,14 @@ GameObject* const Component::getGameObjectPtr() const {
 	return m_object;
 }
 
+void Component::setActiveIndex(const int& index) {
+	m_activeIndex = index;
+}
+
+const int Component::getActiveIndex() {
+	return m_activeIndex;
+}
+
 Component::~Component() {} //empty dstr
 
 /*

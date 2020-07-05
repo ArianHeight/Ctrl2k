@@ -158,14 +158,15 @@ void PhysEngine::buildCollisionList(bool &mapChange, int &newMap)
 		//player only, check against connector hitboxes
 		if (object->getGameObjectPtr()->isCamLinked())
 		{
-			const std::vector<Component*>& connectors = this->playgroundTile->getAllActiveComponents(CONNECTOR);
+			const Indices& connectors = this->playgroundTile->getAllActiveComponentIndices(CONNECTOR);
 			for (int i = 0; i < connectors.size(); i++)
 			{
-				if (this->aabbCheck(testPos, connectors[i]->getSelfHB()))
+				Component* const& connector = playgroundTile->getComponent(connectors[i]);
+				if (this->aabbCheck(testPos, connector->getSelfHB()))
 				{
 					mapChange = true; //global queue map change
-					newMap = this->m_game->getEngine().getAssets().getMM().search(connectors[i]->getTarget());
-					this->playerMapChange(transform, connectors[i]);
+					newMap = this->m_game->getEngine().getAssets().getMM().search(connector->getTarget());
+					this->playerMapChange(transform, connector);
 				}
 			}
 		}/*
