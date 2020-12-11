@@ -102,7 +102,7 @@ void RenderEngine::createBaseShaders()
 	*/
 	//loads texture shaders
 	tempName = "textureRendering";
-	this->addShader(Shader("textureRendering", "Shaders/Tiled/Ctrl 2k textureRender.vert", "Shaders/Tiled/Ctrl 2k textureRender.frag"));
+	this->addShader(Shader("textureRendering", "../../Shaders/Tiled/Ctrl 2k textureRender.vert", "../../Shaders/Tiled/Ctrl 2k textureRender.frag"));
 	tempShaderPtr = this->getShader(tempName);
 	
 	//sets the vars for texture shader
@@ -120,7 +120,7 @@ void RenderEngine::createBaseShaders()
 	*/
 	//loads animation shaders
 	tempName = "animationRendering";
-	this->addShader(Shader("animationRendering", "Shaders/Tiled/Ctrl 2k animationRender.vert", "Shaders/Tiled/Ctrl 2k textureRender.frag"));
+	this->addShader(Shader("animationRendering", "../../Shaders/Tiled/Ctrl 2k animationRender.vert", "../../Shaders/Tiled/Ctrl 2k textureRender.frag"));
 	tempShaderPtr = this->getShader(tempName);
 
 	//sets the vars for animation shader
@@ -139,7 +139,7 @@ void RenderEngine::createBaseShaders()
 	*/
 	//loads line render shaders
 	tempName = "lineRendering";
-	this->addShader(Shader("lineRendering", "Shaders/Tiled/Ctrl 2k lineRender.vert", "Shaders/Tiled/Ctrl 2k lineRender.frag"));
+	this->addShader(Shader("lineRendering", "../../Shaders/Tiled/Ctrl 2k lineRender.vert", "../../Shaders/Tiled/Ctrl 2k lineRender.frag"));
 	tempShaderPtr = this->getShader(tempName);
 
 	//sets the vars for line render shader
@@ -156,7 +156,7 @@ void RenderEngine::createBaseShaders()
 	*/
 	//loads text render shaders
 	tempName = "textRendering";
-	this->addShader(Shader("textRendering", "Shaders/Tiled/Ctrl 2k textRender.vert", "Shaders/Tiled/Ctrl 2k textRender.frag"));
+	this->addShader(Shader("textRendering", "../../Shaders/Tiled/Ctrl 2k textRender.vert", "../../Shaders/Tiled/Ctrl 2k textRender.frag"));
 	tempShaderPtr = this->getShader(tempName);
 
 	//loads vars for text render
@@ -176,7 +176,7 @@ void RenderEngine::createBaseShaders()
 	*/
 	//loads texture normalized render shaders
 	tempName = "textureNRendering";
-	this->addShader(Shader("textureNRendering", "Shaders/Tiled/Ctrl 2k textureNRender.vert", "Shaders/Tiled/Ctrl 2k textureNRender.frag"));
+	this->addShader(Shader("textureNRendering", "../../Shaders/Tiled/Ctrl 2k textureNRender.vert", "../../Shaders/Tiled/Ctrl 2k textureNRender.frag"));
 	tempShaderPtr = this->getShader(tempName);
 
 	//sets the vars for normalized texture render shaders

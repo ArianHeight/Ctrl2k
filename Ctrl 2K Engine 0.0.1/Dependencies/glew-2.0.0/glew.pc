@@ -1,6 +1,6 @@
-prefix=C:/Users/gal/CMakeBuilds/1e575a14-b3a8-243e-8613-efb9bb4d1578/install/x64-Debug (default)
+prefix=C:/Users/edmon/Source/Repos/Ctrl2k/Ctrl 2K Engine 0.0.1/Dependencies/glew-2.0.0/build/cmake/out/install/x64-Debug
 exec_prefix=${prefix}
-libdir=C:/Users/gal/CMakeBuilds/1e575a14-b3a8-243e-8613-efb9bb4d1578/install/x64-Debug (default)/lib
+libdir=C:/Users/edmon/Source/Repos/Ctrl2k/Ctrl 2K Engine 0.0.1/Dependencies/glew-2.0.0/build/cmake/out/install/x64-Debug/lib
 includedir=${prefix}/include
 
 Name: glew

@@ -52,7 +52,7 @@ void GameWindow::initSDL()
 		exit(-1);
 	}
 
-	this->m_sdlWindow = SDL_CreateWindow(this->m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->m_windowWidth, this->m_windowHeight, SDL_WINDOW_OPENGL);
+	this->m_sdlWindow = SDL_CreateWindow(this->m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->m_windowWidth, this->m_windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if (this->m_sdlWindow == nullptr) //check if sucessful
 	{
 		std::cerr << "Failed to create SDL2 window...\nExiting" << std::endl;
@@ -152,6 +152,10 @@ void GameWindow::changeWindowSizeTo(int winx, int winy)
 	this->m_windowWidth = winx;
 	this->m_windowHeight = winy;
 	this->m_windowAspectRatio = (float)this->m_windowWidth / (float)this->m_windowHeight;
+
+	//NOTE: need to check if dis works
+	SDL_SetWindowSize(m_sdlWindow, m_windowWidth, m_windowHeight);
+	swapBuffers();
 }
 
 void GameWindow::changeWindowResTo(int resx, int resy)

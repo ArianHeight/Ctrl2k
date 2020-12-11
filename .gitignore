@@ -14,8 +14,14 @@
 *.userprefs
 
 # Build results
-Win32/Debug
-x64/Debug
+**/[Bb]in/
+**/[Oo]ut/
+**/[Ddebug]/*d.lib
+**/[Ddebug]/*d.exp
+**/[Ddebug]/*d.exe
+**/[Rr]elease/*.lib
+**/[Rr]elease/*.exp
+*.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

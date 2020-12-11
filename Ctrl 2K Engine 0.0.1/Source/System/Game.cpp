@@ -142,14 +142,14 @@ void Game::debugSetup()
 	sounds.addMusic(std::string("Running in The 90s"), std::string("Resource/Audio/Initial D - Running in The 90s.wav"));
 	sounds.addSFX(std::string("beat"), std::string("Resource/Audio/beat.wav"));
 	Parser temp(maps, textures, fonts, animations);
-	victor = temp.parseDotAnim(std::string("Resource/Animations/victor_walk.anim"));
-	texture = temp.parseDotAnim(std::string("Resource/Animations/turret_rest.anim"));
-	ballTexture = temp.parseDotAnim(std::string("Resource/Animations/ball.anim"));
-	gameFont = temp.parseDotFNT(std::string("Resource/System/Fonts/visitor/visitor.fnt"));
+	victor = temp.parseDotAnim(std::string("../../Resource/Animations/victor_walk.anim"));
+	texture = temp.parseDotAnim(std::string("../../Resource/Animations/turret_rest.anim"));
+	ballTexture = temp.parseDotAnim(std::string("../../Resource/Animations/ball.anim"));
+	gameFont = temp.parseDotFNT(std::string("../../Resource/System/Fonts/visitor/visitor.fnt"));
 	//temp.parseDotFNT(std::string("Resource/System/Fonts/quantum/quantum.fnt"));
 	//temp.parseDotFNT(std::string("Resource/System/Fonts/perfect_dark/perfect_dark.fnt"));
-	activePlaygroundIndex = temp.parseDotMP(std::string("Resource/Map/test.mp"));
-	temp.parseDotMP(std::string("Resource/Map/test1.mp"));
+	activePlaygroundIndex = temp.parseDotMP(std::string("../../Resource/Map/test.mp"));
+	temp.parseDotMP(std::string("../../Resource/Map/test1.mp"));
 	healthBar = new StatusBar(std::string("health bar"), glm::dvec2(-1.0, 0.99), glm::dvec2(-0.25, 0.9011111), textures.create(std::string("woodenbar"), std::string("Resource/Texture/Widgets/woodenBarBackground.png")),
 		glm::dvec2(-0.95703125, 0.6875), glm::dvec2(0.95703125, -0.6875), textures.create(std::string("barFiller"), std::string("Resource/Texture/Widgets/barFiller.png")));
 	healthBar->setColour(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));

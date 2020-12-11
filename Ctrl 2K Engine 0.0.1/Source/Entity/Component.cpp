@@ -6,7 +6,7 @@ Component class
 
 */
 
-Component::Component(const ComponentType& type) : m_type(type) {} //empty cstr
+Component::Component(const ComponentType& type) : m_type(type), m_activeIndex(-1) {} //empty cstr
 
 const ComponentType Component::getType() const {
 	return m_type;

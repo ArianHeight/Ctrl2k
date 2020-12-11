@@ -1,0 +1,42 @@
+name = test_animation;
+
+rootDir.texture = "../Texture";
+rootDir.audio = "../Audio";
+
+spriteSheet = "victor1_armoured_front_walk.png"
+atlasDim = 192, 64
+audio = 2; //number of tracks
+afile = 0; test.mp3 //audio file
+afile = 1; test1.mp3
+
+//rows and frames start count from 0
+
+rows = 4;
+rowHeight = 64;
+frameWidth = 32;
+sameFrameCount = 6; //or differingFrameCount, don't need specifications for each frame in this case
+sameFrameTime = 0.25; //or differingFrameTime, don't need specifications for each frame in this case
+sameAudio = 1; //or differingAudio, don't need specifications for each frame in this case
+ 
+row = 0; //normal
+frameTime = 0.25;
+track = 0; //audio track
+close();
+
+row = 1; //differing times (1 frame)
+frameTime = 0.25;
+frameTime = 0, 0.5;
+track = 1;
+close();
+
+row 2 #differing widths (1 frame)
+frameTime 0.25
+frameWidth 0 46
+close
+
+row 3 #differing widths (all frame)
+frameTime 0.25
+frameWidth -1 46
+close
+
+#rows 4 ad 5 are created with standard frame audio, time, width, and height, so no specifications needed

@@ -19,6 +19,7 @@ template <typename T>
 inline void unorderedRemove(const int& index, std::vector<T>& arr) {
 	if (arr.size() == 1) { //only element is indexed element, pop it
 		arr.pop_back();
+		return;
 	}
 
 	//move last element in arr to index and pop back
@@ -39,25 +40,26 @@ GameObject::GameObject() {
 }
 
 void GameObject::activateComponent(const int& index) {
-	if (index < 0 || index >= m_components.size()) { //bound guard
+	if (index < 0 || index >= m_components.size() || m_components[index]->getActiveIndex() != -1) { //bound guard
 		return;
 	}
 
 	Component* const& c = m_components[index];
-	c->setActiveIndex(m_activeComponents.size());
+	c->setActiveIndex(m_activeComponents[c->getType()].size());
 	m_activeComponents[c->getType()].push_back(index);
 }
 
 void GameObject::disableComponent(const int& index) {
-	if (index < 0 || index >= m_components.size()) { //bound guard
+	int id = m_components[index]->getActiveIndex();
+	if (index < 0 || index >= m_components.size() || id == -1) { //bound and disabled guard
 		return;
 	}
 
-	int id = m_components[index]->getActiveIndex();
 	Indices& ac = m_activeComponents[m_components[index]->getType()];
 	if (id >= 0 && id < ac.size()) { //bound guard
 		unorderedRemove(id, ac);
 	}
+	m_components[index]->setActiveIndex(-1);
 }
 
 int GameObject::addComponent(Component* const& component, const bool& active) {

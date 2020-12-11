@@ -443,7 +443,7 @@ void shaderSetup()
 	*/
 	//loads parallax shaders
 	tempName = "parallaxPass";
-	rEngine.addShader(Shader("parallaxPass", "Shaders/Tiled/Ctrl 2k parallaxPass.vert", "Shaders/Tiled/Ctrl 2k parallaxPass.frag"));
+	rEngine.addShader(Shader("parallaxPass", "../../Shaders/Tiled/Ctrl 2k parallaxPass.vert", "../../Shaders/Tiled/Ctrl 2k parallaxPass.frag"));
 
 	parallaxAlbedo = glGetUniformLocation(rEngine.getShader(tempName)->getShaderProgram(), "albedoSampler");
 	parallaxDepth = glGetUniformLocation(rEngine.getShader(tempName)->getShaderProgram(), "depthSampler");
@@ -476,7 +476,7 @@ void shaderSetup()
 	*/
 	//loads widget render shaders
 	tempName = "widgetRenderPass";
-	rEngine.addShader(Shader("widgetRenderPass", "Shaders/Tiled/Ctrl 2k widgetRender.vert", "Shaders/Tiled/Ctrl 2k widgetRender.frag"));
+	rEngine.addShader(Shader("widgetRenderPass", "../../Shaders/Tiled/Ctrl 2k widgetRender.vert", "../../Shaders/Tiled/Ctrl 2k widgetRender.frag"));
 
 	wgtDimensions = glGetUniformLocation(rEngine.getShader(tempName)->getShaderProgram(), "dimensions");
 	wgtBoxTopLeft = glGetUniformLocation(rEngine.getShader(tempName)->getShaderProgram(), "boxTopLeft");
@@ -538,7 +538,7 @@ int main(int argc, char *argv[])
 	Parser temp(maps, textures, fonts, animations);
 	std::string name; //for game configs
 	std::vector<int> data;
-	temp.parseConfigs(std::string("Resource/System/Graphics.config"), name, data);
+	temp.parseConfigs(std::string("../../Resource/System/Graphics.config"), name, data);
 	rEngine.getMainWindow()->setConfig(name, data);
 
 	rEngine.init();
@@ -557,22 +557,22 @@ int main(int argc, char *argv[])
 	shaderSetup();
 
 	//debug all temporary code....
-	sounds.addMusic(std::string("Running in The 90s"), std::string("Resource/Audio/Initial D - Running in The 90s.wav"));
-	sounds.addSFX(std::string("beat"), std::string("Resource/Audio/beat.wav"));
-	victor = temp.parseDotAnim(std::string("Resource/Animations/victor_walk.anim"));
-	texture = temp.parseDotAnim(std::string("Resource/Animations/turret_rest.anim"));
-	turretDeathTexture = temp.parseDotAnim(std::string("Resource/Animations/turret_death.anim"));
-	int fireFX = temp.parseDotAnim(std::string("Resource/Animations/FireEffect.anim"));
-	int swordFX = temp.parseDotAnim(std::string("Resource/Animations/sword_flash.anim"));
-	ballTexture = temp.parseDotAnim(std::string("Resource/Animations/ball.anim"));
-	int vicIdle = temp.parseDotAnim(std::string("Resource/Animations/victor_idle.anim"));
-	gameFont = temp.parseDotFNT(std::string("Resource/System/Fonts/visitor/visitor.fnt"));
+	sounds.addMusic(std::string("Running in The 90s"), std::string("../../Resource/Audio/Initial D - Running in The 90s.wav"));
+	sounds.addSFX(std::string("beat"), std::string("../../Resource/Audio/beat.wav"));
+	victor = temp.parseDotAnim(std::string("../../Resource/Animations/victor_walk.anim"));
+	texture = temp.parseDotAnim(std::string("../../Resource/Animations/turret_rest.anim"));
+	turretDeathTexture = temp.parseDotAnim(std::string("../../Resource/Animations/turret_death.anim"));
+	int fireFX = temp.parseDotAnim(std::string("../../Resource/Animations/FireEffect.anim"));
+	int swordFX = temp.parseDotAnim(std::string("../../Resource/Animations/sword_flash.anim"));
+	ballTexture = temp.parseDotAnim(std::string("../../Resource/Animations/ball.anim"));
+	int vicIdle = temp.parseDotAnim(std::string("../../Resource/Animations/victor_idle.anim"));
+	gameFont = temp.parseDotFNT(std::string("../../Resource/System/Fonts/visitor/visitor.fnt"));
 	//temp.parseDotFNT(std::string("Resource/System/Fonts/quantum/quantum.fnt"));
 	//temp.parseDotFNT(std::string("Resource/System/Fonts/perfect_dark/perfect_dark.fnt"));
-	activePlaygroundIndex = temp.parseDotMP(std::string("Resource/Map/test.mp"));
-	temp.parseDotMP(std::string("Resource/Map/test1.mp"));
-	healthBar = new StatusBar(std::string("health bar"), glm::dvec2(-1.0, 0.99), glm::dvec2(-0.25, 0.9011111), textures.create(std::string("woodenbar"), std::string("Resource/Texture/Widgets/woodenBarBackground.png")),
-							  glm::dvec2(-0.95703125, 0.6875), glm::dvec2(0.95703125, -0.6875), textures.create(std::string("barFiller"), std::string("Resource/Texture/Widgets/barFiller.png")));
+	activePlaygroundIndex = temp.parseDotMP(std::string("../../Resource/Map/test.mp"));
+	temp.parseDotMP(std::string("../../Resource/Map/test1.mp"));
+	healthBar = new StatusBar(std::string("health bar"), glm::dvec2(-1.0, 0.99), glm::dvec2(-0.25, 0.9011111), textures.create(std::string("woodenbar"), std::string("../../Resource/Texture/Widgets/woodenBarBackground.png")),
+							  glm::dvec2(-0.95703125, 0.6875), glm::dvec2(0.95703125, -0.6875), textures.create(std::string("barFiller"), std::string("../../Resource/Texture/Widgets/barFiller.png")));
 	healthBar->setColour(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 	staminaBar = new StatusBar(std::string("stamina bar"), glm::dvec2(-1.0, 0.901111), glm::dvec2(-0.25, 0.8122222), textures.search(std::string("woodenbar")),
 		glm::dvec2(-0.95703125, 0.6875), glm::dvec2(0.95703125, -0.6875), textures.search(std::string("barFiller")));
