@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{9183C531-6F34-4BEC-A1E8-96A6613FFDCA}</ProjectGuid>
-    <RootNamespace>Ctrl2KRenderer</RootNamespace>
+    <ProjectGuid>{4FC5CA38-4069-48EF-85E2-2ED66EE13F54}</ProjectGuid>
+    <RootNamespace>CtrlCore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

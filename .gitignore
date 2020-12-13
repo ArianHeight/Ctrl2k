@@ -16,12 +16,12 @@
 # Build results
 **/[Bb]in/
 **/[Oo]ut/
-**/[Ddebug]/*d.lib
-**/[Ddebug]/*d.exp
-**/[Ddebug]/*d.exe
+**/[Dd]ebug/*d.lib
+**/[Dd]ebug/*d.exp
+**/[Dd]ebug/*d.exe
 **/[Rr]elease/*.lib
 **/[Rr]elease/*.exp
-*.exe
+**/[Rr]elease/*.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
