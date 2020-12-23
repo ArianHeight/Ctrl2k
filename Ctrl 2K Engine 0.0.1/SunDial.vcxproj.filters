@@ -11,18 +11,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\FilePathProcessing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Logger.h">
+    <ClInclude Include="Include\EngineClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Ctrl Dump\Logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Ctrl Dump\FilePathProcessing.cpp">
+    <ClCompile Include="Source\SunDial\EngineClock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
