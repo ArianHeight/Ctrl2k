@@ -15,6 +15,7 @@ enum LogType
 	LOGTYPE_FLUSH, 
 	LOGTYPE_FATAL,
 	LOGTYPE_WARNING,
+	LOGTYPE_PROFILE, 
 	LOGTYPE_SIZE			//Keep this as the last element!
 };
 
@@ -25,9 +26,9 @@ void SafeLog_PushAllPendingMessages();
 
 //only queue the msgs, need to call SafeLog_PushAllPendingMessages for it to push
 #define LOG_FLUSH_QUEUE() SafeLog_QueueMessage(LogType::LOGTYPE_FLUSH, "", 0, "")
-#define LOG_FATAL_QUEUE(type, log) SafeLog_QueueMessage(LogType::LOGTYPE_FATAL, __FILE__, __LINE__, log)
-#define LOG_WARNING_QUEUE(type, log) SafeLog_QueueMessage(LogType::LOGTYPE_WARNING, __FILE__, __LINE__, log)
-#define LOG_MSG_QUEUE(type, log) SafeLog_QueueMessage(LogType::LOGTYPE_NONE, __FILE__, __LINE__, log)
+#define LOG_FATAL_QUEUE(log) SafeLog_QueueMessage(LogType::LOGTYPE_FATAL, __FILE__, __LINE__, log)
+#define LOG_WARNING_QUEUE(log) SafeLog_QueueMessage(LogType::LOGTYPE_WARNING, __FILE__, __LINE__, log)
+#define LOG_MSG_QUEUE(log) SafeLog_QueueMessage(LogType::LOGTYPE_NONE, __FILE__, __LINE__, log)
 #define LOG_QUEUE(type, log) SafeLog_QueueMessage(type, __FILE__, __LINE__, log)
 
 #define LOG_FLUSH() SafeLog_ImmediatePushMessage(LogType::LOGTYPE_FLUSH, "", 0, "")

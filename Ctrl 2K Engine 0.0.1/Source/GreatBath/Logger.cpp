@@ -13,7 +13,8 @@ static const std::string LogMsgPrefix[LogType::LOGTYPE_SIZE]
 	"", 
 	"", 
 	"FATAL ERROR: ", 
-	"WARNING: "
+	"WARNING: ", 
+	""
 };
 
 struct LogBlock
@@ -37,10 +38,13 @@ static void Log_PushMessage(const LogBlock& data)
 	std::cout << LogMsgPrefix[data.type];
 	switch(data.type)
 	{
+	case LogType::LOGTYPE_NONE:
+		break;
 	case LogType::LOGTYPE_FLUSH:
 		std::cout << std::endl;
 		return; //early return here to avoid double spacing
 	case LogType::LOGTYPE_FATAL:
+	case LogType::LOGTYPE_WARNING:
 		std::cout << "In file " << data.file << " line " << data.line << " thread id " << data.creationId << ", ";
 		break;
 	default:

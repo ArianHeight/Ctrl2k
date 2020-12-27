@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GreatBath", "..\Ctrl 2K Eng
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SunDial", "..\Ctrl 2K Engine 0.0.1\SunDial.vcxproj", "{EB11A967-DAB8-4DE2-894C-F5014E62137E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SunDial Profiler", "..\Ctrl 2K Engine 0.0.1\SunDial Profiler.vcxproj", "{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{EB11A967-DAB8-4DE2-894C-F5014E62137E}.Release|x64.Build.0 = Release|x64
 		{EB11A967-DAB8-4DE2-894C-F5014E62137E}.Release|x86.ActiveCfg = Release|Win32
 		{EB11A967-DAB8-4DE2-894C-F5014E62137E}.Release|x86.Build.0 = Release|Win32
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Debug|x64.ActiveCfg = Debug|x64
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Debug|x64.Build.0 = Debug|x64
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Debug|x86.ActiveCfg = Debug|Win32
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Debug|x86.Build.0 = Debug|Win32
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Release|x64.ActiveCfg = Release|x64
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Release|x64.Build.0 = Release|x64
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Release|x86.ActiveCfg = Release|Win32
+		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
