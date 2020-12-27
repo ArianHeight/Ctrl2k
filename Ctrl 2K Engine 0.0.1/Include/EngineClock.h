@@ -11,66 +11,43 @@ typedef TimeUnitType EngineClock_Microseconds;
 typedef TimeUnitType EngineClock_Milliseconds;
 typedef TimeUnitType EngineClock_Seconds;
 
-class LifeTimeClock_InternalStorage
+template <typename ClockTypeTimePoint, typename ClockType, typename TimeType>
+class LifeTimeClock
 {
-protected:
+private:
 	TimeUnitType& ref;
+	ClockTypeTimePoint start;
 
 public:
-	LifeTimeClock_InternalStorage(TimeUnitType& ref);
+	LifeTimeClock(TimeUnitType& ref) : ref(ref)
+	{
+		start = ClockType::now();
+	}
+	~LifeTimeClock()
+	{
+		ref = std::chrono::duration_cast<TimeType>(ClockType::now() - start).count();
+	}
 };
 
 //A clock that outputs its lifetime into the given reference with TimeUnit std::chrono::nanoseconds
 //Anything much much smaller than a second should be measured as such
 //Uses std::high_resolution_clock internally
-class MiniLifeTimeClock : public LifeTimeClock_InternalStorage
-{
-private:
-	std::chrono::high_resolution_clock::time_point start;
-
-public:
-	MiniLifeTimeClock(EngineClock_Nanoseconds& ref);
-	~MiniLifeTimeClock();
-};
+#define MiniLifeTimeClock(time_nanoseconds) LifeTimeClock<std::chrono::high_resolution_clock::time_point, std::chrono::high_resolution_clock, std::chrono::nanoseconds>(time_nanoseconds)
 
 //A clock that outputs its lifetime into the given reference with TimeUnit std::chrono::microseconds
 //Anything smaller than a second should be measured as such
 //Uses std::high_resolution_clock internally
-class ShortLifeTimeClock : public LifeTimeClock_InternalStorage
-{
-private:
-	std::chrono::high_resolution_clock::time_point start;
-
-public:
-	ShortLifeTimeClock(EngineClock_Microseconds& ref);
-	~ShortLifeTimeClock();
-};
+#define ShortLifeTimeClock(time_microseconds) LifeTimeClock<std::chrono::high_resolution_clock::time_point, std::chrono::high_resolution_clock, std::chrono::microseconds>(time_microseconds)
 
 //A clock that outputs its lifetime into the given reference with TimeUnit std::chrono::milliseconds
 //Anything smaller than an hour can be measured as such
 //Uses std::steady_clock internally
-class MedLifeTimeClock : public LifeTimeClock_InternalStorage
-{
-private:
-	std::chrono::steady_clock::time_point start;
-
-public:
-	MedLifeTimeClock(EngineClock_Milliseconds& ref);
-	~MedLifeTimeClock();
-};
+#define MedLifeTimeClock(time_milliseconds) LifeTimeClock<std::chrono::steady_clock::time_point, std::chrono::steady_clock, std::chrono::milliseconds>(time_milliseconds)
 
 //A clock that outputs its lifetime into the given reference with TimeUnit std::chrono::seconds
 //Anything longer than an hour should be measured as such
 //Uses std::system_clock internally
-class LongLifeTimeClock : public LifeTimeClock_InternalStorage
-{
-private:
-	std::chrono::system_clock::time_point start;
-
-public:
-	LongLifeTimeClock(EngineClock_Seconds& ref);
-	~LongLifeTimeClock();
-};
+#define LongLifeTimeClock(time_seconds) LifeTimeClock<std::chrono::system_clock::time_point, std::chrono::system_clock, std::chrono::seconds>(time_seconds)
 
 //A clock that can be used to time various things
 //Refrain from using across threads
@@ -84,7 +61,6 @@ private:
 
 	std::chrono::high_resolution_clock::time_point m_lastQueryPoint;
 	std::chrono::high_resolution_clock::time_point m_currentQueryPoint; //temp data storage
-	std::chrono::high_resolution_clock::duration m_durationTimeElapsed; //temp data storage
 	
 public:
 	EngineBaseClock();
@@ -93,14 +69,23 @@ public:
 	//Queries the current time and updates the time elapsed since last second
 	const EngineClock_Microseconds& QueryTime();
 	//Check the time elapsed
-	const EngineClock_Microseconds& GetTimeElapsed();
+	const EngineClock_Microseconds& GetTimeElapsed()
+	{
+		return m_timeElapsed;
+	}
 };
 
 //size of the array holding past queries
-#define ENGINECLOCK_INTERNAL_TIMESLOTS 5
+#define ENGINECLOCK_INTERNAL_TIMESLOTS 8
+//percentage of qps variance which when passed, counts as a hitch
+#define ENGINECLOCK_INTENAL_HITCH_VARIANCE 0.2
+
 #define SECONDS_PER_MILLISECOND 1e-3
 #define SECONDS_PER_MICROSECOND 1e-6
 #define SECONDS_PER_NANOSECOND 1e-9
+#define MILLISECONDS_TO_SECONDS(ms) (SECONDS_PER_MILLISECOND * (ms))
+#define MICROSECONDS_TO_SECONDS(us) (SECONDS_PER_MICROSECOND * (us))
+#define NANOSECONDS_TO_SECONDS(ns) (SECONDS_PER_NANOSECOND * (ns))
 
 //A more advanced clock that uses the EngineBaseClock to keep time
 //This will be fitted with average qps(queries per second), highest qps, lowest qps, 
@@ -134,12 +119,29 @@ public:
 	//Queries the current time and updates the time elapsed since last second
 	//Also updates all internal data
 	const EngineClock_Microseconds& QueryTime();
-	//Check the time elapsed
-	const EngineClock_Microseconds& GetTimeElapsed();
+
 	const TimeSeconds GetSecondsElapsedModifiedForHitch();
 	const TimeSeconds GetTrueSecondsElapsed();
-	const TimeRate& getQPS();
-	const TimeRate& getAvgQPS();
-	const TimeRate& getLowQPS();
-	const TimeRate& getHighQPS();
+
+	//Check the time elapsed
+	const EngineClock_Microseconds& GetTimeElapsed()
+	{
+		return m_pastQueries[m_lastIndex];
+	}
+	const TimeRate& getQPS()
+	{
+		return m_QPS;
+	}
+	const TimeRate& getAvgQPS()
+	{
+		return m_averageQPS;
+	}
+	const TimeRate& getLowQPS()
+	{
+		return m_lowestQPS;
+	}
+	const TimeRate& getHighQPS()
+	{
+		return m_highestQPS;
+	}
 };

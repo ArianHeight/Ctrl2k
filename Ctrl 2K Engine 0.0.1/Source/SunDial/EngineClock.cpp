@@ -1,53 +1,8 @@
 #include <math.h>
+#include <algorithm>
+#include <iterator>
 
 #include "EngineClock.h"
-
-LifeTimeClock_InternalStorage::LifeTimeClock_InternalStorage(TimeUnitType& ref) : ref(ref) {}
-
-
-MiniLifeTimeClock::MiniLifeTimeClock(EngineClock_Nanoseconds& ref) : LifeTimeClock_InternalStorage(ref)
-{
-	start = std::chrono::high_resolution_clock::now();
-}
-
-MiniLifeTimeClock::~MiniLifeTimeClock()
-{
-	ref = abs(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count());
-}
-
-
-ShortLifeTimeClock::ShortLifeTimeClock(EngineClock_Microseconds& ref) : LifeTimeClock_InternalStorage(ref)
-{
-	start = std::chrono::high_resolution_clock::now();
-}
-
-ShortLifeTimeClock::~ShortLifeTimeClock()
-{
-	ref = abs(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count());
-}
-
-
-MedLifeTimeClock::MedLifeTimeClock(EngineClock_Milliseconds& ref) : LifeTimeClock_InternalStorage(ref)
-{
-	start = std::chrono::steady_clock::now();
-}
-
-MedLifeTimeClock::~MedLifeTimeClock()
-{
-	ref = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count();
-}
-
-
-LongLifeTimeClock::LongLifeTimeClock(EngineClock_Seconds& ref) : LifeTimeClock_InternalStorage(ref)
-{
-	start = std::chrono::system_clock::now();
-}
-
-LongLifeTimeClock::~LongLifeTimeClock()
-{
-	ref = abs(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count());
-}
-
 
 //empty cstr for now
 EngineBaseClock::EngineBaseClock() : m_lastQueryPoint(std::chrono::high_resolution_clock::now()), m_timeElapsed(0) {}
@@ -58,15 +13,9 @@ EngineBaseClock::~EngineBaseClock() {}
 const EngineClock_Microseconds& EngineBaseClock::QueryTime()
 {
 	m_currentQueryPoint = std::chrono::high_resolution_clock::now();
-	m_durationTimeElapsed = std::chrono::duration_cast<ClockTimeUnit>(m_currentQueryPoint - m_lastQueryPoint);
-	m_timeElapsed = m_durationTimeElapsed.count();
+	m_timeElapsed = std::chrono::duration_cast<ClockTimeUnit>(m_currentQueryPoint - m_lastQueryPoint).count();
 	m_lastQueryPoint = m_currentQueryPoint;
 
-	return m_timeElapsed;
-}
-
-const EngineClock_Microseconds& EngineBaseClock::GetTimeElapsed()
-{
 	return m_timeElapsed;
 }
 
@@ -75,15 +24,15 @@ CtrlEngineClock::CtrlEngineClock() :
 	m_internalClock(),
 	m_currentIndex(0),
 	m_lastIndex(0), 
-	m_PQTotal(0), 
+	m_PQTotal(ENGINECLOCK_INTERNAL_TIMESLOTS), 
 	m_PQLowestIndex(0), 
 	m_PQHighestIndex(0), 
-	m_QPS(0.0),
-	m_lowestQPS(0.0),
-	m_averageQPS(0.0),
-	m_highestQPS(0.0)
+	m_QPS(1.0),
+	m_lowestQPS(1.0),
+	m_averageQPS(1.0),
+	m_highestQPS(1.0)
 {
-	m_pastQueries[m_currentIndex] = 0;
+	m_pastQueries.fill(1); //prevent divide by 0
 }
 
 //empty for now
@@ -97,12 +46,26 @@ const EngineClock_Microseconds& CtrlEngineClock::QueryTime()
 	m_pastQueries[m_currentIndex] = m_internalClock.QueryTime();
 	m_PQTotal += m_pastQueries[m_currentIndex];
 	
-	//TODO highest lowest qp counts
+	//lower and higher qp index update
+	if(m_PQLowestIndex == m_currentIndex || m_PQHighestIndex == m_currentIndex)
+	{
+		auto minmaxIndices = std::minmax_element(m_pastQueries.begin(), m_pastQueries.end());
+		m_PQLowestIndex = std::distance(m_pastQueries.begin(), minmaxIndices.first);
+		m_PQHighestIndex = std::distance(m_pastQueries.begin(), minmaxIndices.second);
+	}
+	else
+	{
+		if(m_pastQueries[m_currentIndex] <= m_pastQueries[m_PQLowestIndex])
+			m_PQLowestIndex = m_currentIndex;
+		if(m_pastQueries[m_currentIndex] >= m_pastQueries[m_PQHighestIndex])
+			m_PQHighestIndex = m_currentIndex;
+	}
 
 	//modify qps counts
-	m_QPS = 1.0 / m_pastQueries[m_currentIndex];
-	m_averageQPS = ENGINECLOCK_INTERNAL_TIMESLOTS / m_PQTotal;
-	//TODO finish with highest lowest qps
+	m_QPS = 1.0 / MICROSECONDS_TO_SECONDS(m_pastQueries[m_currentIndex]);
+	m_averageQPS = 1.0 / MICROSECONDS_TO_SECONDS(m_PQTotal / ENGINECLOCK_INTERNAL_TIMESLOTS);
+	m_highestQPS = 1.0 / MICROSECONDS_TO_SECONDS(m_pastQueries[m_PQLowestIndex]); //shortest time elapsed = highest qps
+	m_lowestQPS = 1.0 / MICROSECONDS_TO_SECONDS(m_pastQueries[m_PQHighestIndex]); //longest time elapsed = lower qps
 
 	//increment current index
 	m_lastIndex = m_currentIndex;
@@ -110,37 +73,14 @@ const EngineClock_Microseconds& CtrlEngineClock::QueryTime()
 	return m_pastQueries[m_lastIndex];
 }
 
-const EngineClock_Microseconds& CtrlEngineClock::GetTimeElapsed()
-{
-	return m_pastQueries[m_lastIndex];
-}
-
-const TimeRate& CtrlEngineClock::getQPS()
-{
-	return m_QPS;
-}
-
-const TimeRate& CtrlEngineClock::getAvgQPS()
-{
-	return m_averageQPS;
-}
-
-const TimeRate& CtrlEngineClock::getLowQPS()
-{
-	return m_lowestQPS;
-}
-
-const TimeRate& CtrlEngineClock::getHighQPS()
-{
-	return m_highestQPS;
-}
-
 const TimeSeconds CtrlEngineClock::GetSecondsElapsedModifiedForHitch()
 {
-	return 0.0; //TODO finish this
+	if((m_averageQPS - m_QPS) / m_averageQPS > ENGINECLOCK_INTENAL_HITCH_VARIANCE) //hitch detected
+		return 1.0 / m_averageQPS; //loss of accuracy doesn't matter if program is hitching
+	return MICROSECONDS_TO_SECONDS(m_pastQueries[m_lastIndex]);
 }
 
 const TimeSeconds CtrlEngineClock::GetTrueSecondsElapsed()
 {
-	return SECONDS_PER_MICROSECOND * m_pastQueries[m_lastIndex];
+	return MICROSECONDS_TO_SECONDS(m_pastQueries[m_lastIndex]);
 }
