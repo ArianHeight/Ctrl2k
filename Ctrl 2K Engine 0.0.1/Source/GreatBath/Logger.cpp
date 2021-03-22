@@ -1,6 +1,5 @@
 //In chage of logging all things
 #include <iostream>
-#include <chrono>
 #include <thread>
 #include <condition_variable>
 #include <mutex>
@@ -12,8 +11,10 @@
 static const std::string LogMsgPrefix[LogType::LOGTYPE_SIZE]
 {
 	"", 
+	"", 
 	"FATAL ERROR: ", 
-	"WARNING: "
+	"WARNING: ", 
+	""
 };
 
 struct LogBlock
@@ -37,7 +38,13 @@ static void Log_PushMessage(const LogBlock& data)
 	std::cout << LogMsgPrefix[data.type];
 	switch(data.type)
 	{
+	case LogType::LOGTYPE_NONE:
+		break;
+	case LogType::LOGTYPE_FLUSH:
+		std::cout << std::endl;
+		return; //early return here to avoid double spacing
 	case LogType::LOGTYPE_FATAL:
+	case LogType::LOGTYPE_WARNING:
 		std::cout << "In file " << data.file << " line " << data.line << " thread id " << data.creationId << ", ";
 		break;
 	default:
@@ -74,7 +81,7 @@ static void Log_ContinuousLogMsg()
 			Log_PushMessage(pendingLogs.front()); //log msg
 			pendingLogs.pop();
 			logLock.unlock(); //unlock guard to allow more msgs to come in
-			std::this_thread::sleep_for(std::chrono::milliseconds(0)); //force swap threads
+			std::this_thread::yield(); //yield to other threads
 			logLock.lock(); //hold lock again before continuing
 		}
 		else

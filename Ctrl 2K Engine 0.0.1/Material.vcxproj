@@ -157,12 +157,15 @@
     <ClInclude Include="Include\TexturesInternal.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Ctrl Dump.vcxproj">
-      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
-    </ProjectReference>
+    <ClCompile Include="Source\Material\TexturesInternal.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Material\TexturesInternal.cpp" />
+    <ProjectReference Include="AssetsCore.vcxproj">
+      <Project>{fc37a3e4-4fbe-4088-9de8-2318c80e81e6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GreatBath.vcxproj">
+      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
