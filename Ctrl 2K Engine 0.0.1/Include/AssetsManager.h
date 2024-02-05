@@ -5,6 +5,11 @@
 #include <unordered_map>
 #include <queue>
 #include <functional>
+#include <future>
+#include <atomic>
+#include <thread>
+#include "../../Core/Include/ThreadSafeVector.h"
+#include "../../Core/Include/ThreadSafeQueue.h"
 #include "Logger.h"
 
 #define LOAD_FAIL_VALUE 0
@@ -12,11 +17,11 @@ typedef int AssetId;
 
 enum AssetState
 {
-	ASSET_LOADING_QUEUED,		//When the texture is loading in the background
-	ASSET_LOADED,				//Texture has been loaded
-	ASSET_DELETE_QUEUED,		//Texture is queued for delete
-	ASSET_DELETED,				//Texture has been deleted
-	ASSETSTATE_SIZE				//TEXSTATE_SIZE must remain the final member here
+	ASSET_LOADING_QUEUED,		//When the asset is loading in the background
+	ASSET_LOADED,				//Asset has been loaded
+	ASSET_DELETE_QUEUED,		//Asset is queued for delete
+	ASSET_DELETED,				//Asset has been deleted
+	ASSETSTATE_SIZE				//ASSETSTATE_SIZE must remain the final member here
 };
 
 struct AssetMetaDataTemplate
@@ -281,5 +286,174 @@ protected:
 			std::lock_guard<std::mutex> lock(assetCountMutex);
 			assetsLoaded = assetsLoaded + loadCount - unloadCount;
 		}
+	}
+};
+
+//Asynchronous assets manager
+//only meant to be used in one single thread
+//Is a singleton please refrain from making multiple instances of any children
+//Multiple instances of different children are fine though
+//
+//Refrain from locking mutexes randomly in the children pls
+//Asset MUST be a child of AssetTemplate
+template <typename Asset>
+class AsyncAssetManager
+{
+protected:
+	core::ThreadSafeVector<Asset> assets;
+	core::ThreadSafeQueue<AssetId> unloadedAssetsQueue;
+	std::atomic_int assetsLoading = 0;
+	std::atomic_int assetsLoaded = 0;
+	std::atomic_int assetsUnloading = 0;
+
+	//protected cstr, this is supposed to be an abstract class
+	AsyncAssetManager() {}
+
+private:
+	//only needs to be compiled does not need to be called
+	static void forceTypeInheritance()
+	{
+		static_assert(std::is_base_of<AssetTemplate, Asset>::value, "Given type Asset not child of AssetTemplate");
+	}
+
+	inline void counterNewLoading()
+	{
+		assetsLoading++;
+	}
+	inline void counterLoadingToLoaded()
+	{
+		assetsLoading--;
+		assetsLoaded++;
+	}
+	inline void counterLoadedToUnloading()
+	{
+		assetsLoaded--;
+		assetsUnloading++;
+	}
+	inline void counterUnloadingToUnloaded()
+	{
+		assetsUnloading--;
+	}
+	inline void counterUnloadingToLoaded() //used for reloading
+	{
+		assetsUnloading--;
+		assetsLoaded++;
+	}
+
+	//this is essentially a manual spin lock and will end up eating cycles if 
+	//something is trying to unload an asset that is still being loaded
+	//returns ASSET_LOADED if the asset state has been set to unloading successfully
+	AssetState trySetStateUnloading(AssetId id)
+	{
+		AssetState loadState = ASSET_LOADING_QUEUED;
+		for(; loadState == ASSET_LOADING_QUEUED; std::this_thread::yield()) //try to unload
+		{
+			assets.modifyData([&](std::vector<Asset>& data)->void
+				{
+					loadState = data[id].state;
+					if(loadState == ASSET_LOADED) //if loaded, quickly set the asset state to delete queued
+					{
+						data[id].state = ASSET_DELETE_QUEUED; //this will exit the while loop but loadState will remain as loaded
+						counterLoadedToUnloading();
+					}
+				});
+		}
+
+		return loadState == ASSET_LOADED; //true when you've successfully set the loadstate to unloading
+	}
+
+protected:
+	void asyncLoadAssetInternal(AssetId id, std::function<void(Asset&)> loadFunc)
+	{
+		std::async([=]()->void
+			{
+				Asset assetLoading = Asset();
+
+				loadFunc(assetLoading);
+
+				assets.modifyData([&](std::vector<Asset>& data)->void
+					{
+						data[id] = std::move(assetLoading); //move data
+						//set loaded state
+						data[id].state = ASSET_LOADED;
+						counterLoadingToLoaded();
+					});
+			});
+	}
+
+	AssetId asyncLoadAsset(std::function<void(Asset&)> loadFunc)
+	{
+		//create new asset slot
+		AssetId newAssetId = 0;
+		bool useUnloadedSlot = false;
+		//check if there's an unloaded slot open
+		unloadedAssetsQueue.modifyData([&](std::queue<AssetId>& unloadedQueue)->void
+			{
+				useUnloadedSlot = !unloadedQueue.empty();
+				newAssetId = unloadedQueue.front();
+				unloadedQueue.pop();
+			});
+		//flag start loading
+		assets.modifyData([&](std::vector<Asset>& data)->void
+			{
+				if(useUnloadedSlot) //reset the asset if using an unloaded slot
+					data[newAssetId] = Asset(); //default should have state set to loading
+				else //add a new slot
+				{
+					newAssetId = data.size();
+					data.push_back(Asset()); //default should have state set to loading
+				}
+				//set loading state
+				counterNewLoading();
+			});
+
+		//load asset
+		asyncLoadAssetInternal(newAssetId, loadFunc);
+
+		return newAssetId;
+	}
+
+	void asyncUnloadAsset(AssetId id, std::function<void(Asset&)> unloadFunc)
+	{
+		std::async([=]()->void
+			{
+				if(!trySetStateUnloading(id)) //early exit if unloading state couldn't get set - either asset already unloading or unloaded
+					return;
+
+				assets.modifyData([&](std::vector<Asset>& data)->void
+					{
+						unloadFunc(data[id]);
+						//set state properly
+						data[id].state = ASSET_DELETED;
+						counterUnloadingToUnloaded();
+					});
+
+				unloadedAssetsQueue.push(id); //maybe move this into the clause above? not sure if necessary
+			});
+	}
+
+	void asyncReloadAsset(AssetId id, std::function<void(Asset&)> unloadFunc, std::function<void(Asset&)> loadFunc)
+	{
+		auto fullReloadFunc = [=]()->void
+		{
+			if(!trySetStateUnloading(id))
+				return; //cannot reload an asset being unloaded?
+
+			//load asset
+			Asset assetReloading = Asset();
+			loadFunc(assetReloading);
+
+			assets.modifyData([&](std::vector<Asset>& data)->void
+				{
+					unloadFunc(data[id]);
+					
+					data[id] = std::move(assetReloading); //move data
+					//set loaded state
+					data[id].state = ASSET_LOADED;
+					counterUnloadingToLoaded();
+				});
+		};
+
+		std::async(fullReloadFunc);
 	}
 };
