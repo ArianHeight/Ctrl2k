@@ -28,7 +28,7 @@ namespace rqm
 
 		vec2_base() {};
 		vec2_base(const T& val) : x(val), y(val) {};
-		vec2_base(const T& val1, const T& val2) : x(val1), y(val2) {}
+		vec2_base(const T& val0, const T& val1) : x(val0), y(val1) {}
 		vec2_base(const vec2_base<T>& other) : x(other.x), y(other.y) {}
 
 		inline T magnitude_squared() const { return x * x + y * y; }
@@ -69,6 +69,8 @@ namespace rqm
 		vec2_base<T>& operator-=(const T& val) { x -= val; y -= val; return *this; }
 		vec2_base<T>& operator*=(const T& val) { x *= val; y *= val; return *this; }
 		vec2_base<T>& operator/=(const T& val) { x /= val; y /= val; return *this; }
+
+		bool operator==(const vec2_base<T>& other) { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y); }
 	};
 	template <typename T>
 	std::ostream& operator<<(std::ostream& os, const vec2_base<T>& op1) { os << op1.x << ',' << op1.y; return os; }
@@ -90,7 +92,7 @@ namespace rqm
 
 		vec3_base() {};
 		vec3_base(const T& val) : x(val), y(val), z(val) {}
-		vec3_base(const T& val1, const T& val2, const T& val3) : x(val1), y(val2), z(val3) {}
+		vec3_base(const T& val0, const T& val1, const T& val2) : x(val0), y(val1), z(val2) {}
 		vec3_base(const vec3_base<T>& other) : x(other.x), y(other.y), z(other.z) {}
 		vec3_base(const vec2_base<T>& base, const T& val = 1) : x(base.x), y(base.y), z(val) {}
 
@@ -134,6 +136,8 @@ namespace rqm
 		vec3_base<T>& operator-=(const T& val) { x -= val; y -= val; z -= val; return *this; }
 		vec3_base<T>& operator*=(const T& val) { x *= val; y *= val; z *= val; return *this; }
 		vec3_base<T>& operator/=(const T& val) { x /= val; y /= val; z /= val; return *this; }
+
+		bool operator==(const vec3_base<T>& other) { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y) && epsilon_equals(z, other.z); }
 	};
 	template <typename T>
 	std::ostream& operator<<(std::ostream& os, const vec3_base<T>& op1) { os << op1.x << ',' << op1.y << ',' << op1.z; return os; }
@@ -161,7 +165,7 @@ namespace rqm
 
 		vec4_base() {};
 		vec4_base(const T& val) : x(val), y(val), z(val), w(val) {}
-		vec4_base(const T& val1, const T& val2, const T& val3, const T& val4) : x(val1), y(val2), z(val3), w(val4) {}
+		vec4_base(const T& val0, const T& val1, const T& val2, const T& val3) : x(val0), y(val1), z(val2), w(val3) {}
 		vec4_base(const vec4_base<T>& other) : x(other.x), y(other.y), z(other.z), w(other.w) {}
 		vec4_base(const vec3_base<T>& base, const T& val = 1) : x(base.x), y(base.y), z(base.z), w(val) {}
 
@@ -202,11 +206,16 @@ namespace rqm
 		vec4_base<T>& operator-=(const vec4_base<T>& other) { x -= other.x; y -= other.y; z -= other.z; w -= other.w; return *this; }
 		vec4_base<T>& operator*=(const vec4_base<T>& other) { x *= other.x; y *= other.y; z *= other.z; w *= other.w; return *this; }
 		vec4_base<T>& operator/=(const vec4_base<T>& other) { x /= other.x; y /= other.y; z /= other.z; w /= other.w; return *this; }
-		vec4_base<T>& operator=(const T& val) { x = val; y = val; z = val; return *this; }
+		vec4_base<T>& operator=(const T& val) { x = val; y = val; z = val; w = val; return *this; }
 		vec4_base<T>& operator+=(const T& val) { x += val; y += val; z += val; w += val; return *this; }
 		vec4_base<T>& operator-=(const T& val) { x -= val; y -= val; z -= val; w -= val; return *this; }
 		vec4_base<T>& operator*=(const T& val) { x *= val; y *= val; z *= val; w *= val; return *this; }
 		vec4_base<T>& operator/=(const T& val) { x /= val; y /= val; z /= val; w /= val; return *this; }
+
+		bool operator==(const vec4_base<T>& other)
+		{
+			return epsilon_equals(x, other.x) && epsilon_equals(y, other.y) && epsilon_equals(z, other.z) && epsilon_equals(w, other.w);
+		}
 	};
 	template <typename T>
 	std::ostream& operator<<(std::ostream& os, const vec4_base<T>& op1) { os << op1.x << ',' << op1.y << ',' << op1.z << ',' << op1.w; return os; }

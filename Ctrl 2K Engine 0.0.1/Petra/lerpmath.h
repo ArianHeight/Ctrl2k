@@ -53,12 +53,13 @@ namespace rqm
 	}
 
 	// assumes inputs are already normalized
+	// TODO make sure this is right?
 	template <typename T>
 	void slerp_short_in_place(const quat_base<T>& start, const quat_base<T>& end, const T& t, quat_base<T>& out)
 	{
 		T d = dot(start.data, end.data);
 		T theta = acos(d);
-		out = ((start * sin((1 - t) * theta)) * ((d >= 0) ? 1 : -1) + (end * sin(t * theta))) / sin(theta);
+		out = ((start * sin((1 - t) * theta)) * signum_no_zero(d) + (end * sin(t * theta))) / sin(theta);
 	}
 	template <typename T>
 	quat_base<T> slerp_short(const quat_base<T>& start, const quat_base<T>& end, const T& t)
