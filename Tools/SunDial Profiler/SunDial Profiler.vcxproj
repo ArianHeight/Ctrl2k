@@ -19,14 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\ThreadSafeQueue.h" />
-    <ClInclude Include="Include\ThreadSafeVector.h" />
+    <ClInclude Include="Profiler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Profiler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{385bc729-58fa-49d3-8609-0a33b280e111}</ProjectGuid>
-    <RootNamespace>CtrlMiscUtils</RootNamespace>
+    <ProjectGuid>{75cde69c-f1e7-4ce0-b20d-65e9c5a9dbe1}</ProjectGuid>
+    <RootNamespace>SunDialProfiler</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

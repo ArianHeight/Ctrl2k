@@ -18,12 +18,19 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EngineClock.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EngineClock.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{460d5759-6f03-499d-8a8f-dbc87004e0b4}</ProjectGuid>
-    <RootNamespace>Material</RootNamespace>
+    <ProjectGuid>{eb11a967-dab8-4de2-894c-f5014e62137e}</ProjectGuid>
+    <RootNamespace>CtrlProfiler</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>SunDial</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -75,26 +82,26 @@
     <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
-    <IncludePath>$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
-    <IncludePath>$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,21 +159,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Include\Textures.h" />
-    <ClInclude Include="Include\TexturesInternal.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\Material\TexturesInternal.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="AssetsCore.vcxproj">
-      <Project>{fc37a3e4-4fbe-4088-9de8-2318c80e81e6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="GreatBath.vcxproj">
-      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

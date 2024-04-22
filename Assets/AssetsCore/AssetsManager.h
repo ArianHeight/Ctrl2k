@@ -8,9 +8,9 @@
 #include <future>
 #include <atomic>
 #include <thread>
-#include "../../Core/Include/ThreadSafeVector.h"
-#include "../../Core/Include/ThreadSafeQueue.h"
-#include "Logger.h"
+#include "../../Core/CtrlMiscUtils/ThreadSafeVector.h"
+#include "../../Core/CtrlMiscUtils/ThreadSafeQueue.h"
+#include "../../Core/GreatBath/Logger.h"
 
 #define LOAD_FAIL_VALUE 0
 typedef int AssetId;

@@ -15,11 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\ThreadSafeVector.h">
+    <ClInclude Include="Textures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\ThreadSafeQueue.h">
+    <ClInclude Include="TexturesInternal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TexturesInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

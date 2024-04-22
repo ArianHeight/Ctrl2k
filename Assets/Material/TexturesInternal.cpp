@@ -3,17 +3,19 @@
 #include <unordered_map>
 #include <mutex>
 
+// TODO Make this use dependencies outside ofthe main project folder(ie put deps in sln folder instead?)
+
 #define GLEW_STATIC
-#include "../Include/GL/glew.h"
+#include "../../Ctrl 2K Engine 0.0.1/Include/GL/glew.h"
 #ifdef _WIN32
-#include "../Include/GL/wglew.h"
+#include "../../Ctrl 2K Engine 0.0.1/Include/GL/wglew.h"
 #endif
 
-#include "SOIL.h"
+#include "../../Ctrl 2K Engine 0.0.1/Dependencies/SOIL for opengl 3.0 context and above/src/SOIL.h"
 
-#include "Logger.h"
+#include "../../../Core/GreatBath/Logger.h"
 #include "TexturesInternal.h"
-#include "AssetsManager.h"
+#include "../AssetsCore/AssetsManager.h"
 
 static_assert(std::is_same<AssetId, TexId>::value, "TexId is not the same type as AssetId");
 
