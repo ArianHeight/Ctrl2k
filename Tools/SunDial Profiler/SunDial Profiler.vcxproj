@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Profiler.h" />
+    <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\SunDial Profiler\Profiler.cpp" />
+    <ClCompile Include="Profiler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
