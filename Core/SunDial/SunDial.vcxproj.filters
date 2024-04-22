@@ -11,12 +11,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\EngineClock.h">
+    <ClInclude Include="EngineClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\SunDial\EngineClock.cpp">
+    <ClCompile Include="EngineClock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\EngineClock.h" />
+    <ClInclude Include="EngineClock.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\SunDial\EngineClock.cpp" />
+    <ClCompile Include="EngineClock.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
