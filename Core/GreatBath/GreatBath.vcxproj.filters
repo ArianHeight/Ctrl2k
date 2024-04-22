@@ -11,18 +11,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\FilePathProcessing.h">
+    <ClInclude Include="FilePathProcessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Logger.h">
+    <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\GreatBath\Logger.cpp">
+    <ClCompile Include="FilePathProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GreatBath\FilePathProcessing.cpp">
+    <ClCompile Include="Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

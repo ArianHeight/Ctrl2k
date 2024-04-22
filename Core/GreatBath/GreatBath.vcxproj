@@ -18,6 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FilePathProcessing.h" />
+    <ClInclude Include="Logger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FilePathProcessing.cpp" />
+    <ClCompile Include="Logger.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -88,13 +96,13 @@
     <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\$(Platform)\Bin\</IntDir>
-    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,14 +160,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Include\FilePathProcessing.h" />
-    <ClInclude Include="Include\Logger.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\GreatBath\FilePathProcessing.cpp" />
-    <ClCompile Include="Source\GreatBath\Logger.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

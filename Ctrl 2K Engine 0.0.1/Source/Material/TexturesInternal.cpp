@@ -11,7 +11,7 @@
 
 #include "SOIL.h"
 
-#include "Logger.h"
+#include "../../../Core/GreatBath/Logger.h"
 #include "TexturesInternal.h"
 #include "AssetsManager.h"
 

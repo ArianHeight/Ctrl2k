@@ -10,7 +10,7 @@
 #include <thread>
 #include "../../Core/CtrlMiscUtils/ThreadSafeVector.h"
 #include "../../Core/CtrlMiscUtils/ThreadSafeQueue.h"
-#include "Logger.h"
+#include "../../Core/GreatBath/Logger.h"
 
 #define LOAD_FAIL_VALUE 0
 typedef int AssetId;

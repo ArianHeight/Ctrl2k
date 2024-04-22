@@ -19,11 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="GreatBath.vcxproj">
-      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Include\Profiler.h" />
   </ItemGroup>
   <ItemGroup>
