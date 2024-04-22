@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <mutex>
 
+// TODO Make this use dependencies outside ofthe main project folder(ie put deps in sln folder instead?)
+
 #define GLEW_STATIC
 #include "../../Ctrl 2K Engine 0.0.1/Include/GL/glew.h"
 #ifdef _WIN32
