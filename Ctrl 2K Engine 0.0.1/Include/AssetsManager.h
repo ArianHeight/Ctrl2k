@@ -8,8 +8,8 @@
 #include <future>
 #include <atomic>
 #include <thread>
-#include "../../Core/Include/ThreadSafeVector.h"
-#include "../../Core/Include/ThreadSafeQueue.h"
+#include "../../Core/CtrlMiscUtils/ThreadSafeVector.h"
+#include "../../Core/CtrlMiscUtils/ThreadSafeQueue.h"
 #include "Logger.h"
 
 #define LOAD_FAIL_VALUE 0
