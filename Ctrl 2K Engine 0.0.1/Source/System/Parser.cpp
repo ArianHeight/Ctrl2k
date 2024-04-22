@@ -1046,8 +1046,8 @@ int Parser::parseConfigs(std::string &filePath, std::string &name, std::vector<i
 	std::string commandTarget = "";
 
 	std::string targetSector;
-	bool fullscreen;
-	bool vsync;
+	bool fullscreen = false;
+	bool vsync = false;
 	int windowWidth;
 	int windowHeight;
 	glm::ivec2 resolution;

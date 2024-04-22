@@ -153,12 +153,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Include\AssetsManager.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Core\CtrlMiscUtils.vcxproj">
       <Project>{385bc729-58fa-49d3-8609-0a33b280e111}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AssetsManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
