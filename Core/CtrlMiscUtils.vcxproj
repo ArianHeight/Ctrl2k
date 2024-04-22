@@ -18,11 +18,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\ThreadSafeQueue.h" />
+    <ClInclude Include="Include\ThreadSafeVector.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{fc37a3e4-4fbe-4088-9de8-2318c80e81e6}</ProjectGuid>
-    <RootNamespace>AssetsCore</RootNamespace>
+    <ProjectGuid>{385bc729-58fa-49d3-8609-0a33b280e111}</ProjectGuid>
+    <RootNamespace>CtrlMiscUtils</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -152,14 +156,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Include\AssetsManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Core\CtrlMiscUtils.vcxproj">
-      <Project>{385bc729-58fa-49d3-8609-0a33b280e111}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
