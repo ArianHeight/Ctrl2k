@@ -6,14 +6,21 @@
 #include <vector>
 #include <assert.h>
 
-#include "Logger.h"
-#include "EngineClock.h"
-#include "Profiler.h"
+#include "Core/GreatBath/Logger.h"
+#include "Core/SunDial/EngineClock.h"
+#include "Tools/SunDial Profiler/Profiler.h"
 
 #define CTRLTEST_ERROR std::this_thread::sleep_for(std::chrono::seconds(1)); assert(false);
+//#define LOG_TEST
+//#define LOGGER_TEST
+//#define LIFE_TIME_CLOCK_TEST
+//#define ENGINE_BASE_CLOCK_TEST
+//#define CTRL_ENGINE_CLOCK_TEST
+//#define PROFILER_TEST
 
 void logTest()
 {
+#ifdef LOG_TEST
 	int firstRep = rand() % 6 + 5; //5-10 reps
 	int secondRep = rand() % 11 + 5; //5 - 15 reps
 	for(int i = 0; i < firstRep; i++)
@@ -29,10 +36,12 @@ void logTest()
 		LOG_MSG_PUSH("This is a log test msg #" + std::to_string(i));
 		std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 490 + 10)); //wait between 10ms and 0.5s
 	}
+#endif // LOG_TEST
 }
 
 void runLoggerTest()
 {
+#ifdef LOGGER_TEST
 	srand(time(NULL));
 
 	std::vector<std::thread> testers;
@@ -67,6 +76,7 @@ void runLoggerTest()
 
 	LOG_WARNING_PUSH("If program has printed anything at this point, logger tests successful");
 	LOG_FLUSH();
+#endif // LOGGER_TEST
 }
 
 template <typename T>
@@ -79,6 +89,7 @@ bool IsAccurate(const T& value, const T& comparator, const T& deltaEpsilon, cons
 
 void LifeTimeClockTest(const double percentAccuracy)
 {
+#ifdef LIFE_TIME_CLOCK_TEST
 	long time = 0;
 	long testTime = 1e9;
 	long deltaAccuracy = 50000;
@@ -134,10 +145,12 @@ void LifeTimeClockTest(const double percentAccuracy)
 
 	LOG_MSG_PUSH("LifeTimeClock tests successful");
 	LOG_FLUSH();
+#endif // LIFE_TIME_CLOCK_TEST
 }
 
 void runEngineBaseClockTest(double accuracy)
 {
+#ifdef ENGINE_BASE_CLOCK_TEST
 	const int fps = 10;
 	const long usElapsed = 1e6 / fps;
 	EngineBaseClock c;
@@ -153,10 +166,12 @@ void runEngineBaseClockTest(double accuracy)
 	}
 	LOG_MSG_PUSH("EngineBaseClock " + std::to_string(fps) + "fps test successful with accuracy " + std::to_string(accuracy));
 	LOG_FLUSH();
+#endif // ENGINE_BASE_CLOCK_TEST
 }
 
 void runCtrlEngineClockTest(double accuracy)
 {
+#ifdef CTRL_ENGINE_CLOCK_TEST
 	const int fps = 10;
 	const long usElapsed = 1e6 / fps;
 	CtrlEngineClock c;
@@ -192,10 +207,12 @@ void runCtrlEngineClockTest(double accuracy)
 
 	LOG_MSG_PUSH("CtrlEngineClock " + std::to_string(fps) + "fps test successful with accuracy " + std::to_string(accuracy));
 	LOG_FLUSH();
+#endif // CTRL_ENGINE_CLOCK_TEST
 }
 
 void runProfilerTest()
 {
+#ifdef PROFILER_TEST
 	const int sleepTimeSeconds = 1;
 	{
 		TOOLS_PROFILE();
@@ -231,6 +248,7 @@ void runProfilerTest()
 
 	LOG_MSG_PUSH("If all 12 msgs are pushed above, then profiler tests successful");
 	LOG_FLUSH();
+#endif // PROFILER_TEST
 }
 
 int main()

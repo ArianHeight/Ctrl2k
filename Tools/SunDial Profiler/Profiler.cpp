@@ -1,4 +1,4 @@
-#include "../../../Core/GreatBath/Logger.h"
+#include "Core/GreatBath/Logger.h"
 #include "Profiler.h"
 
 SunDialProfiler::SunDialProfiler(

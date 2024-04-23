@@ -24,8 +24,8 @@ private:
 	std::string current_map_name{""};
 
 public:
-	bool writeSave(std::string &filePath = std::string("../../Resource/Data/0001.sav"));
-	bool readSave(std::string &filePath = std::string("../../Resource/Data/0001.sav"));
+	bool writeSave(std::string &filePath = std::string("../Resource/Data/0001.sav"));
+	bool readSave(std::string &filePath = std::string("../Resource/Data/0001.sav"));
 };
 
 /*
