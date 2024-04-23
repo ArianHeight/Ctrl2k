@@ -13,7 +13,7 @@
 
 #include "../../Ctrl 2K Engine 0.0.1/Dependencies/SOIL for opengl 3.0 context and above/src/SOIL.h"
 
-#include "../../../Core/GreatBath/Logger.h"
+#include "../../Core/GreatBath/Logger.h"
 #include "TexturesInternal.h"
 #include "../AssetsCore/AssetsManager.h"
 
