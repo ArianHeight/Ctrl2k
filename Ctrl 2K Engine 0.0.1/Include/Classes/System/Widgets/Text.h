@@ -9,7 +9,7 @@ Text object which appears on screen
 class Text : public Widget
 {
 public:
-	Text(std::string name, FontManager &fonts, glm::vec2 &spxw, int index, std::string &str, glm::vec2 topLeft, glm::vec2 bottomRight, int orientation = 0, float size = 64.0f, glm::vec4 colour = glm::vec4(1.0f));
+	Text(const std::string& name, FontManager &fonts, glm::vec2 &spxw, int index, const std::string &str, const glm::vec2& topLeft, const glm::vec2& bottomRight, int orientation = 0, float size = 64.0f, const glm::vec4& colour = glm::vec4(1.0f));
 	virtual ~Text();
 
 private:

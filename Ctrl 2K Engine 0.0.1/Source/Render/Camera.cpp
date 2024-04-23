@@ -50,7 +50,7 @@ void Camera::adjustSnap(float acceleration)
 }
 
 //changes the min and max camera positional values
-void Camera::changeClampValues(glm::vec2 &minCam, glm::vec2 &maxCam)
+void Camera::changeClampValues(const glm::vec2 &minCam, const glm::vec2 &maxCam)
 {
 	this->m_minClamp = minCam;
 	this->m_maxClamp = maxCam;

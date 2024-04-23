@@ -12,7 +12,7 @@ public:
 	NonMovingShooter(
 		int shotTexture,
 		double &time,
-		std::string &name,
+		const std::string &name,
 		PhysObject *hitbox,
 		glm::vec2 position = glm::vec2(0.0f),
 		EntityType type = AGGRESSIVE,

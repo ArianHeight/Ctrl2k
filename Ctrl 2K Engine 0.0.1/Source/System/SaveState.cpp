@@ -12,7 +12,7 @@ SaveState::SaveState()
 	//cstr
 }
 
-bool SaveState::readSave(std::string &filePath)
+bool SaveState::readSave(const std::string &filePath)
 {
 	std::ifstream save(filePath.c_str()); //opens file for reading
 
@@ -37,7 +37,7 @@ bool SaveState::readSave(std::string &filePath)
 	return true;
 }
 
-bool SaveState::writeSave(std::string &filePath)
+bool SaveState::writeSave(const std::string &filePath)
 {
 	std::ofstream save(filePath.c_str(), std::ios::trunc); //opens file for writing while truncating the data
 

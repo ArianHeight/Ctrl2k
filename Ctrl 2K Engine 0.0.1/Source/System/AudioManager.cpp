@@ -17,7 +17,7 @@ void AudioManager::updateSize()
 	this->m_bufferSize = this->m_buffer.size();
 }
 
-int AudioManager::search(std::string &name)
+int AudioManager::search(const std::string &name)
 {
 	for (int count = 0; count < this->m_bufferSize; count++)
 	{
@@ -39,7 +39,7 @@ void AudioManager::load(int index)
 	}
 }
 
-void AudioManager::load(std::string &name)
+void AudioManager::load(const std::string &name)
 {
 	this->load(this->search(name));
 }
@@ -52,7 +52,7 @@ void AudioManager::unload(int index)
 	}
 }
 
-void AudioManager::unload(std::string &name)
+void AudioManager::unload(const std::string &name)
 {
 	this->unload(this->search(name));
 }
@@ -62,11 +62,11 @@ void AudioManager::play(int index)
 	this->play(-1, index, 0);
 }
 
-void AudioManager::play(std::string &name)
+void AudioManager::play(const std::string &name)
 {
 	this->play(this->search(name));
 }
-void AudioManager::play(std::string &name, int loop)
+void AudioManager::play(const std::string &name, int loop)
 {
 	this->play(-1, this->search(name), loop);
 }
@@ -76,7 +76,7 @@ void AudioManager::play(int index, int loop)
 	this->play(-1, index, loop);
 }
 
-void AudioManager::play(int channel, std::string &name, int loop)
+void AudioManager::play(int channel, const std::string &name, int loop)
 {
 	this->play(channel, this->search(name), loop);
 }
@@ -89,7 +89,7 @@ void AudioManager::play(int channel, int index, int loop)
 	}
 }
 
-int AudioManager::addMusic(std::string &name, std::string &path)
+int AudioManager::addMusic(const std::string &name, const std::string &path)
 {
 	int index = this->search(name);
 
@@ -105,7 +105,7 @@ int AudioManager::addMusic(std::string &name, std::string &path)
 	return index;
 }
 
-int AudioManager::addSFX(std::string &name, std::string &path)
+int AudioManager::addSFX(const std::string &name, const std::string &path)
 {
 	int index = this->search(name);
 
@@ -135,7 +135,7 @@ bool AudioManager::del(int index)
 	return true;
 }
 
-bool AudioManager::del(std::string &name)
+bool AudioManager::del(const std::string &name)
 {
 	return this->del(this->search(name));
 }
@@ -148,7 +148,7 @@ std::string AudioManager::getPath(int index)
 	}
 }
 
-std::string AudioManager::getPath(std::string &name)
+std::string AudioManager::getPath(const std::string &name)
 {
 	return this->getPath(this->search(name));
 }
@@ -164,12 +164,12 @@ SoundTrack* AudioManager::data(int index)
 }
 
 //returns a pointer to the Audio object
-SoundTrack* AudioManager::data(std::string &name)
+SoundTrack* AudioManager::data(const std::string &name)
 {
 	return this->data(this->search(name));
 }
 
-bool AudioManager::getIsMusic(std::string &name)
+bool AudioManager::getIsMusic(const std::string &name)
 {
 	return this->getIsMusic(this->search(name));
 }

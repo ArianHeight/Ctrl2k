@@ -14,7 +14,7 @@ class AudioManager;
 class SFX : public SoundTrack
 {
 public:
-	SFX(std::string &name, std::string &filePath);
+	SFX(const std::string &name, const std::string &filePath);
 	~SFX();
 
 	friend class AudioManager;

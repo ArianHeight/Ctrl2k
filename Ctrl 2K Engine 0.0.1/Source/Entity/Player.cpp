@@ -8,7 +8,7 @@ bool inVectorAndRemove(T in, std::vector<T>& theList);
 Player class
 */
 
-Player::Player(double &time, std::string &name, PhysObject *hitbox, glm::vec2 position, float speedOne, float speedTwo, float speedThree) :
+Player::Player(double &time, const std::string &name, PhysObject *hitbox, glm::vec2 position, float speedOne, float speedTwo, float speedThree) :
 	Entity(time, name, hitbox, position, PLAYABLE, speedOne, speedTwo, speedThree)
 {
 	//cstr

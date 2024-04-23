@@ -260,7 +260,7 @@ Parser::Parser(Assets &gameAssets) :
 	//cstr
 }
 
-bool Parser::checkMutableType(std::vector<Token> &in)
+bool Parser::checkMutableType(const std::vector<Token> &in)
 {
 	/*
 	numbers - INT_CONSTANT, FLOATING_CONSTANT
@@ -268,7 +268,7 @@ bool Parser::checkMutableType(std::vector<Token> &in)
 	*/
 	if (in[0].getType() == INT_CONSTANT || in[0].getType() == FLOATING_CONSTANT)
 	{
-		for (Token t : in)
+		for (const Token& t : in)
 		{
 			if (t.getType() != INT_CONSTANT && t.getType() != FLOATING_CONSTANT)
 			{
@@ -279,7 +279,7 @@ bool Parser::checkMutableType(std::vector<Token> &in)
 	}
 	else if (in[0].getType() == STRING_LITERAL)
 	{
-		for (Token t : in)
+		for (const Token& t : in)
 		{
 			if (t.getType() != STRING_LITERAL)
 			{
@@ -290,7 +290,7 @@ bool Parser::checkMutableType(std::vector<Token> &in)
 	}
 	else if (in[0].getValue() == "true" || in[0].getValue() == "false")
 	{
-		for (Token t : in)
+		for (const Token& t : in)
 		{
 			if (in[0].getValue() != "true" || in[0].getValue() != "false")
 			{
@@ -411,7 +411,7 @@ void printToken(Token t)
 	std::cout << space.c_str() << std::string(" : [").c_str() << t.getValue().c_str() << ']' << '\n';
 }
 
-void Parser::parseFile(std::string &filePath)
+void Parser::parseFile(const std::string &filePath)
 {
 	this->m_file.clear();
 	this->m_commandList.clear();
@@ -419,20 +419,20 @@ void Parser::parseFile(std::string &filePath)
 	this->parse(this->m_file); //parses the file into m_commandList
 }
 
-bool Parser::splitToken(std::string &string, std::vector<std::string> &out, char delim)
+bool Parser::splitToken(const std::string &string, std::vector<std::string> &out, char delim)
 {
-	string.push_back(delim); //to get last part of string to output to vector
+	std::string newString = string + delim; //to get last part of string to output to vector
 
 	int tokenLength = 0;
 	int tokenBegin = 0;
-	int size = string.size();
+	int size = newString.size();
 	char c = 0;
 	bool delimAppeared = false;
 	bool stringFlag = false;
 
 	for (int count = 0; count < size; count++)
 	{
-		c = string[count];
+		c = newString[count];
 
 		if (c == delim && !stringFlag) //delim is hit while not in between ""
 		{
@@ -442,7 +442,7 @@ bool Parser::splitToken(std::string &string, std::vector<std::string> &out, char
 				{
 					delimAppeared = true;
 				}
-				out.push_back(string.substr(tokenBegin, tokenLength));
+				out.push_back(newString.substr(tokenBegin, tokenLength));
 				tokenLength = 0;
 			}
 		}
@@ -450,7 +450,7 @@ bool Parser::splitToken(std::string &string, std::vector<std::string> &out, char
 		{
 			if (tokenLength != 0)
 			{
-				out.push_back(string.substr(tokenBegin, tokenLength));
+				out.push_back(newString.substr(tokenBegin, tokenLength));
 				tokenLength = 0;
 			}
 
@@ -473,12 +473,10 @@ bool Parser::splitToken(std::string &string, std::vector<std::string> &out, char
 		}
 	}
 
-	string.pop_back(); //pop added delim off back
-
 	return delimAppeared;
 }
 
-void Parser::cleanPath(std::string &path, std::string &out)
+void Parser::cleanPath(const std::string &path, std::string &out)
 {
 	std::vector<std::string> bufferOne;
 	std::vector<std::string> bufferTwo;
@@ -575,7 +573,7 @@ void Parser::removeFileNameFromPath(std::string &string, std::string &out)
 	out.pop_back(); //takes out final extra /
 }
 
-int Parser::parseDotMP(std::string &filePath)
+int Parser::parseDotMP(std::string filePath)
 {
 	this->parseFile(filePath); //outputs to m_commandList
 	std::string commandTarget = "";
@@ -674,7 +672,7 @@ int Parser::parseDotMP(std::string &filePath)
 	return this->m_mapRef.create(mName, mVisName, mCollName, mDepthName, mSize, mWP);
 }
 
-int Parser::parseDotFNT(std::string &filePath)
+int Parser::parseDotFNT(std::string filePath)
 {
 	this->m_file.clear();
 	this->m_lexer.lexFile(filePath, this->m_file); //splits file into tokens
@@ -851,7 +849,7 @@ int Parser::parseDotFNT(std::string &filePath)
 	return this->m_fontRef.addFont(newFont);
 }
 
-int Parser::parseDotAnim(std::string &filePath)
+int Parser::parseDotAnim(std::string filePath)
 {
 	this->parseFile(filePath); //outputs to m_commandList
 	std::string commandTarget = "";
@@ -1040,7 +1038,7 @@ int Parser::parseDotAnim(std::string &filePath)
 	return this->m_animationRef.addAnimation(currentAnimation);
 }
 
-int Parser::parseConfigs(std::string &filePath, std::string &name, std::vector<int> &data)
+int Parser::parseConfigs(const std::string &filePath, std::string &name, std::vector<int> &data)
 {
 	this->parseFile(filePath); //outputs to m_commandList
 	std::string commandTarget = "";

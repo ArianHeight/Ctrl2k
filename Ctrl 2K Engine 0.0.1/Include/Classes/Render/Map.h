@@ -14,7 +14,7 @@ class GameObject;
 class Map : public GameObject
 {
 public:
-	Map(TextureManager &textureBuffer, std::string &name, std::string &visualName, std::string &collisionName, std::string &depthName, float size = 1.0f, glm::vec2 wp = glm::vec2(0.0f), float ar = 1.0f);
+	Map(TextureManager &textureBuffer, const std::string &name, const std::string &visualName, const std::string &collisionName, const std::string &depthName, float size = 1.0f, glm::vec2 wp = glm::vec2(0.0f), float ar = 1.0f);
 	~Map();
 
 	friend class MapManager;

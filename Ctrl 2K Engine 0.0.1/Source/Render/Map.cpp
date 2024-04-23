@@ -6,7 +6,7 @@ Map object
 
 */
 
-Map::Map(TextureManager &textureBuffer, std::string &name, std::string &visualName, std::string &collisionName, std::string &depthName, float size, glm::vec2 wp, float ar) :
+Map::Map(TextureManager &textureBuffer, const std::string &name, const std::string &visualName, const std::string &collisionName, const std::string &depthName, float size, glm::vec2 wp, float ar) :
 	textureSource(textureBuffer), m_name(name), m_wp(wp), m_sizeWP(size), m_ar(ar)
 {
 	this->m_textureNames[0] = visualName;

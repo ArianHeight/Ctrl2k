@@ -6,7 +6,7 @@ for SoundTrack class
 
 */
 
-SoundTrack::SoundTrack(std::string &name, std::string &filePath) :
+SoundTrack::SoundTrack(const std::string &name, const std::string &filePath) :
 	m_name(name), m_filePath(filePath)
 {
 	//cstr
@@ -53,12 +53,12 @@ bool SoundTrack::resumePlayingTrack()
 }
 
 //accessors
-std::string& SoundTrack::getName()
+std::string SoundTrack::getName()
 {
 	return this->m_name;
 }
 
-std::string& SoundTrack::getFilePath()
+std::string SoundTrack::getFilePath()
 {
 	return this->m_filePath;
 }

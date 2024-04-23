@@ -14,7 +14,7 @@ class AudioManager;
 class BGM : public SoundTrack
 {
 public:
-	BGM(std::string &name, std::string &filePath);
+	BGM(const std::string &name, const std::string &filePath);
 	~BGM();
 
 	friend class AudioManager;

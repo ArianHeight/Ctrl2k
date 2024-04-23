@@ -12,7 +12,7 @@ class CollisionMap
 {
 public:
 	CollisionMap(GLuint map, float *mapBigness, glm::vec2 worldPos = glm::vec2(0.0f), float size = 1.0f);
-	CollisionMap(std::string &mapPath, float *mapBigness, glm::vec2 worldPos = glm::vec2(0.0f), float size = 1.0f);
+	CollisionMap(const std::string &mapPath, float *mapBigness, glm::vec2 worldPos = glm::vec2(0.0f), float size = 1.0f);
 	~CollisionMap();
 
 private:

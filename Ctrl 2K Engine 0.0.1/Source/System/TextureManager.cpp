@@ -17,7 +17,7 @@ void TextureManager::updateSize()
 	this->m_bufferSize = this->m_buffer.size();
 }
 
-int TextureManager::search(std::string &name)
+int TextureManager::search(const std::string &name)
 {
 	for (int count = 0; count < this->m_bufferSize; count++)
 	{
@@ -41,7 +41,7 @@ void TextureManager::bind(int index)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void TextureManager::bind(std::string &name)
+void TextureManager::bind(const std::string &name)
 {
 	this->bind(this->search(name));
 }
@@ -54,7 +54,7 @@ void TextureManager::disable(int index)
 	}
 }
 
-void TextureManager::disable(std::string &name)
+void TextureManager::disable(const std::string &name)
 {
 	this->disable(this->search(name));
 }
@@ -67,12 +67,12 @@ void TextureManager::activate(int index)
 	}
 }
 
-void TextureManager::activate(std::string &name)
+void TextureManager::activate(const std::string &name)
 {
 	this->activate(this->search(name));
 }
 
-int TextureManager::create(std::string &name, std::string &path)
+int TextureManager::create(const std::string &name, const std::string &path)
 {
 	int index = this->search(name);
 
@@ -102,7 +102,7 @@ bool TextureManager::del(int index)
 	return true;
 }
 
-bool TextureManager::del(std::string &name)
+bool TextureManager::del(const std::string &name)
 {
 	return this->del(this->search(name));
 }
@@ -115,7 +115,7 @@ std::string TextureManager::getPath(int index)
 	}
 }
 
-std::string TextureManager::getPath(std::string &name)
+std::string TextureManager::getPath(const std::string &name)
 {
 	return this->getPath(this->search(name));
 }
@@ -131,7 +131,7 @@ Texture* TextureManager::data(int index)
 }
 
 //returns a pointer to the Texture object
-Texture* TextureManager::data(std::string &name)
+Texture* TextureManager::data(const std::string &name)
 {
 	return this->data(this->search(name));
 }

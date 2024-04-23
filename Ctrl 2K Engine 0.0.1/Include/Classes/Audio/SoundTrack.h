@@ -13,7 +13,7 @@ class AudioManager;
 class SoundTrack
 {
 public:
-	SoundTrack(std::string &name, std::string &filePath);
+	SoundTrack(const std::string &name, const std::string &filePath);
 	~SoundTrack();
 
 	friend class AudioManager;
@@ -36,8 +36,8 @@ public:
 	virtual bool playTrack(int channel, int loop); //inputs the target channel and amount of loops
 	virtual bool resumePlayingTrack();
 
-	std::string& getName();
-	std::string& getFilePath();
+	std::string getName();
+	std::string getFilePath();
 	bool getLoadState();
 	bool getIsMusic();
 };
