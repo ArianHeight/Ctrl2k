@@ -28,7 +28,7 @@ private:
 	void updateSize();
 
 public:
-	int search(std::string &name);
+	int search(const std::string &name);
 	std::string getName(int index);
 	void changeLoadState();
 	/*std::thread::id getActiveThread(); //returns thread id
@@ -42,59 +42,59 @@ public:
 	void updateMapsLoaded();
 
 	//adds teleport area
-	void addConnector(std::string &mapOne, std::string &mapTwo, FourPoints &mapOnePoints, FourPoints &mapTwoPoints);
-	void addConnector(int mapOneIndex, int mapTwoIndex, FourPoints &mapOnePoints, FourPoints &mapTwoPoints);
+	void addConnector(const std::string &mapOne, const std::string &mapTwo, const FourPoints &mapOnePoints, const FourPoints &mapTwoPoints);
+	void addConnector(int mapOneIndex, int mapTwoIndex, const FourPoints &mapOnePoints, const FourPoints &mapTwoPoints);
 
 	//useMap which has preloading and loading screen stuff
-	void useMap(std::string &name);
+	void useMap(const std::string &name);
 	void useMap(int index);
 
 	//binds map texture
-	void bindStandard(std::string &name);
+	void bindStandard(const std::string &name);
 	void bindStandard(int index);
 
 	//unloads a map
-	void unload(std::string &name);
+	void unload(const std::string &name);
 	void unload(int index);
 
 	//loads a map into video memory and RAM
-	void load(std::string &name);
+	void load(const std::string &name);
 	void load(int index);
 
 	//makes new map given info
-	int create(std::string &name, std::string &visualName, std::string &collisionName, std::string &depthName, float size = 1.0f, glm::vec2 wp = glm::vec2(0.0f), float ar = 1.0f);
+	int create(const std::string &name, const std::string &visualName, const std::string &collisionName, const std::string &depthName, float size = 1.0f, glm::vec2 wp = glm::vec2(0.0f), float ar = 1.0f);
 
 	//deletes map
-	bool del(std::string &name);
+	bool del(const std::string &name);
 	bool del(int index);
 
 	//ptr to map
-	Map* data(std::string &name);
+	Map* data(const std::string &name);
 	Map* data(int index);
 
 	//reserves amount of space in buffer
-	void reserve(std::string &name);
+	void reserve(const std::string &name);
 	void reserve(int size);
 
 	//number of maps
-	float getSize(std::string &name);
+	float getSize(const std::string &name);
 	float getSize(int index);
 
 	//aspect ratio of map
-	float getAR(std::string &name);
+	float getAR(const std::string &name);
 	float getAR(int index);
 
-	glm::vec2 getWP(std::string &name); //gets world position of map
+	glm::vec2 getWP(const std::string &name); //gets world position of map
 	glm::vec2 getWP(int index); //gets world position of map
 
 	//camera limit world positions of the 4 edges
-	glm::vec2 getMinCamWP(std::string &name);
+	glm::vec2 getMinCamWP(const std::string &name);
 	glm::vec2 getMinCamWP(int index);
-	glm::vec2 getMaxCamWP(std::string &name);
+	glm::vec2 getMaxCamWP(const std::string &name);
 	glm::vec2 getMaxCamWP(int index);
 
 	//teleport areas which lead to other maps
-	FourPoints getTPArea(std::string &name, std::string &map);
+	FourPoints getTPArea(const std::string &name, const std::string &map);
 	FourPoints getTPArea(int index, int mapIndex);
 
 	//texture index for Rendering texture

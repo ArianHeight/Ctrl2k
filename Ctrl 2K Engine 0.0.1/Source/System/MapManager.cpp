@@ -18,7 +18,7 @@ void MapManager::updateSize()
 	this->m_bufferSize = this->m_buffer.size();
 }
 
-int MapManager::search(std::string &name)
+int MapManager::search(const std::string &name)
 {
 	for (int count = 0; count < this->m_bufferSize; count++)
 	{
@@ -131,7 +131,7 @@ void MapManager::updateMapsLoaded()
 }
 
 //give in order tl, tr, bl, br
-void MapManager::addConnector(int mapOneIndex, int mapTwoIndex, FourPoints &mapOnePoints, FourPoints &mapTwoPoints)
+void MapManager::addConnector(int mapOneIndex, int mapTwoIndex, const FourPoints &mapOnePoints, const FourPoints &mapTwoPoints)
 {
 	//map 1
 	this->m_buffer[mapOneIndex]->m_adjMaps.push_back(this->m_buffer[mapTwoIndex]->m_name); //add name
@@ -143,7 +143,7 @@ void MapManager::addConnector(int mapOneIndex, int mapTwoIndex, FourPoints &mapO
 }
 
 //give in order tl, tr, bl, br. connectors are the teleport squares that moves the player between maps
-void MapManager::addConnector(std::string &mapOne, std::string &mapTwo, FourPoints &mapOnePoints, FourPoints &mapTwoPoints)
+void MapManager::addConnector(const std::string &mapOne, const std::string &mapTwo, const FourPoints &mapOnePoints, const FourPoints &mapTwoPoints)
 {
 	this->addConnector(this->search(mapOne), this->search(mapTwo), mapOnePoints, mapTwoPoints);
 }
@@ -198,7 +198,7 @@ void MapManager::useMap(int index)
 	}
 }
 
-void MapManager::useMap(std::string &name)
+void MapManager::useMap(const std::string &name)
 {
 	this->useMap(this->search(name));
 }
@@ -211,7 +211,7 @@ void MapManager::bindStandard(int index)
 	}
 }
 
-void MapManager::bindStandard(std::string &name)
+void MapManager::bindStandard(const std::string &name)
 {
 	this->bindStandard(this->search(name));
 }
@@ -224,7 +224,7 @@ void MapManager::unload(int index)
 	}
 }
 
-void MapManager::unload(std::string &name)
+void MapManager::unload(const std::string &name)
 {
 	this->unload(this->search(name));
 }
@@ -237,12 +237,12 @@ void MapManager::load(int index)
 	}
 }
 
-void MapManager::load(std::string &name)
+void MapManager::load(const std::string &name)
 {
 	this->load(this->search(name));
 }
 
-int MapManager::create(std::string &name, std::string &visualName, std::string &collisionName, std::string &depthName, float size, glm::vec2 wp, float ar)
+int MapManager::create(const std::string &name, const std::string &visualName, const std::string &collisionName, const std::string &depthName, float size, glm::vec2 wp, float ar)
 {
 	int index = this->search(name);
 
@@ -273,7 +273,7 @@ bool MapManager::del(int index)
 	return true;
 }
 
-bool MapManager::del(std::string &name)
+bool MapManager::del(const std::string &name)
 {
 	return this->del(this->search(name));
 }
@@ -287,7 +287,7 @@ Map* MapManager::data(int index)
 	return this->m_buffer[0];
 }
 
-Map* MapManager::data(std::string &name)
+Map* MapManager::data(const std::string &name)
 {
 	return this->data(this->search(name));
 }
@@ -300,7 +300,7 @@ void MapManager::reserve(int size)
 	}
 }
 
-void MapManager::reserve(std::string &name)
+void MapManager::reserve(const std::string &name)
 {
 	this->reserve(this->search(name));
 }
@@ -314,7 +314,7 @@ float MapManager::getSize(int index)
 	return 0.0f;
 }
 
-float MapManager::getSize(std::string &name)
+float MapManager::getSize(const std::string &name)
 {
 	return this->getSize(this->search(name));
 }
@@ -328,7 +328,7 @@ float MapManager::getAR(int index)
 	return 0.0f;
 }
 
-float MapManager::getAR(std::string &name)
+float MapManager::getAR(const std::string &name)
 {
 	return this->getAR(this->search(name));
 }
@@ -342,7 +342,7 @@ glm::vec2 MapManager::getWP(int index)
 	return glm::vec2(0.0f);
 }
 
-glm::vec2 MapManager::getWP(std::string &name)
+glm::vec2 MapManager::getWP(const std::string &name)
 {
 	return this->getWP(this->search(name));
 }
@@ -356,7 +356,7 @@ glm::vec2 MapManager::getMinCamWP(int index)
 	return glm::vec2(0.0f);
 }
 
-glm::vec2 MapManager::getMinCamWP(std::string &name)
+glm::vec2 MapManager::getMinCamWP(const std::string &name)
 {
 	return this->getMinCamWP(this->search(name));
 }
@@ -370,7 +370,7 @@ glm::vec2 MapManager::getMaxCamWP(int index)
 	return glm::vec2(0.0f);
 }
 
-glm::vec2 MapManager::getMaxCamWP(std::string &name)
+glm::vec2 MapManager::getMaxCamWP(const std::string &name)
 {
 	return this->getMaxCamWP(this->search(name));
 }
@@ -388,7 +388,7 @@ FourPoints MapManager::getTPArea(int index, int mapIndex)
 	return FourPoints{glm::vec2(0.0f), glm::vec2(0.0f) , glm::vec2(0.0f) , glm::vec2(0.0f)};
 }
 
-FourPoints MapManager::getTPArea(std::string &name, std::string &map)
+FourPoints MapManager::getTPArea(const std::string &name, const std::string &map)
 {
 	int index = this->search(name);
 	int mapIndex = 0;

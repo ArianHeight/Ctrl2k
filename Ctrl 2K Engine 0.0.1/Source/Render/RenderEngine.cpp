@@ -237,7 +237,7 @@ void RenderEngine::drawTexture(int textureIndex, const glm::vec2& pos, const glm
 	this->drawQuad();
 }
 
-void RenderEngine::drawTextureN(int textureIndex, glm::vec2& topLeft, glm::vec2& bottomRight, float depth)
+void RenderEngine::drawTextureN(int textureIndex, const glm::vec2& topLeft, const glm::vec2& bottomRight, float depth)
 {
 	Shader* s = this->getShader(std::string("textureNRendering")); //temp ptr to shader
 	TextureManager &tm = this->parentEngine.getAssets().getTM(); //temp ref to texture manager
@@ -285,7 +285,7 @@ void RenderEngine::drawAnimation(int animationIndex, double &animTime, const glm
 	this->drawQuad();
 }
 
-void RenderEngine::drawLine(glm::vec2& wp, glm::vec2& wpt, glm::vec3& colour)
+void RenderEngine::drawLine(const glm::vec2& wp, const glm::vec2& wpt, const glm::vec3& colour)
 {
 	Shader* s = this->getShader(std::string("lineRendering")); //temp ptr
 	glm::vec2 &ptw = this->getMainWindow()->getPixelToWindowRef(); //temp ref to pixel to window
@@ -303,7 +303,7 @@ void RenderEngine::drawLine(glm::vec2& wp, glm::vec2& wpt, glm::vec3& colour)
 	this->drawLine();
 }
 
-void RenderEngine::drawString(int fontIndex, std::string &string, glm::vec2 cursor, float size, glm::vec4 colour)
+void RenderEngine::drawString(int fontIndex, const std::string &string, glm::vec2 cursor, float size, const glm::vec4& colour)
 {
 	Shader* s = this->getShader(std::string("textRendering")); //temporary ptr
 	Font *selectFont = this->parentEngine.getAssets().getFM().data(fontIndex); //ptr to the font we are printing in
@@ -339,7 +339,7 @@ void RenderEngine::drawString(int fontIndex, std::string &string, glm::vec2 curs
 	}
 }
 
-void RenderEngine::drawStringInBox(int fontIndex, std::string& string, glm::vec2 cursor, float width, float size, glm::vec4 colour)
+void RenderEngine::drawStringInBox(int fontIndex, const std::string& string, glm::vec2 cursor, float width, float size, const glm::vec4& colour)
 {
 	Shader* s = this->getShader(std::string("textRendering")); //temporary ptr
 	Font *selectFont = this->parentEngine.getAssets().getFM().data(fontIndex); //ptr to the font we are printing in
@@ -395,12 +395,12 @@ updaters
 
 */
 
-void RenderEngine::addShader(Shader &shaderobj)
+void RenderEngine::addShader(const Shader& shaderobj)
 {
 	this->shaderPrograms.push_back(shaderobj);
 }
 
-void RenderEngine::useShader(std::string& name)
+void RenderEngine::useShader(const std::string& name)
 {
 	for (int i = 0; i < this->shaderPrograms.size(); i++) //iterate and look for name
 	{
@@ -672,7 +672,7 @@ GameWindow* RenderEngine::getMainWindow()
 	return &(this->mainWindow);
 }
 
-Shader* RenderEngine::getShader(std::string& name)
+Shader* RenderEngine::getShader(const std::string& name)
 {
 	for (int i = 0; i < this->shaderPrograms.size(); i++) //iterate and look for name
 	{

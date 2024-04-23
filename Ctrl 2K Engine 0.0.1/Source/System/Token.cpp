@@ -9,7 +9,7 @@ for tokens for lexing
 /*
 Base Class for Token
 */
-Token::Token(std::string &value) : m_value(value) 
+Token::Token(const std::string &value) : m_value(value) 
 {
 	//cstr	
 }
@@ -19,7 +19,12 @@ std::string& Token::getValue()
 	return this->m_value;
 }
 
-TypeOfToken Token::getType()
+const std::string& Token::getValue() const
+{
+	return this->m_value;
+}
+
+TypeOfToken Token::getType() const
 {
 	return this->m_type;
 }

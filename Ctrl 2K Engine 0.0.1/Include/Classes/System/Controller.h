@@ -35,7 +35,7 @@ protected:
 public:
 	//void changeActionDictionary(); //changes the action dictionary
 	std::vector<std::string>* queryOutput(); //returns the list of actions needed to be performed per frame
-	void changeKeyBinding(char c, std::string &str, bool held = false);
+	void changeKeyBinding(char c, const std::string &str, bool held = false);
 	void pressKey(char c);
 	void offKey(char c);
 	void pressMouseButton(char button);

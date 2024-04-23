@@ -10,7 +10,7 @@ Text object
 void drawStringInBox(int fontIndex, std::string& string, glm::dvec2 cursor, double width, float size, glm::vec4 colour);
 void drawString(int fontIndex, std::string &string, glm::dvec2 cursor, float size, glm::vec4 colour);
 
-Text::Text(std::string name, FontManager &fonts, glm::vec2 &spxw, int index, std::string &str, glm::vec2 topLeft, glm::vec2 bottomRight, int orientation, float size, glm::vec4 colour) :
+Text::Text(const std::string& name, FontManager &fonts, glm::vec2 &spxw, int index, const std::string &str, const glm::vec2& topLeft, const glm::vec2& bottomRight, int orientation, float size, const glm::vec4& colour) :
 	source(fonts), singlePxToWindow(spxw), Widget(name, topLeft, bottomRight, -1), m_fontIndex(index), 
 	m_text(str), m_textOrientation(orientation), m_textSize(size), m_colour(colour)
 {

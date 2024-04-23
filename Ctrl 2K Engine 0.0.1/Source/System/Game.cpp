@@ -25,7 +25,7 @@ Game::Game(CoreEngine &engine) :
 	this->globalActiveObjects->addChild(this->widgets); //passes ownership here
 }
 
-void Game::addObj(std::string &category, GameObject *obj)
+void Game::addObj(const std::string &category, GameObject *obj)
 {
 	obj->linkGame(this);
 	if (category == "entity")

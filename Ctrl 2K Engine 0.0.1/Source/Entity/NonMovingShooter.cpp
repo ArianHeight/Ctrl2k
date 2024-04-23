@@ -6,7 +6,7 @@ non moving turret like entities
 
 */
 
-NonMovingShooter::NonMovingShooter(int shotTexture, double &time, std::string &name, PhysObject *hitbox, glm::vec2 position, EntityType type, float speedOne, float speedTwo, float speedThree, float range, Orientation dir) :
+NonMovingShooter::NonMovingShooter(int shotTexture, double &time, const std::string &name, PhysObject *hitbox, glm::vec2 position, EntityType type, float speedOne, float speedTwo, float speedThree, float range, Orientation dir) :
 	Entity(time, name, hitbox, position, type, speedOne, speedTwo, speedThree), m_shotTexture(shotTexture), m_range(range)
 {
 	//cstr

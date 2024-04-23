@@ -108,7 +108,7 @@ bool Lexer::isPunctuator(char c, char cPeek)
 	return false; //if none of above
 }
 
-bool Lexer::isWhiteSpace(std::string &str)
+bool Lexer::isWhiteSpace(const std::string &str)
 {
 	for (char c : str)
 	{
@@ -121,7 +121,7 @@ bool Lexer::isWhiteSpace(std::string &str)
 	return true;
 }
 
-bool Lexer::isFloat(std::string &str)
+bool Lexer::isFloat(const std::string &str)
 {
 	char c; //for iteration
 	short periods = 0; //amount of times period appears
@@ -150,7 +150,7 @@ bool Lexer::isFloat(std::string &str)
 	return false;
 }
 
-bool Lexer::isInt(std::string &str)
+bool Lexer::isInt(const std::string &str)
 {
 	char c; //for iteration
 
@@ -174,7 +174,7 @@ bool Lexer::isInt(std::string &str)
 	return true;
 }
 
-bool Lexer::isSymbol(std::string &str)
+bool Lexer::isSymbol(const std::string &str)
 {
 	char c; //for iteration
 
@@ -240,7 +240,7 @@ void Lexer::test(std::string str)
 	std::cout << "Symbol: " << this->isSymbol(str) << '\n';
 }
 
-void Lexer::lexFile(std::string &filePath, std::vector<Token> &output, bool ignoreEOL, bool ignoreWhiteSpace) //takes string input, lexes it and adds to the output vector lexed tokens
+void Lexer::lexFile(const std::string &filePath, std::vector<Token> &output, bool ignoreEOL, bool ignoreWhiteSpace) //takes string input, lexes it and adds to the output vector lexed tokens
 {
 	std::ifstream file(filePath.c_str());
 	char c = ' '; //for input
@@ -320,7 +320,7 @@ void Lexer::lexFile(std::string &filePath, std::vector<Token> &output, bool igno
 				else if (c != '\t' && !this->isPunctuator(c) && c != '\"') //adds to token if not seperating element
 				{
 					this->m_currentSemiToken += c;
-					if (cPeek == ' ' || (this->isPunctuator(cPeek) && !this->isFloat(std::string(this->m_currentSemiToken + cPeek))) || c == '\"' || cPeek == '\t')
+					if (cPeek == ' ' || (this->isPunctuator(cPeek) && !this->isFloat(this->m_currentSemiToken + cPeek)) || c == '\"' || cPeek == '\t')
 					{
 						this->tokenize(output); //tokenizes the currentToken
 					}

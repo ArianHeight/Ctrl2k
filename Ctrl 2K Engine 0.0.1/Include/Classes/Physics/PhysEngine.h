@@ -48,11 +48,11 @@ public:
 	void spawnSparkParticleFx(PhysEvent *e, bool invert = false); //false spawns at hbOne, true spawns at hbTwo
 
 	//collision detection
-	bool aabbCheck(glm::vec2 &wpOne, FourPoints *wpTwo); //checks point against hitbox
+	bool aabbCheck(const glm::vec2 &wpOne, FourPoints *wpTwo); //checks point against hitbox
 	bool aabbCheck(FourPoints *wpOne, FourPoints *wpTwo); //checks aabb hitbox against hitbox
 
-	bool circleCheck(glm::vec2 &point, glm::vec2& origin, float radius); //checks point against circle hitbox
-	bool circleCheck(glm::vec2 &originOne, float radiusOne, glm::vec2& originTwo, float radiusTwo); //checks circle against circle hitbox
+	bool circleCheck(const glm::vec2 &point, const glm::vec2& origin, float radius); //checks point against circle hitbox
+	bool circleCheck(const glm::vec2 &originOne, float radiusOne, const glm::vec2& originTwo, float radiusTwo); //checks circle against circle hitbox
 
 	bool lineIntersectCheck(DamageArea *lineOne, DamageArea *lineTwo);
 	bool collision(Component *one, Component *two);

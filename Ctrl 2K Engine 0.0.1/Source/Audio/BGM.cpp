@@ -6,7 +6,7 @@ BackGround Music class
 
 */
 
-BGM::BGM(std::string &name, std::string &filePath) :
+BGM::BGM(const std::string &name, const std::string &filePath) :
 	SoundTrack(name, filePath)
 {
 	//cstr

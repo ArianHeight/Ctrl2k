@@ -9,11 +9,12 @@ Tokens for the Lexer and Parser
 class Token
 {
 public:
-	Token(std::string &value);
+	Token(const std::string &value);
 	~Token();
 
 	std::string &getValue();
-	TypeOfToken getType();
+	const std::string& getValue() const;
+	TypeOfToken getType() const;
 	void addNegative();
 
 protected:

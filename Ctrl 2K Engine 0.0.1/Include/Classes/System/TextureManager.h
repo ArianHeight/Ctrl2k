@@ -20,26 +20,26 @@ private:
 	void updateSize();
 
 public:
-	int search(std::string &name);
+	int search(const std::string &name);
 
-	void bind(std::string &name);
+	void bind(const std::string &name);
 	void bind(int index);
 
-	void disable(std::string &name);
+	void disable(const std::string &name);
 	void disable(int index);
 
-	void activate(std::string &name);
+	void activate(const std::string &name);
 	void activate(int index);
 
-	int create(std::string &name, std::string &path);
+	int create(const std::string &name, const std::string &path);
 
-	bool del(std::string &name);
+	bool del(const std::string &name);
 	bool del(int index);
 
-	std::string getPath(std::string &name);
+	std::string getPath(const std::string &name);
 	std::string getPath(int index);
 
-	Texture* data(std::string &name);
+	Texture* data(const std::string &name);
 	Texture* data(int index);
 
 	void reserve(int size);

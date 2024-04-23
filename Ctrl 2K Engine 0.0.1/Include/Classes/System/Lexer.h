@@ -35,10 +35,10 @@ private:
 	bool isAlphabet(char c);
 	bool isNumber(char c);
 	bool isPunctuator(char c, char cPeek); //runs through 2-character operators
-	bool isWhiteSpace(std::string &str); //check if whole string is whitespace
-	bool isFloat(std::string &str);
-	bool isInt(std::string &str);
-	bool isSymbol(std::string &str);
+	bool isWhiteSpace(const std::string &str); //check if whole string is whitespace
+	bool isFloat(const std::string &str);
+	bool isInt(const std::string &str);
+	bool isSymbol(const std::string &str);
 
 	void lexIntSubstr(std::vector<Token> &output); //reads through a semi token and judges if its an int or floating point
 	void lexIdSubstr(std::vector<Token> &output); //reads through a semi token and judges if its an valid identifier or not
@@ -46,7 +46,7 @@ private:
 
 public:
 	void test(std::string str);
-	void lexFile(std::string &filePath, std::vector<Token> &output, bool ignoreEOL = true, bool ignoreWhiteSpace = true); //takes string input, lexes it and adds to the output vector lexed tokens
+	void lexFile(const std::string &filePath, std::vector<Token> &output, bool ignoreEOL = true, bool ignoreWhiteSpace = true); //takes string input, lexes it and adds to the output vector lexed tokens
 };
 
 /*

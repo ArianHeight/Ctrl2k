@@ -58,7 +58,7 @@ std::vector<std::string>* Controller::queryOutput()
 	return &(this->m_actionsToPerform);
 }
 
-void Controller::changeKeyBinding(char c, std::string& str, bool held)
+void Controller::changeKeyBinding(char c, const std::string& str, bool held)
 {
 	if (held)
 	{

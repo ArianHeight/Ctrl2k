@@ -54,7 +54,7 @@ CollisionMap::CollisionMap(GLuint map, float *mapBigness, glm::vec2 worldPos, fl
 	this->m_worldToPixel = glm::vec2((float)(this->m_width - 1.0f) / (this->m_corners->tr.x - this->m_corners->tl.x), (this->m_height - 1.0f) / (this->m_corners->tl.y - this->m_corners->bl.y));
 }
 
-CollisionMap::CollisionMap(std::string &mapPath, float *mapBigness, glm::vec2 worldPos, float size) :
+CollisionMap::CollisionMap(const std::string &mapPath, float *mapBigness, glm::vec2 worldPos, float size) :
 	mapSize(mapBigness), m_worldPos(worldPos), m_size(size)
 {
 	GLubyte *depth = SOIL_load_image(mapPath.c_str(), &this->m_width, &this->m_height, 0, SOIL_LOAD_RGBA); //loads depth map into a 1D array

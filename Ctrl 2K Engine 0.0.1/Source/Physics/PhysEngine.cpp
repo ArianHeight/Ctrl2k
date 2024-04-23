@@ -353,7 +353,7 @@ void PhysEngine::entityEntityResponse(PhysEvent *e)
 }
 */
 //quick axis-aligned bounding box check with a point
-bool PhysEngine::aabbCheck(glm::vec2 &wpOne, FourPoints *wpTwo)
+bool PhysEngine::aabbCheck(const glm::vec2 &wpOne, FourPoints *wpTwo)
 {
 	if (wpOne.x > wpTwo->tl.x && wpOne.x < wpTwo->tr.x)
 	{
@@ -379,7 +379,7 @@ bool PhysEngine::aabbCheck(FourPoints *wpOne, FourPoints *wpTwo)
 }
 
 //quick circle check
-bool PhysEngine::circleCheck(glm::vec2 &point, glm::vec2& origin, float radius)
+bool PhysEngine::circleCheck(const glm::vec2 &point, const glm::vec2& origin, float radius)
 {
 	float distanceX = origin.x - point.x;
 	float distanceY = origin.y - point.y;
@@ -394,7 +394,7 @@ bool PhysEngine::circleCheck(glm::vec2 &point, glm::vec2& origin, float radius)
 }
 
 //quick circle check
-bool PhysEngine::circleCheck(glm::vec2 &originOne, float radiusOne, glm::vec2& originTwo, float radiusTwo)
+bool PhysEngine::circleCheck(const glm::vec2 &originOne, float radiusOne, const glm::vec2& originTwo, float radiusTwo)
 {
 	return this->circleCheck(originOne, originTwo, radiusOne + radiusTwo); //does the same thing
 }

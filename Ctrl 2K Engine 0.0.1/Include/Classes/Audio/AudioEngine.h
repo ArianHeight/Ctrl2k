@@ -28,11 +28,11 @@ public:
 	void setChannels(int num); //sets the amount of mixing channels
 
 	//music will assume override!!
-	void playSoundTrack(std::string &name);
+	void playSoundTrack(const std::string &name);
 	void playSoundTrack(int index);
-	void playSoundTrack(std::string &name, int loop);
+	void playSoundTrack(const std::string &name, int loop);
 	void playSoundTrack(int index, int loop);
-	void playSoundTrack(int channel, std::string &name, int loop);
+	void playSoundTrack(int channel, const std::string &name, int loop);
 	void playSoundTrack(int channel, int index, int loop);
 };
 

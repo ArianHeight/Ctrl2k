@@ -52,7 +52,7 @@ void AudioEngine::setChannels(int num)
 	this->update(); //change the status of m_channels
 }
 
-void AudioEngine::playSoundTrack(std::string &name)
+void AudioEngine::playSoundTrack(const std::string &name)
 {
 	this->playSoundTrack(-1, name, 0);
 }
@@ -62,7 +62,7 @@ void AudioEngine::playSoundTrack(int index)
 	this->playSoundTrack(-1, index, 0);
 }
 
-void AudioEngine::playSoundTrack(std::string &name, int loop)
+void AudioEngine::playSoundTrack(const std::string &name, int loop)
 {
 	this->playSoundTrack(-1, name, loop);
 }
@@ -72,7 +72,7 @@ void AudioEngine::playSoundTrack(int index, int loop)
 	this->playSoundTrack(-1, index, loop);
 }
 
-void AudioEngine::playSoundTrack(int channel, std::string &name, int loop)
+void AudioEngine::playSoundTrack(int channel, const std::string &name, int loop)
 {
 	if (this->m_soundtracks.getIsMusic(name)) //runs if track is music
 	{

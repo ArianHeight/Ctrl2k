@@ -6,7 +6,7 @@ Sound Effect class
 
 */
 
-SFX::SFX(std::string &name, std::string &filePath) :
+SFX::SFX(const std::string &name, const std::string &filePath) :
 	SoundTrack(name, filePath)
 {
 	//cstr

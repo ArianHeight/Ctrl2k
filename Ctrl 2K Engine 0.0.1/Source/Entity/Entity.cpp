@@ -49,7 +49,7 @@ glm::vec2 orientationToVecTwo(Orientation dir)
 	return glm::vec2(0.0f);
 }
 
-Entity::Entity(double &time, std::string &name, PhysObject *hitbox, glm::vec2 position, EntityType type, float speedOne, float speedTwo, float speedThree) :
+Entity::Entity(double &time, const std::string &name, PhysObject *hitbox, glm::vec2 position, EntityType type, float speedOne, float speedTwo, float speedThree) :
 	m_name(name), m_timeRef(time), m_type(type)
 {
 	//adds components

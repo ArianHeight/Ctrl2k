@@ -28,7 +28,7 @@ private:
 	std::vector<GameEvent> globalEventsQueue; //list of events happening globally
 
 public:
-	void addObj(std::string &category, GameObject* obj); //adds gameobject to list. entity or playArea for first arg
+	void addObj(const std::string &category, GameObject* obj); //adds gameobject to list. entity or playArea for first arg
 	void render(); //calls render on every gameObject
 	void update(); //calls update on every gameObject
 	void getAllPOs(std::vector<Component*> &output); //puts all physicsobjects into the output buffer

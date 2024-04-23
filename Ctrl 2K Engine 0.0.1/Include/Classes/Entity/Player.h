@@ -9,7 +9,7 @@ class Player : public Entity
 public:
 	Player(
 		double &time,
-		std::string &name,
+		const std::string &name,
 		PhysObject *hitbox,
 		glm::vec2 position = glm::vec2(0.0f),
 		float speedOne = 4.0f,

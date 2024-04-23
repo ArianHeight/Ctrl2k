@@ -39,7 +39,7 @@ public:
 	void mainPhrase(); //main updater
 	void updateWindowDimensions();
 	void adjustSnap(float acceleration); //changes m_acceleration
-	void changeClampValues(glm::vec2 &minCam, glm::vec2 &maxCam);
+	void changeClampValues(const glm::vec2 &minCam, const glm::vec2 &maxCam);
 	void setTarget(GameObject *obj); //sets the camera to be centered on a game object
 
 	std::string getName();

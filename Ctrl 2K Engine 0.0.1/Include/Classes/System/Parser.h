@@ -160,21 +160,22 @@ private:
 	std::vector<Command*> m_commandList;
 
 	void parse(std::vector<Token> &in);
-	void parseFile(std::string &filePath);
+	void parseFile(const std::string &filePath);
 
-	bool splitToken(std::string &string, std::vector<std::string> &out, char delim = ' '); //splits string into tokens, defaulting with delimiter ' '
-	void cleanPath(std::string &path, std::string &out); //cleans file path
+	// TODO splitToken needs optimizing
+	bool splitToken(const std::string &string, std::vector<std::string> &out, char delim = ' '); //splits string into tokens, defaulting with delimiter ' '
+	void cleanPath(const std::string &path, std::string &out); //cleans file path
 	void checkMapName(std::string &proposedName); //checks map name against map manager
 	void checkTextureName(std::string &proposedName); //checks texture name against texture manager
 	void removeFileNameFromPath(std::string &string, std::string &out); //removes the file name from the end of a file path
 public:
-	bool checkMutableType(std::vector<Token> &in);
+	bool checkMutableType(const std::vector<Token> &in);
 
-	int parseDotMP(std::string &filePath);
+	int parseDotMP(std::string filePath);
 	//bool parseDotGame(std::string &filePath);
-	int parseDotFNT(std::string &filePath);
-	int parseDotAnim(std::string &filePath);
-	int parseConfigs(std::string &filePath, std::string &name = std::string(""), std::vector<int> &data = std::vector<int>());
+	int parseDotFNT(std::string filePath);
+	int parseDotAnim(std::string filePath);
+	int parseConfigs(const std::string &filePath, std::string &name, std::vector<int> &data);
 };
 
 /*
