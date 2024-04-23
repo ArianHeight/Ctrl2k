@@ -101,6 +101,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +114,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +129,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,6 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,17 +157,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\CtrlTest.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Ctrl 2K Engine 0.0.1\GreatBath.vcxproj">
-      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Ctrl 2K Engine 0.0.1\SunDial Profiler.vcxproj">
-      <Project>{75cde69c-f1e7-4ce0-b20d-65e9c5a9dbe1}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Ctrl 2K Engine 0.0.1\SunDial.vcxproj">
-      <Project>{eb11a967-dab8-4de2-894c-f5014e62137e}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
