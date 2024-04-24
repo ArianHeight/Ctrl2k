@@ -16,12 +16,9 @@
 # Build results
 **/[Bb]in/
 **/[Oo]ut/
-**/[Dd]ebug/*d.lib
-**/[Dd]ebug/*d.exp
-**/[Dd]ebug/*d.exe
-**/[Rr]elease/*.lib
-**/[Rr]elease/*.exp
-**/[Rr]elease/*.exe
+*.lib
+*.exp
+*.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
