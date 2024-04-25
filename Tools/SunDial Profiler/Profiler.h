@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 #include "Core/GreatBath/FilePathProcessing.h"
-
+#ifdef HAS
 class SunDialProfiler
 {
 private:
@@ -33,3 +33,4 @@ public:
 #define TOOLS_HP_MULTIPROFILE_LOG(profiler_name, msg) auto profiler_name = SunDialProfiler(true, __FILE__, __LINE__, __FUNCTION__, msg)
 //use when you need to give custome profiler names to have multiple profiles happening in the same scope
 #define TOOLS_HP_MULTIPROFILE(profiler_name) auto profiler_name = SunDialProfiler(true, __FILE__, __LINE__, __FUNCTION__)
+#endif

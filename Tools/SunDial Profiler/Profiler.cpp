@@ -1,6 +1,6 @@
 #include "Core/GreatBath/Logger.h"
 #include "Profiler.h"
-
+#ifdef HAS
 SunDialProfiler::SunDialProfiler(
 	bool highPrecision, 
 	const FilePath& file, 
@@ -32,3 +32,4 @@ SunDialProfiler::~SunDialProfiler()
 
 	SafeLog_ImmediatePushMessage(LogType::LOGTYPE_PROFILE, m_file, m_line, m_msg);
 }
+#endif

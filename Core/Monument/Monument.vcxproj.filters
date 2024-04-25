@@ -15,30 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="assert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vecmath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="basicmath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lerpmath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="quatmath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matmath.h">
+    <ClInclude Include="Monument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Petra.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Monument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

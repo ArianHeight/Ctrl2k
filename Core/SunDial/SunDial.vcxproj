@@ -28,7 +28,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{eb11a967-dab8-4de2-894c-f5014e62137e}</ProjectGuid>
-    <RootNamespace>CtrlProfiler</RootNamespace>
+    <RootNamespace>SunDial</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>SunDial</ProjectName>
   </PropertyGroup>

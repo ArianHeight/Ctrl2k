@@ -1,6 +1,6 @@
 #pragma once
 #include "FilePathProcessing.h"
-
+#ifdef HAS
 //uncomment to use full file path
 #define LOG_USE_FILENAME 1
 
@@ -36,3 +36,4 @@ void SafeLog_PushAllPendingMessages();
 #define LOG_WARNING_PUSH(log) SafeLog_ImmediatePushMessage(LogType::LOGTYPE_WARNING, __FILE__, __LINE__, log)
 #define LOG_MSG_PUSH(log) SafeLog_ImmediatePushMessage(LogType::LOGTYPE_NONE, __FILE__, __LINE__, log)
 #define LOG_PUSH(type, log) SafeLog_ImmediatePushMessage(type, __FILE__, __LINE__, log)
+#endif

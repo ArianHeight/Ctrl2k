@@ -7,7 +7,7 @@
 #include <assert.h>
 
 #include "Logger.h"
-
+#ifdef HAS
 static const std::string LogMsgPrefix[LogType::LOGTYPE_SIZE]
 {
 	"", 
@@ -148,3 +148,4 @@ void SafeLog_PushAllPendingMessages()
 	
 	Log_PushAllPendingMessages();
 }
+#endif
