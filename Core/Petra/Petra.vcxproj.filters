@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="rqm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vecmath.h">
@@ -38,7 +38,7 @@
     <ClCompile Include="Petra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="rqm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

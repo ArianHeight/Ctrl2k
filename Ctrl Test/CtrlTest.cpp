@@ -19,7 +19,6 @@
 //#define ENGINE_BASE_CLOCK_TEST
 //#define CTRL_ENGINE_CLOCK_TEST
 //#define PROFILER_TEST
-//#define MUTE_FILEPATH_TEST_COUT
 
 void logTest()
 {
@@ -262,6 +261,7 @@ int main()
 	runCtrlEngineClockTest(0.2);
 	runProfilerTest();
 	runFilePathTests();
+	runMathTests();
 
 	return 0;
 }

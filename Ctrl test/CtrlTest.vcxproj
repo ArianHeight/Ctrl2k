@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="CtrlTest.cpp" />
     <ClCompile Include="GreatBathTests.cpp" />
+    <ClCompile Include="PetraTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\GreatBath\GreatBath.vcxproj">
