@@ -6,6 +6,8 @@
 #include <vector>
 #include <assert.h>
 
+#include "tests.h"
+
 #include "Core/GreatBath/Logger.h"
 #include "Core/SunDial/EngineClock.h"
 #include "Tools/SunDial Profiler/Profiler.h"
@@ -17,6 +19,7 @@
 //#define ENGINE_BASE_CLOCK_TEST
 //#define CTRL_ENGINE_CLOCK_TEST
 //#define PROFILER_TEST
+//#define MUTE_FILEPATH_TEST_COUT
 
 void logTest()
 {
@@ -258,6 +261,7 @@ int main()
 	runEngineBaseClockTest(0.2);
 	runCtrlEngineClockTest(0.2);
 	runProfilerTest();
+	runFilePathTests();
 
 	return 0;
 }

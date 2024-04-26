@@ -30,6 +30,9 @@
     <ProjectReference Include="..\Monument\Monument.vcxproj">
       <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Petra\Petra.vcxproj">
+      <Project>{15ad7afd-0ddb-4b7c-823f-3b54cf4d41af}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

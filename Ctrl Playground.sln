@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ctrl Playground", "Ctrl Pla
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Monument", "Core\Monument\Monument.vcxproj", "{F769839C-583C-4BD8-99F4-4A19382E2DDD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CtrlMiscUtils", "Core\CtrlMiscUtils\CtrlMiscUtils.vcxproj", "{385BC729-58FA-49D3-8609-0A33B280E111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{F769839C-583C-4BD8-99F4-4A19382E2DDD}.Release|x64.Build.0 = Release|x64
 		{F769839C-583C-4BD8-99F4-4A19382E2DDD}.Release|x86.ActiveCfg = Release|Win32
 		{F769839C-583C-4BD8-99F4-4A19382E2DDD}.Release|x86.Build.0 = Release|Win32
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Debug|x64.ActiveCfg = Debug|x64
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Debug|x64.Build.0 = Debug|x64
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Debug|x86.ActiveCfg = Debug|Win32
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Debug|x86.Build.0 = Debug|Win32
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Release|x64.ActiveCfg = Release|x64
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Release|x64.Build.0 = Release|x64
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Release|x86.ActiveCfg = Release|Win32
+		{385BC729-58FA-49D3-8609-0A33B280E111}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +101,7 @@ Global
 		{EB11A967-DAB8-4DE2-894C-F5014E62137E} = {9195EE2C-80D2-44E4-8B7F-BDA29544780B}
 		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1} = {394EB5CA-5D00-4573-A6FF-97C979310C58}
 		{F769839C-583C-4BD8-99F4-4A19382E2DDD} = {9195EE2C-80D2-44E4-8B7F-BDA29544780B}
+		{385BC729-58FA-49D3-8609-0A33B280E111} = {9195EE2C-80D2-44E4-8B7F-BDA29544780B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6DDFDF4A-2092-4AAE-9196-38FF189B5401}

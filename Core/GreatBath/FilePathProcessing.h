@@ -2,6 +2,8 @@
 #include <ostream>
 #include <string>
 
+#include "Core/Monument/basictypes.h"
+
 namespace gbt
 {
 typedef std::string FileExt;
@@ -18,41 +20,40 @@ constexpr const char* FOLDER_DELIMITERS = "/\\";
 class FilePath
 {
 public:
-    FilePath() = default;
+    FilePath() : m_path(""), m_nameStartPos(0), m_nameEndPos(0), m_extStartPos(0) {}
     FilePath(std::string&& pathstring);
     FilePath(const std::string& pathstring);
-    FilePath(FilePath&& newPath) noexcept;
-    FilePath(const FilePath& oldPath);
+    FilePath(c_string c_str);
     
     FilePath& operator=(const std::string& pathstring); // copy
     FilePath& operator=(std::string&& pathstring) noexcept; // move
-    FilePath& operator=(const FilePath& other); // copy
-    FilePath& operator=(FilePath&& other) noexcept; // move
+    FilePath& operator=(c_string c_str); // copy
 
     bool isEmpty() const { return m_path.empty(); }
 
     const std::string& path() const { return m_path; }
-    const std::string_view& folderPathView() const { return m_folderPath; }
-    const std::string_view& fileNameView() const { return m_fileName; }
-    const std::string_view& fileNameNoExtView() const { return m_fileNameNoExt; }
-    const std::string_view& fileExtView() const { return m_fileExt; }
-    FolderPath folderPath() const { return std::string(m_folderPath); }
-    FileName fileName() const { return std::string(m_fileName); }
-    FileNameNoExt fileNameNoExt() const { return std::string(m_fileNameNoExt); }
-    FileExt fileExt() const { return std::string(m_fileExt); }
+
+    // use views if possible, but the data can go out of scope for these
+    const std::string_view folderPathView() const { return { m_path.data(), m_nameStartPos }; }
+    const std::string_view fileNameView() const { return { &(m_path[m_nameStartPos]), m_path.length() - m_nameStartPos }; }
+    const std::string_view fileNameNoExtView() const { return { &(m_path[m_nameStartPos]), m_nameEndPos - m_nameStartPos }; }
+    const std::string_view fileExtView() const { return { &(m_path[m_extStartPos]), m_path.length() - m_extStartPos }; }
+
+    // copied strings
+    FolderPath folderPath() const { return m_path.substr(0, m_nameStartPos); }
+    FileName fileName() const { return m_path.substr(m_nameStartPos); }
+    FileNameNoExt fileNameNoExt() const { return m_path.substr(m_nameStartPos, m_nameEndPos - m_nameStartPos); }
+    FileExt fileExt() const { return m_path.substr(m_extStartPos); }
 
 private:
     void copy(const std::string& pathstring);
     void move(std::string&& pathstring);
-    void copy(const FilePath& other);
-    void move(FilePath&& other);
-    void generateViews();
+    void generatePos();
 
     std::string m_path;
-    std::string_view m_folderPath;
-    std::string_view m_fileName;
-    std::string_view m_fileNameNoExt;
-    std::string_view m_fileExt;
+    size_t m_nameStartPos;
+    size_t m_nameEndPos;
+    size_t m_extStartPos;
 };
 inline std::ostream& operator<<(std::ostream& os, const FilePath& path) { os << path.path(); return os; }
 }
