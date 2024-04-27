@@ -72,6 +72,8 @@ union vec2_base
 	vec2_base<T>& operator*=(const T& val) { x *= val; y *= val; return *this; }
 	vec2_base<T>& operator/=(const T& val) { x /= val; y /= val; return *this; }
 
+	inline T& operator[](size_t idx) { return data[idx]; }
+	inline const T& operator[](size_t idx) const { return data[idx]; }
 	bool operator==(const vec2_base<T>& other) { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y); }
 };
 template <typename T>
@@ -139,6 +141,8 @@ union vec3_base
 	vec3_base<T>& operator*=(const T& val) { x *= val; y *= val; z *= val; return *this; }
 	vec3_base<T>& operator/=(const T& val) { x /= val; y /= val; z /= val; return *this; }
 
+	inline T& operator[](size_t idx) { return data[idx]; }
+	inline const T& operator[](size_t idx) const { return data[idx]; }
 	bool operator==(const vec3_base<T>& other) { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y) && epsilon_equals(z, other.z); }
 };
 template <typename T>
@@ -214,6 +218,8 @@ union vec4_base
 	vec4_base<T>& operator*=(const T& val) { x *= val; y *= val; z *= val; w *= val; return *this; }
 	vec4_base<T>& operator/=(const T& val) { x /= val; y /= val; z /= val; w /= val; return *this; }
 
+	inline T& operator[](size_t idx) { return data[idx]; }
+	inline const T& operator[](size_t idx) const { return data[idx]; }
 	bool operator==(const vec4_base<T>& other)
 	{
 		return epsilon_equals(x, other.x) && epsilon_equals(y, other.y) && epsilon_equals(z, other.z) && epsilon_equals(w, other.w);
@@ -249,6 +255,13 @@ template <typename T>
 T dot(const vec3_base<T>& op1, const vec3_base<T>& op2) { return op1.x * op2.x + op1.y * op2.y + op1.z * op2.z; }
 template <typename T>
 T dot(const vec4_base<T>& op1, const vec4_base<T>& op2) { return op1.x * op2.x + op1.y * op2.y + op1.z * op2.z + op1.w * op2.w; }
+template <typename T>
+void cross_in_place(const vec3_base<T>& op1, const vec3_base<T>& op2, vec3_base<T>& out)
+{
+	out.x = op1.y * op2.z - op1.z * op2.y;
+	out.y = op1.z * op2.x - op1.x * op2.z;
+	out.z = op1.x * op2.y - op1.y * op2.x;
+};
 template <typename T>
 vec3_base<T> cross(const vec3_base<T>& op1, const vec3_base<T>& op2)
 {

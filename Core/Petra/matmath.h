@@ -27,7 +27,7 @@ union mat22_base
     struct { vec2_base<T> x; vec2_base<T> y; };
     struct { vec2_base<T> row0; vec2_base<T> row1; };
     struct { T xx; T xy; T yx; T yy; };
-    T data[2][2]; // C++ is row major
+    vec2_base<T> data[2]; // C++ is row major
     T flat_data[4];
 
     mat22_base() {}
@@ -126,6 +126,8 @@ union mat22_base
     mat22_base<T>& operator*=(const T& val) { row0 *= val; row1 *= val; return *this; }
     mat22_base<T>& operator/=(const T& val) { row0 /= val; row1 /= val; return *this; }
 
+    inline vec2_base<T>& operator[](size_t idx) { return data[idx]; }
+    inline const vec2_base<T>& operator[](size_t idx) const { return data[idx]; }
     bool operator==(const mat22_base<T>& other) { return row0 == other.row0 && row1 == other.row1; }
 };
 template <typename T>
@@ -201,7 +203,7 @@ union mat33_base
     struct { vec3_base<T> x; vec3_base<T> y; vec3_base<T> z; };
     struct { vec3_base<T> row0; vec3_base<T> row1; vec3_base<T> row2; };
     struct { T xx; T xy; T xz; T yx; T yy; T yz; T zx; T zy; T zz; };
-    T data[3][3]; // C++ is row major
+    vec3_base<T> data[3]; // C++ is row major
     T flat_data[9];
 
     mat33_base() {}
@@ -317,6 +319,8 @@ union mat33_base
     mat33_base<T>& operator*=(const T& val) { row0 *= val; row1 *= val; row2 *= val; return *this; }
     mat33_base<T>& operator/=(const T& val) { row0 /= val; row1 /= val; row2 /= val; return *this; }
 
+    inline vec3_base<T>& operator[](size_t idx) { return data[idx]; }
+    inline const vec3_base<T>& operator[](size_t idx) const { return data[idx]; }
     bool operator==(const mat33_base<T>& other) { return row0 == other.row0 && row1 == other.row1 && row2 == other.row2; }
 };
 template <typename T>
@@ -441,7 +445,7 @@ union mat44_base
     struct { vec4_base<T> x; vec4_base<T> y; vec4_base<T> z; vec4_base<T> w; };
     struct { vec4_base<T> row0; vec4_base<T> row1; vec4_base<T> row2; vec4_base<T> row3; };
     struct { T xx; T xy; T xz; T xw; T yx; T yy; T yz; T yw; T zx; T zy; T zz; T zw; T wx; T wy; T wz; T ww; };
-    T data[4][4]; // C++ is row major
+    vec4_base<T> data[4]; // C++ is row major
     T flat_data[16];
 
     mat44_base() {}
@@ -613,6 +617,8 @@ union mat44_base
     mat44_base<T>& operator*=(const T& val) { row0 *= val; row1 *= val; row2 *= val; row3 *= val; return *this; }
     mat44_base<T>& operator/=(const T& val) { row0 /= val; row1 /= val; row2 /= val; row3 /= val; return *this; }
 
+    inline vec4_base<T>& operator[](size_t idx) { return data[idx]; }
+    inline const vec4_base<T>& operator[](size_t idx) const { return data[idx]; }
     bool operator==(const mat44_base<T>& other) { return row0 == other.row0 && row1 == other.row1 && row2 == other.row2 && row3 == other.row3; }
 };
 template <typename T>

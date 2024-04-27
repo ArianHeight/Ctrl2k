@@ -29,6 +29,15 @@ struct VecTestInputs
 	float v2mag;
 	float v12mag;
 	float v21mag;
+	float v12Dot;
+	float scalar;
+	VecT v1ScalarSum;
+	VecT v1ScalarDiff; // scalar - v1
+	VecT scalarV1Diff; // v1 - scalar
+	VecT v1ScalarProd;
+	VecT v1ScalarDiv; // v1 / scalar
+	VecT v12Min;
+	VecT v12Max;
 };
 
 // modifies the inputs
@@ -46,7 +55,18 @@ void testVecGeneral(const VecTestInputs<VecT>& in)
 	assert(in.v1 / in.v2 == in.v12Div);
 	assert(in.v2 / in.v1 == in.v21Div);
 
-	// TODO test *= ops
+	VecT temp = in.v1;
+	temp += in.v2;
+	assert(temp == in.vSum);
+	temp = in.v1;
+	temp -= in.v2;
+	assert(temp == -in.v12Diff);
+	temp = in.v1;
+	temp *= in.v2;
+	assert(temp == in.vHProd);
+	temp = in.v1;
+	temp /= in.v2;
+	assert(temp == in.v12Div);
 
 	assert(in.v1.magnitude_squared() == in.v1magsqr);
 	assert(in.v2.magnitude_squared() == in.v2magsqr);
@@ -67,7 +87,35 @@ void testVecGeneral(const VecTestInputs<VecT>& in)
 	assert(v12 == in.v12norm);
 	assert(v21 == in.v21norm);
 
-	// TODO test modify by scalar
+	assert(rqm::dot(in.v1, in.v2) == in.v12Dot);
+
+	assert(in.v1 + in.scalar == in.v1ScalarSum);
+	assert(in.scalar + in.v1 == in.v1ScalarSum);
+	assert(in.scalar - in.v1 == in.v1ScalarDiff);
+	assert(in.v1 - in.scalar == in.scalarV1Diff);
+	assert(in.v1 * in.scalar == in.v1ScalarProd);
+	assert(in.scalar * in.v1 == in.v1ScalarProd);
+	assert(in.v1 / in.scalar == in.v1ScalarDiv);
+
+	temp = in.v1;
+	temp += in.scalar;
+	assert(temp == in.v1ScalarSum);
+	temp = in.v1;
+	temp -= in.scalar;
+	assert(temp == in.scalarV1Diff);
+	temp = in.v1;
+	temp *= in.scalar;
+	assert(temp == in.v1ScalarProd);
+	temp = in.v1;
+	temp /= in.scalar;
+	assert(temp == in.v1ScalarDiv);
+
+	assert(rqm::min(in.v1, in.v2) == in.v12Min);
+	assert(rqm::max(in.v1, in.v2) == in.v12Max);
+	rqm::min_in_place(in.v1, in.v2, temp);
+	assert(temp == in.v12Min);
+	rqm::max_in_place(in.v1, in.v2, temp);
+	assert(temp == in.v12Max);
 
 	std::cout << std::endl;
 }
@@ -89,17 +137,17 @@ void testVec2()
 	float v21m = rqm::sqrt(v21ms);
 	VecTestInputs<rqm::vec2> args =
 	{
-		{ 5.0f, 3.1f },
-		{ 2.5f, -0.2f },
-		{ 5.0f + 2.5f, 3.1f - 0.2f },
-		{ -2.5f, -3.3f },
-		{ 5.0f * 2.5f, -0.2f * 3.1f },
-		{ 2.0f, 3.1f / -0.2f },
-		{ 0.5f, -0.2f / 3.1f },
-		{ 5.0f / v1m, 3.1f / v1m },
-		{ 2.5f / v2m, -0.2f / v2m },
-		{ -2.5f / v12m, -3.3f / v12m },
-		{ 2.5f / v21m, 3.3f / v21m },
+		{ 5.0f, 3.1f }, // v1
+		{ 2.5f, -0.2f }, // v2
+		{ 5.0f + 2.5f, 3.1f - 0.2f }, // sum
+		{ -2.5f, -3.3f }, // v2 - v1
+		{ 5.0f * 2.5f, -0.2f * 3.1f }, // prod
+		{ 2.0f, 3.1f / -0.2f }, // v1 / v2
+		{ 0.5f, -0.2f / 3.1f }, // v2 / v1
+		{ 5.0f / v1m, 3.1f / v1m }, // v1norm
+		{ 2.5f / v2m, -0.2f / v2m }, // v2norm
+		{ -2.5f / v12m, -3.3f / v12m }, // (v2 - v1)norm
+		{ 2.5f / v21m, 3.3f / v21m }, // (v1 - v2)norm
 		v1ms,
 		v2ms,
 		v12ms,
@@ -107,65 +155,132 @@ void testVec2()
 		v1m,
 		v2m,
 		v12m,
-		v21m
+		v21m,
+		5.0f * 2.5f + (3.1f * -0.2f), // dot
+		6.3f, // scalar
+		{ 5.0f + 6.3f, 3.1f + 6.3f }, // scalar + v1
+		{ 6.3f - 5.0f, 6.3f - 3.1f }, // scalar - v1
+		{ 5.0f - 6.3f, 3.1f - 6.3f }, // v1 - scalar
+		{ 5.0f * 6.3f, 3.1f * 6.3f }, // scalar * v1
+		{ 5.0f / 6.3f, 3.1f / 6.3f }, // v1 / scalar
+		{ 2.5f, -0.2f }, // min(v1, v2)
+		{ 5.0f, 3.1f } // max(v1, v2)
 	};
 	testVecGeneral(args);
+	rqm::vec2 indTest = { 1.0f, 2.0f };
+	assert(indTest[0] == indTest.x);
+	assert(indTest[1] == indTest.y);
 }
 
 void testVec3()
 {
-	rqm::vec3 a = { 1.0, 2.0, 3.0 };
-	std::cout << a << '\n';
-	rqm::vec3 b = rqm::vec3(3, 4, 5);
-	std::cout << a + b << ' ' << a - b << ' ' << a * b << ' ' << a / b << '\n';
-	std::cout << b.magnitude() << ' ';
-	float bdist = b.normalize();
-	std::cout << bdist << ' ' << b << '\n';
-	std::cout << b + 2 << ' ' << b - 2 << ' ' << b * 2 << ' ' << b / 2 << '\n';
-	b += 1;
-	std::cout << b << ' ';
-	b -= 1;
-	std::cout << b << ' ';
-	b *= 2;
-	std::cout << b << ' ';
-	b /= 2;
-	std::cout << b << '\n';
-	rqm::vec2 c = rqm::vec2(1, 3);
-	rqm::vec3 d = rqm::vec3(c, 2);
-	rqm::vec3 e = c;
-	std::cout << c << ' ' << d << ' ' << e << '\n';
-	rqm::vec3 f = { 1, 3, 4 };
-	f.xy = { 2, 5 };
-	std::cout << f << ' ' << d.xy + f.xy << ' ';
-	f.xy *= 2;
-	std::cout << f << "\n\n";
+	float v1x = -1.5f; float v1y = 7.4f; float v1z = -5.6f;
+	float v2x = 3.2f; float v2y = 4.7f; float v2z = -0.3f;
+	float v12dx = v2x - v1x; float v12dy = v2y - v1y; float v12dz = v2z - v1z;
+	float v1ms = v1x * v1x + v1y * v1y + v1z * v1z;
+	float v2ms = v2x * v2x + v2y * v2y + v2z * v2z;
+	float v12ms = v12dx * v12dx + v12dy * v12dy + v12dz * v12dz;
+	float v21ms = (-v12dx * -v12dx) + (-v12dy * -v12dy) + (-v12dz * -v12dz);
+	float v1m = rqm::sqrt(v1ms);
+	float v2m = rqm::sqrt(v2ms);
+	float v12m = rqm::sqrt(v12ms);
+	float v21m = rqm::sqrt(v21ms);
+	float s = -12.3f;
+	VecTestInputs<rqm::vec3> args =
+	{
+		{ v1x, v1y, v1z }, // v1
+		{ v2x, v2y, v2z }, // v2
+		{ v1x + v2x, v1y + v2y, v1z + v2z }, // sum
+		{ v12dx, v12dy, v12dz }, // v2 - v1
+		{ v1x * v2x, v1y * v2y, v1z * v2z }, // prod
+		{ v1x / v2x, v1y / v2y, v1z / v2z }, // v1 / v2
+		{ v2x / v1x, v2y / v1y, v2z / v1z }, // v2 / v1
+		{ v1x / v1m, v1y / v1m, v1z / v1m }, // v1norm
+		{ v2x / v2m, v2y / v2m, v2z / v2m }, // v2norm
+		{ v12dx / v12m, v12dy / v12m, v12dz / v12m }, // (v2 - v1)norm
+		{ -v12dx / v21m, -v12dy / v21m, -v12dz / v21m }, // (v1 - v2)norm
+		v1ms,
+		v2ms,
+		v12ms,
+		v21ms,
+		v1m,
+		v2m,
+		v12m,
+		v21m,
+		v1x * v2x + v1y * v2y + v1z * v2z, // dot
+		s, // scalar
+		{ v1x + s, v1y + s, v1z + s }, // scalar + v1
+		{ s - v1x, s - v1y, s - v1z }, // scalar - v1
+		{ v1x - s, v1y - s, v1z - s }, // v1 - scalar
+		{ s * v1x, s * v1y, s * v1z }, // scalar * v1
+		{ v1x / s, v1y / s, v1z / s }, // v1 / scalar
+		{ std::min(v1x, v2x), std::min(v1y, v2y), std::min(v1z, v2z) }, // min(v1, v2)
+		{ std::max(v1x, v2x), std::max(v1y, v2y), std::max(v1z, v2z) } // max(v1, v2)
+	};
+	testVecGeneral(args);
+	rqm::vec3 indTest = { 1.0f, 2.0f, 3.0f };
+	assert(indTest[0] == indTest.x);
+	assert(indTest[1] == indTest.y);
+	assert(indTest[2] == indTest.z);
+	rqm::vec3 c1 = { 1.0f, 2.0f, 3.0f };
+	rqm::vec3 c2 = { 3.0f, 4.0f, 5.0f };
+	assert(rqm::cross(c1, c2) == rqm::vec3(-2.0f, 4.0f, -2.0f));
+	rqm::vec3 c3;
+	rqm::cross_in_place(c2, c1, c3);
+	assert(c3 == -rqm::cross(c1, c2));
 }
 
 void testVec4()
 {
-	rqm::vec4 a = { 1.0, 2.0, 3.0, 4.0 };
-	std::cout << a << '\n';
-	rqm::vec4 b = rqm::vec4(3, 4, 5, 6);
-	std::cout << a + b << ' ' << a - b << ' ' << a * b << ' ' << a / b << '\n';
-	std::cout << b.magnitude() << ' ';
-	float bdist = b.normalize();
-	std::cout << bdist << ' ' << b << '\n';
-	std::cout << b + 2 << ' ' << b - 2 << ' ' << b * 2 << ' ' << b / 2 << '\n';
-	b += 1;
-	std::cout << b << ' ';
-	b -= 1;
-	std::cout << b << ' ';
-	b *= 2;
-	std::cout << b << ' ';
-	b /= 2;
-	std::cout << b << '\n';
-	rqm::vec3 c = rqm::vec3(1, 3, 5);
-	rqm::vec4 d = rqm::vec4(c, 2);
-	rqm::vec4 e = c;
-	std::cout << c << ' ' << d << ' ' << e << '\n';
-	rqm::vec4 f = rqm::vec4(1);
-	f.xyz.normalize_no_return();
-	std::cout << f << "\n\n";
+	float v1x = -4.7f; float v1y = 5.6f; float v1z = -3.2f; float v1w = 10.5f;
+	float v2x = 9.8f; float v2y = 2.3f; float v2z = -0.8f; float v2w = -7.8f;
+	float v12dx = v2x - v1x; float v12dy = v2y - v1y; float v12dz = v2z - v1z; float v12dw = v2w - v1w;
+	float v1ms = v1x * v1x + v1y * v1y + v1z * v1z + v1w * v1w;
+	float v2ms = v2x * v2x + v2y * v2y + v2z * v2z + v2w * v2w;
+	float v12ms = v12dx * v12dx + v12dy * v12dy + v12dz * v12dz + v12dw * v12dw;
+	float v21ms = (-v12dx * -v12dx) + (-v12dy * -v12dy) + (-v12dz * -v12dz) + (-v12dw * -v12dw);
+	float v1m = rqm::sqrt(v1ms);
+	float v2m = rqm::sqrt(v2ms);
+	float v12m = rqm::sqrt(v12ms);
+	float v21m = rqm::sqrt(v21ms);
+	float s = -4.6f;
+	VecTestInputs<rqm::vec4> args =
+	{
+		{ v1x, v1y, v1z, v1w }, // v1
+		{ v2x, v2y, v2z, v2w }, // v2
+		{ v1x + v2x, v1y + v2y, v1z + v2z, v1w + v2w }, // sum
+		{ v12dx, v12dy, v12dz, v12dw }, // v2 - v1
+		{ v1x * v2x, v1y * v2y, v1z * v2z, v1w * v2w }, // prod
+		{ v1x / v2x, v1y / v2y, v1z / v2z, v1w / v2w }, // v1 / v2
+		{ v2x / v1x, v2y / v1y, v2z / v1z, v2w / v1w }, // v2 / v1
+		{ v1x / v1m, v1y / v1m, v1z / v1m, v1w / v1m }, // v1norm
+		{ v2x / v2m, v2y / v2m, v2z / v2m, v2w / v2m }, // v2norm
+		{ v12dx / v12m, v12dy / v12m, v12dz / v12m, v12dw / v12m }, // (v2 - v1)norm
+		{ -v12dx / v21m, -v12dy / v21m, -v12dz / v21m, -v12dw / v21m }, // (v1 - v2)norm
+		v1ms,
+		v2ms,
+		v12ms,
+		v21ms,
+		v1m,
+		v2m,
+		v12m,
+		v21m,
+		v1x * v2x + v1y * v2y + v1z * v2z + v1w * v2w, // dot
+		s, // scalar
+		{ v1x + s, v1y + s, v1z + s, v1w + s }, // scalar + v1
+		{ s - v1x, s - v1y, s - v1z, s - v1w }, // scalar - v1
+		{ v1x - s, v1y - s, v1z - s, v1w - s }, // v1 - scalar
+		{ s * v1x, s * v1y, s * v1z, s * v1w }, // scalar * v1
+		{ v1x / s, v1y / s, v1z / s, v1w / s }, // v1 / scalar
+		{ std::min(v1x, v2x), std::min(v1y, v2y), std::min(v1z, v2z), std::min(v1w, v2w) }, // min(v1, v2)
+		{ std::max(v1x, v2x), std::max(v1y, v2y), std::max(v1z, v2z), std::max(v1w, v2w) } // max(v1, v2)
+	};
+	testVecGeneral(args);
+	rqm::vec4 indTest = { 1.0f, 2.0f, 3.0f, 4.0f };
+	assert(indTest[0] == indTest.x);
+	assert(indTest[1] == indTest.y);
+	assert(indTest[2] == indTest.z);
+	assert(indTest[3] == indTest.w);
 }
 
 void testVecOps()
@@ -308,77 +423,6 @@ void testMat3()
 	std::cout << '\n';
 
 	std::cout << "\n";
-}
-
-std::string det(const std::string& a, const std::string& b, const std::string& c, const std::string& d)
-{
-	return a + " * " + d + " - " + b + " * " + c;
-}
-
-/*
-a, b, c,
-d, e, f,
-g, h, i
-
-*/
-std::string det(const std::string& a, const std::string& b, const std::string& c, const std::string& d, const std::string& e, const std::string& f, const std::string& g, const std::string& h, const std::string& i, std::unordered_map<std::string, int>& map, int& ind, bool useSub = false)
-{
-	std::string p[3];
-	p[0] = det(e, f, h, i);
-	p[1] = det(d, f, g, i);
-	p[2] = det(d, e, g, h);
-
-	for(int i = 0; i < 3; i++)
-	{
-		if(map.find(p[i]) == map.end())
-		{
-			map[p[i]] = ind;
-			ind++;
-		}
-	}
-
-	if(useSub)
-	{
-		return a + " * p" + std::to_string(map[p[0]]) + " - " + b + " * p" + std::to_string(map[p[1]]) + " + " + c + " * p" + std::to_string(map[p[2]]);
-	}
-	return a + "(" + p[0] + ") - " + b + "(" + p[1] + ") + " + c + "(" + p[2] + ")";
-}
-
-void helpInvert()
-{
-	std::unordered_map<std::string, int> pmap;
-	int index = 0;
-	//std::cout << det("xx", "xy", "yx", "yy") << '\n';
-	//std::cout << det("xx", "xy", "xz", "yx", "yy", "yz", "zx", "zy", "zz", pmap, index);
-	std::string names[4][4] = { {"xx", "xy", "xz", "xw"}, {"yx", "yy", "yz", "yw"}, {"zx", "zy", "zz", "zw"}, {"wx", "wy", "wz", "ww"} };
-	std::vector<std::string> vars = { "A", "B", "C", "D", "E", "F","G","H","I","J","K","L","M","N","O","P" };
-	std::vector<std::string> vals;
-	for(int j = 0; j < 4; j++)
-	{
-		for(int i = 0; i < 4; i++)
-		{
-			std::vector<std::string> temp;
-			for(int x = 0; x < 4; x++)
-			{
-				for(int y = 0; y < 4; y++)
-				{
-					if(x != i && y != j)
-					{
-						temp.push_back(names[x][y]);
-					}
-				}
-			}
-			vals.push_back(det(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5], temp[6], temp[7], temp[8], pmap, index, true));
-		}
-	}
-	for(const auto& it : pmap)
-	{
-		std::cout << "p" << it.second << " = " << it.first << '\n';
-	}
-	for(int i = 0; i < 16; i++)
-	{
-		std::cout << vars[i] << " = " << vals[i] << '\n';
-	}
 }
 
 void testMat4()
