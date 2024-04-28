@@ -7,14 +7,17 @@
 #include <assert.h>
 
 #include "Logger.h"
-#ifdef HAS
-static const std::string LogMsgPrefix[LogType::LOGTYPE_SIZE]
+
+using namespace gbt;
+
+static const char* LogMsgPrefix[LogType::LOGTYPE_NONE_SIZE] =
 {
-	"", 
-	"", 
-	"FATAL ERROR: ", 
-	"WARNING: ", 
-	""
+	"TRACE: ",
+	"PROFILE: ",
+	"",
+	"WARNING: ",
+	"ERROR: ",
+	"FATAL ERROR: "
 };
 
 struct LogBlock
@@ -33,22 +36,25 @@ static std::queue<LogBlock> pendingLogs;
 //YOU MUST USE THE LOG GUARD to use this function
 static void Log_PushMessage(const LogBlock& data)
 {
-	assert(data.type < LogType::LOGTYPE_SIZE && data.type >= 0);
+	assert(data.type < LogType::LOGTYPE_NONE_SIZE && data.type >= 0);
 
 	std::cout << LogMsgPrefix[data.type];
 	switch(data.type)
 	{
-	case LogType::LOGTYPE_NONE:
+	case LogType::LOGTYPE_TRACE:
+	case LogType::LOGTYPE_PROFILE:
+	case LogType::LOGTYPE_MSG:
 		break;
-	case LogType::LOGTYPE_FLUSH:
-		std::cout << std::endl;
-		return; //early return here to avoid double spacing
-	case LogType::LOGTYPE_FATAL:
 	case LogType::LOGTYPE_WARNING:
+	case LogType::LOGTYPE_ERROR:
+	case LogType::LOGTYPE_FATAL:
 		std::cout << "In file " << data.file << " line " << data.line << " thread id " << data.creationId << ", ";
 		break;
+	case LogType::LOGTYPE_NONE_FLUSH:
+		std::cout << data.log << std::endl;
+		return; //early return here to avoid double spacing
 	default:
-		std::cout << "In file " << data.file << " line " << data.line << ", ";
+		break;
 	}
 	std::cout << data.log << '\n';
 }
@@ -64,7 +70,7 @@ static inline void Log_PushAllPendingMessages()
 	}
 }
 
-#ifdef LOG_USE_LOGGING_THREAD 1
+#ifdef LOG_USE_LOGGING_THREAD
 //both of these are with logGuard
 static std::condition_variable sleepLogger;
 static volatile bool terminateLogger = false;
@@ -95,7 +101,7 @@ static void Log_ContinuousLogMsg()
 }
 
 //class is used for scoping the thread
-static class LoggerThread
+class LoggerThread
 {
 private:
 	std::thread logger; //this is effectively static
@@ -122,17 +128,17 @@ static LoggerThread loggerThread;
 
 #endif
 
-void SafeLog_QueueMessage(const LogType type, const FilePath& file, const LineNumber line, const std::string& log)
+void gbt::SafeLog_QueueMessage(const LogType type, const FilePath& file, const LineNumber line, const std::string& log)
 {
 	std::lock_guard<std::mutex> lock(logGuard);
 #ifdef LOG_USE_FILENAME
-	pendingLogs.push(LogBlock{ type, std::this_thread::get_id(), FilePath_GetFileName(file), line, log });
+	pendingLogs.push(LogBlock{ type, std::this_thread::get_id(), file.fileName(), line, log });
 #else
 	pendingLogs.push(LogBlock{ type, std::this_thread::get_id(), file, line, log });
 #endif
 }
 
-void SafeLog_ImmediatePushMessage(const LogType type, const FilePath& file, const LineNumber line, const std::string& log)
+void gbt::SafeLog_ImmediatePushMessage(const LogType type, const FilePath& file, const LineNumber line, const std::string& log)
 {
 	SafeLog_QueueMessage(type, file, line, log);
 #ifdef LOG_USE_LOGGING_THREAD
@@ -142,10 +148,9 @@ void SafeLog_ImmediatePushMessage(const LogType type, const FilePath& file, cons
 #endif
 }
 
-void SafeLog_PushAllPendingMessages()
+void gbt::SafeLog_PushAllPendingMessages()
 {
 	std::lock_guard<std::mutex> lock(logGuard);
 	
 	Log_PushAllPendingMessages();
 }
-#endif

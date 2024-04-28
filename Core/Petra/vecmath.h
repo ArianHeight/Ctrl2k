@@ -54,8 +54,6 @@ union vec2_base
 
 	vec2_base<T> operator+(const vec2_base<T>& other) const { return { x + other.x, y + other.y }; }
 	vec2_base<T> operator-(const vec2_base<T>& other) const { return { x - other.x, y - other.y }; }
-	vec2_base<T> operator*(const vec2_base<T>& other) const { return { x * other.x, y * other.y }; }
-	vec2_base<T> operator/(const vec2_base<T>& other) const { return { x / other.x, y / other.y }; }
 	vec2_base<T> operator+(const T& val) const { return { x + val, y + val }; }
 	vec2_base<T> operator-(const T& val) const { return { x - val, y - val }; }
 	vec2_base<T> operator*(const T& val) const { return { x * val, y * val }; }
@@ -64,8 +62,6 @@ union vec2_base
 	vec2_base<T>& operator=(const vec2_base<T>& other) { x = other.x; y = other.y; return *this; }
 	vec2_base<T>& operator+=(const vec2_base<T>& other) { x += other.x; y += other.y; return *this; }
 	vec2_base<T>& operator-=(const vec2_base<T>& other) { x -= other.x; y -= other.y; return *this; }
-	vec2_base<T>& operator*=(const vec2_base<T>& other) { x *= other.x; y *= other.y; return *this; }
-	vec2_base<T>& operator/=(const vec2_base<T>& other) { x /= other.x; y /= other.y; return *this; }
 	vec2_base<T>& operator=(const T& val) { x = val; y = val; return *this; }
 	vec2_base<T>& operator+=(const T& val) { x += val; y += val; return *this; }
 	vec2_base<T>& operator-=(const T& val) { x -= val; y -= val; return *this; }
@@ -74,7 +70,7 @@ union vec2_base
 
 	inline T& operator[](size_t idx) { return data[idx]; }
 	inline const T& operator[](size_t idx) const { return data[idx]; }
-	bool operator==(const vec2_base<T>& other) { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y); }
+	inline bool operator==(const vec2_base<T>& other) const { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y); }
 };
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const vec2_base<T>& op1) { os << op1.x << ',' << op1.y; return os; }
@@ -84,6 +80,8 @@ template <typename T>
 inline vec2_base<T> operator-(const T& val, const vec2_base<T>& vec) { return { val - vec.x, val - vec.y }; }
 template <typename T>
 inline vec2_base<T> operator*(const T& val, const vec2_base<T>& vec) { return vec * val; }
+template <typename T>
+inline vec2_base<T> operator/(const T& val, const vec2_base<T>& vec) { return { val / vec.x, val / vec.y }; }
 
 template <typename T>
 union vec3_base
@@ -123,8 +121,6 @@ union vec3_base
 
 	vec3_base<T> operator+(const vec3_base<T>& other) const { return { x + other.x, y + other.y, z + other.z }; }
 	vec3_base<T> operator-(const vec3_base<T>& other) const { return { x - other.x, y - other.y, z - other.z }; }
-	vec3_base<T> operator*(const vec3_base<T>& other) const { return { x * other.x, y * other.y, z * other.z }; }
-	vec3_base<T> operator/(const vec3_base<T>& other) const { return { x / other.x, y / other.y, z / other.z }; }
 	vec3_base<T> operator+(const T& val) const { return { x + val, y + val, z + val }; }
 	vec3_base<T> operator-(const T& val) const { return { x - val, y - val, z - val }; }
 	vec3_base<T> operator*(const T& val) const { return { x * val, y * val, z * val }; }
@@ -133,8 +129,6 @@ union vec3_base
 	vec3_base<T>& operator=(const vec3_base<T>& other) { x = other.x; y = other.y; z = other.z; return *this; }
 	vec3_base<T>& operator+=(const vec3_base<T>& other) { x += other.x; y += other.y; z += other.z; return *this; }
 	vec3_base<T>& operator-=(const vec3_base<T>& other) { x -= other.x; y -= other.y; z -= other.z; return *this; }
-	vec3_base<T>& operator*=(const vec3_base<T>& other) { x *= other.x; y *= other.y; z *= other.z; return *this; }
-	vec3_base<T>& operator/=(const vec3_base<T>& other) { x /= other.x; y /= other.y; z /= other.z; return *this; }
 	vec3_base<T>& operator=(const T& val) { x = val; y = val; z = val; return *this; }
 	vec3_base<T>& operator+=(const T& val) { x += val; y += val; z += val; return *this; }
 	vec3_base<T>& operator-=(const T& val) { x -= val; y -= val; z -= val; return *this; }
@@ -143,7 +137,7 @@ union vec3_base
 
 	inline T& operator[](size_t idx) { return data[idx]; }
 	inline const T& operator[](size_t idx) const { return data[idx]; }
-	bool operator==(const vec3_base<T>& other) { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y) && epsilon_equals(z, other.z); }
+	inline bool operator==(const vec3_base<T>& other) const { return epsilon_equals(x, other.x) && epsilon_equals(y, other.y) && epsilon_equals(z, other.z); }
 };
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const vec3_base<T>& op1) { os << op1.x << ',' << op1.y << ',' << op1.z; return os; }
@@ -153,6 +147,8 @@ template <typename T>
 inline vec3_base<T> operator-(const T& val, const vec3_base<T>& vec) { return { val - vec.x, val - vec.y, val - vec.z }; }
 template <typename T>
 inline vec3_base<T> operator*(const T& val, const vec3_base<T>& vec) { return vec * val; }
+template <typename T>
+inline vec3_base<T> operator/(const T& val, const vec3_base<T>& vec) { return { val / vec.x, val / vec.y, val / vec.z }; }
 
 
 template <typename T>
@@ -200,8 +196,6 @@ union vec4_base
 
 	vec4_base<T> operator+(const vec4_base<T>& other) const { return { x + other.x, y + other.y, z + other.z, w + other.w }; }
 	vec4_base<T> operator-(const vec4_base<T>& other) const { return { x - other.x, y - other.y, z - other.z, w - other.w }; }
-	vec4_base<T> operator*(const vec4_base<T>& other) const { return { x * other.x, y * other.y, z * other.z, w * other.w }; }
-	vec4_base<T> operator/(const vec4_base<T>& other) const { return { x / other.x, y / other.y, z / other.z, w / other.w }; }
 	vec4_base<T> operator+(const T& val) const { return { x + val, y + val, z + val, w + val }; }
 	vec4_base<T> operator-(const T& val) const { return { x - val, y - val, z - val, w - val }; }
 	vec4_base<T> operator*(const T& val) const { return { x * val, y * val, z * val, w * val }; }
@@ -210,8 +204,6 @@ union vec4_base
 	vec4_base<T>& operator=(const vec4_base<T>& other) { x = other.x; y = other.y; z = other.z; w = other.w; return *this; }
 	vec4_base<T>& operator+=(const vec4_base<T>& other) { x += other.x; y += other.y; z += other.z; w += other.w; return *this; }
 	vec4_base<T>& operator-=(const vec4_base<T>& other) { x -= other.x; y -= other.y; z -= other.z; w -= other.w; return *this; }
-	vec4_base<T>& operator*=(const vec4_base<T>& other) { x *= other.x; y *= other.y; z *= other.z; w *= other.w; return *this; }
-	vec4_base<T>& operator/=(const vec4_base<T>& other) { x /= other.x; y /= other.y; z /= other.z; w /= other.w; return *this; }
 	vec4_base<T>& operator=(const T& val) { x = val; y = val; z = val; w = val; return *this; }
 	vec4_base<T>& operator+=(const T& val) { x += val; y += val; z += val; w += val; return *this; }
 	vec4_base<T>& operator-=(const T& val) { x -= val; y -= val; z -= val; w -= val; return *this; }
@@ -220,7 +212,7 @@ union vec4_base
 
 	inline T& operator[](size_t idx) { return data[idx]; }
 	inline const T& operator[](size_t idx) const { return data[idx]; }
-	bool operator==(const vec4_base<T>& other)
+	inline bool operator==(const vec4_base<T>& other) const
 	{
 		return epsilon_equals(x, other.x) && epsilon_equals(y, other.y) && epsilon_equals(z, other.z) && epsilon_equals(w, other.w);
 	}
@@ -233,6 +225,9 @@ template <typename T>
 inline vec4_base<T> operator-(const T& val, const vec4_base<T>& vec) { return { val - vec.x, val - vec.y, val - vec.z, val - vec.w }; }
 template <typename T>
 inline vec4_base<T> operator*(const T& val, const vec4_base<T>& vec) { return vec * val; }
+template <typename T>
+inline vec4_base<T> operator/(const T& val, const vec4_base<T>& vec) { return { val / vec.x, val / vec.y, val / vec.z, val / vec.w }; }
+
 
 typedef float vec1;
 typedef vec2_base<float> vec2;
@@ -249,6 +244,18 @@ typedef vec2_base<int> ivec2;
 typedef vec3_base<int> ivec3;
 typedef vec4_base<int> ivec4;
 
+template <typename T>
+vec2_base<T> hadamard_product(const vec2_base<T>& op1, const vec2_base<T>& op2) { return { op1.x * op2.x, op1.y * op2.y }; }
+template <typename T>
+vec3_base<T> hadamard_product(const vec3_base<T>& op1, const vec3_base<T>& op2) { return { op1.x * op2.x, op1.y * op2.y, op1.z * op2.z }; }
+template <typename T>
+vec4_base<T> hadamard_product(const vec4_base<T>& op1, const vec4_base<T>& op2) { return { op1.x * op2.x, op1.y * op2.y, op1.z * op2.z, op1.w * op2.w }; }
+template <typename T>
+vec2_base<T> hadamard_division(const vec2_base<T>& op1, const vec2_base<T>& op2) { return { op1.x / op2.x, op1.y / op2.y }; }
+template <typename T>
+vec3_base<T> hadamard_division(const vec3_base<T>& op1, const vec3_base<T>& op2) { return { op1.x / op2.x, op1.y / op2.y, op1.z / op2.z }; }
+template <typename T>
+vec4_base<T> hadamard_division(const vec4_base<T>& op1, const vec4_base<T>& op2) { return { op1.x / op2.x, op1.y / op2.y, op1.z / op2.z, op1.w / op2.w }; }
 template <typename T>
 T dot(const vec2_base<T>& op1, const vec2_base<T>& op2) { return op1.x * op2.x + op1.y * op2.y; }
 template <typename T>

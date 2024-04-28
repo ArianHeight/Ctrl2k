@@ -13,11 +13,11 @@ template <> constexpr int EPSILON<int> = 0;
 
 // return -1 for negative numbers, 0 for 0, 1 for positive numbers
 template <typename T>
-T signum(const T& val) { return (T)(T > 0) - (T)(T < 0); }
+T signum(const T& val) { return (T)(val > 0) - (T)(val < 0); }
 
 // return -1 for negative numbers, 1 otherwise
 template <typename T>
-T signum_no_zero(const T& val) { return (T)(T >= 0) - (T)(T < 0); }
+T signum_no_zero(const T& val) { return (T)(val >= 0) - (T)(val < 0); }
 
 template <typename T>
 inline T abs(const T& val) { return std::abs(val); }

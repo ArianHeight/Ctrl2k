@@ -1,5 +1,5 @@
 #pragma once
-#include "vecmath.h"
+#include "matmath.h"
 
 /*
 
@@ -21,6 +21,7 @@ struct quat_base
 {
 	vec4_base<T> data;
 
+	quat_base() {}
 	quat_base(const vec4_base<T>& vec) : data(vec) {}
 	quat_base(const T& s, const vec3_base<T>& vec) { data.ijk = vec; data.scalar = s; }
 	quat_base(const T& i, const T& j, const T& k, const T& s) : data(i, j, k, s) {}
@@ -107,6 +108,8 @@ struct quat_base
 		rotate_in_place(vec);
 		return vec;
 	}
+
+	inline bool operator==(const quat_base<T>& other) const { return data == other.data; }
 };
 template <typename T>
 inline std::ostream& operator<<(std::ostream& os, const quat_base<T>& op1) { os << op1.data; return os; }
@@ -134,6 +137,35 @@ template<typename T>
 inline quat_base<T> gen_quat_angle_about_axis_deg(T theta_deg, const vec3_base<T>& axis)
 {
 	return gen_quat_angle_about_axis_rad(deg2rad(theta_deg), axis);
+}
+
+template<typename T>
+mat33_base<T> quat_to_mat33(const quat_base<T>& q)
+{
+	T m, im, jm, km, si, sj, sk, ii, ij, ik, jj, jk, kk;
+	m = 2 / q.data.magnitude_squared();
+	im = q.data.i * m;
+	jm = q.data.j * m;
+	km = q.data.k * m;
+	si = q.data.scalar * im;
+	sj = q.data.scalar * jm;
+	sk = q.data.scalar * km;
+	ii = q.data.i * im;
+	ij = q.data.i * jm;
+	ik = q.data.i * km;
+	jj = q.data.j * jm;
+	jk = q.data.j * km;
+	kk = q.data.k * km;
+	return { { 1 - jj - kk, ij - sk, ik + sj }, { ij + sk, 1 - ii - kk, jk - si }, { ik - sj, ik + si, 1 - ii - jj } };
+}
+template<typename T>
+quat_base<T> mat33_to_quat(const mat33_base<T>& m)
+{
+	T t, r, s;
+	t = m.get_trace();
+	r = rqm::sqrt(1 + t);
+	s = 1 / (2 * r);
+	return { s * (m.zy - m.yz), s * (m.xz - m.zx), s * (m.yx - m.xy), r / 2 };
 }
 
 

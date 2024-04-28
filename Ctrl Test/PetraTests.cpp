@@ -36,6 +36,7 @@ struct VecTestInputs
 	VecT scalarV1Diff; // v1 - scalar
 	VecT v1ScalarProd;
 	VecT v1ScalarDiv; // v1 / scalar
+	VecT scalarV1Div; // scalar / v1
 	VecT v12Min;
 	VecT v12Max;
 };
@@ -51,9 +52,9 @@ void testVecGeneral(const VecTestInputs<VecT>& in)
 	VecT v21 = in.v1 - in.v2;
 	assert(v21 == -in.v12Diff);
 	assert(v12 == in.v12Diff);
-	assert(in.v1 * in.v2 == in.vHProd);
-	assert(in.v1 / in.v2 == in.v12Div);
-	assert(in.v2 / in.v1 == in.v21Div);
+	assert(rqm::hadamard_product(in.v1, in.v2) == in.vHProd);
+	assert(rqm::hadamard_division(in.v1, in.v2) == in.v12Div);
+	assert(rqm::hadamard_division(in.v2, in.v1) == in.v21Div);
 
 	VecT temp = in.v1;
 	temp += in.v2;
@@ -61,12 +62,6 @@ void testVecGeneral(const VecTestInputs<VecT>& in)
 	temp = in.v1;
 	temp -= in.v2;
 	assert(temp == -in.v12Diff);
-	temp = in.v1;
-	temp *= in.v2;
-	assert(temp == in.vHProd);
-	temp = in.v1;
-	temp /= in.v2;
-	assert(temp == in.v12Div);
 
 	assert(in.v1.magnitude_squared() == in.v1magsqr);
 	assert(in.v2.magnitude_squared() == in.v2magsqr);
@@ -96,6 +91,7 @@ void testVecGeneral(const VecTestInputs<VecT>& in)
 	assert(in.v1 * in.scalar == in.v1ScalarProd);
 	assert(in.scalar * in.v1 == in.v1ScalarProd);
 	assert(in.v1 / in.scalar == in.v1ScalarDiv);
+	assert(in.scalar / in.v1 == in.scalarV1Div);
 
 	temp = in.v1;
 	temp += in.scalar;
@@ -163,6 +159,7 @@ void testVec2()
 		{ 5.0f - 6.3f, 3.1f - 6.3f }, // v1 - scalar
 		{ 5.0f * 6.3f, 3.1f * 6.3f }, // scalar * v1
 		{ 5.0f / 6.3f, 3.1f / 6.3f }, // v1 / scalar
+		{ 6.3f / 5.0f, 6.3f / 3.1f }, // scalar / v1
 		{ 2.5f, -0.2f }, // min(v1, v2)
 		{ 5.0f, 3.1f } // max(v1, v2)
 	};
@@ -214,6 +211,7 @@ void testVec3()
 		{ v1x - s, v1y - s, v1z - s }, // v1 - scalar
 		{ s * v1x, s * v1y, s * v1z }, // scalar * v1
 		{ v1x / s, v1y / s, v1z / s }, // v1 / scalar
+		{ s / v1x, s / v1y, s / v1z }, // v1 / scalar
 		{ std::min(v1x, v2x), std::min(v1y, v2y), std::min(v1z, v2z) }, // min(v1, v2)
 		{ std::max(v1x, v2x), std::max(v1y, v2y), std::max(v1z, v2z) } // max(v1, v2)
 	};
@@ -272,6 +270,7 @@ void testVec4()
 		{ v1x - s, v1y - s, v1z - s, v1w - s }, // v1 - scalar
 		{ s * v1x, s * v1y, s * v1z, s * v1w }, // scalar * v1
 		{ v1x / s, v1y / s, v1z / s, v1w / s }, // v1 / scalar
+		{ s / v1x, s / v1y, s / v1z, s / v1w }, // v1 / scalar
 		{ std::min(v1x, v2x), std::min(v1y, v2y), std::min(v1z, v2z), std::min(v1w, v2w) }, // min(v1, v2)
 		{ std::max(v1x, v2x), std::max(v1y, v2y), std::max(v1z, v2z), std::max(v1w, v2w) } // max(v1, v2)
 	};
@@ -283,44 +282,39 @@ void testVec4()
 	assert(indTest[3] == indTest.w);
 }
 
-void testVecOps()
-{
-	rqm::vec2 a = rqm::vec2(2, 3);
-	std::cout << rqm::dot(a, a) << '\n';
-	rqm::vec3 b = rqm::vec3(2, 3, 4);
-	std::cout << rqm::dot(b, b) << '\n';
-	rqm::vec4 c = rqm::vec4(2, 3, 4, 5);
-	std::cout << rqm::dot(c, c) << '\n';
-
-	rqm::vec3 xaxis = { 1, 0, 0 };
-	rqm::vec3 yaxis = { 0, 1, 0 };
-	rqm::vec3 zaxis = { 0, 0, 1 };
-	std::cout << rqm::cross(xaxis, yaxis) << ' ' << rqm::cross(zaxis, xaxis) << ' ' << rqm::cross(yaxis, zaxis) << '\n';
-
-	rqm::vec3 begin = { 1, 2, 3 };
-	rqm::vec3 end = { 4, 8, 12 };
-	std::cout << rqm::lerp(begin, end, 0.5f) << '\n';
-
-	rqm::vec4 d = { -1, 1, 0, 1 };
-	rqm::vec4 e = { -5, -2, 5, 2 };
-	std::cout << "min " << rqm::min(d, e) << " max " << rqm::max(e, d) << '\n';
-	std::cout << "\n";
-}
-
 void testQuat()
 {
-	rqm::quat rotateByZ = rqm::gen_quat_angle_about_axis_rad(rqm::PI<float> / 2, rqm::vec3(0, 0, 1));
+	rqm::quat rotateByZRad = rqm::gen_quat_angle_about_axis_rad(rqm::PI<float> / 2, rqm::vec3(0, 0, 1));
+	rqm::quat rotateByZDeg = rqm::gen_quat_angle_about_axis_deg(90.0f, rqm::vec3(0, 0, 1));
+	assert(rotateByZDeg == rotateByZRad);
 	rqm::vec3 zaxis = { 0,0,1 };
 	rqm::vec4 xpoint = { 1,0,0,1 };
 	rqm::vec4 yaxis = { 0,1,0,0 };
-	rqm::quat rotateByZ180 = rqm::gen_quat_angle_about_axis_deg(180.0f, rqm::vec3(0, 0, 1));
-	std::cout << "zaxis rotated about z 90 degrees is " << rotateByZ.rotate(zaxis) << '\n';
-	std::cout << "xpoint rotated about z 90 degrees is " << rotateByZ.rotate(xpoint) << '\n';
-	std::cout << "yaxis rotated about z 90 degrees is " << rotateByZ.rotate(yaxis) << '\n';
-	std::cout << "zaxis rotated about z 180 degrees is " << rotateByZ180.rotate(zaxis) << '\n';
-	std::cout << "xpoint rotated about z 180 degrees is " << rotateByZ180.rotate(xpoint) << '\n';
-	std::cout << "yaxis rotated about z 180 degrees is " << rotateByZ180.rotate(yaxis) << '\n';
-	std::cout << "\n";
+	assert(rotateByZRad.rotate(zaxis) == zaxis);
+	assert(rotateByZDeg.rotate(xpoint) == rqm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	rotateByZDeg.rotate_in_place(yaxis);
+	assert(yaxis == rqm::vec4(-1, 0, 0, 0));
+	rqm::mat33 rotateMatrix = rqm::quat_to_mat33(rotateByZDeg);
+	assert(rotateMatrix * yaxis.xyz == rqm::vec3(0, -1, 0));
+	assert(rqm::mat33_to_quat(rotateMatrix) == rotateByZDeg);
+	
+	std::cout << std::endl;
+}
+
+void testLerp()
+{
+	rqm::vec3 v1 = { 0, 1, 2 };
+	rqm::vec3 v2 = { 2, 3, 4 };
+	assert(rqm::lerp(v1, v2, 0.5f) == rqm::vec3(1, 2, 3));
+	float invsqrt2 = 1.0f / std::sqrt(2.0f);
+	rqm::vec3 nv1 = { 0, 1, 0 };
+	rqm::vec3 nv2 = { 1, 0, 0 };
+	assert(rqm::nlerp(nv1, nv2, 0.5f) == rqm::vec3(invsqrt2, invsqrt2, 0));
+	rqm::quat q1 = { 0, 1, 0, 0 };
+	rqm::quat q2 = { 1, 0, 0, 0 };
+	assert(rqm::slerp(q1, q2, 0.5f) == rqm::quat(invsqrt2, invsqrt2, 0, 0));
+	assert(rqm::slerp_short(q1, q2, 0.5f) == rqm::quat(invsqrt2, invsqrt2, 0, 0));
+	// TODO maybe someday can test the special behaviour of short slerp compared to normal slerp
 }
 
 void testMat2()
@@ -495,8 +489,8 @@ void runMathTests()
 	testVec2();
 	testVec3();
 	testVec4();
-	testVecOps();
 	testQuat();
+	testLerp();
 	testMat2();
 	testMat3();
 	testMat4();

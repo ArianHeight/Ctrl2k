@@ -53,6 +53,8 @@ union mat22_base
             xy, yy);
     }
 
+    T get_trace() const { return xx + yy; }
+
     // is orthogonal if all columns are orthonormal
     bool is_orthogonal() const
     {
@@ -128,7 +130,7 @@ union mat22_base
 
     inline vec2_base<T>& operator[](size_t idx) { return data[idx]; }
     inline const vec2_base<T>& operator[](size_t idx) const { return data[idx]; }
-    bool operator==(const mat22_base<T>& other) { return row0 == other.row0 && row1 == other.row1; }
+    inline bool operator==(const mat22_base<T>& other) const { return row0 == other.row0 && row1 == other.row1; }
 };
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const mat22_base<T>& op1) { os << '[' << op1.row0 << '|' << op1.row1 << ']'; return os; }
@@ -238,6 +240,8 @@ union mat33_base
             xz, yz, zz);
     }
 
+    T get_trace() const { return xx + yy + zz; }
+
     // is orthogonal if all columns are orthonormal
     bool is_orthogonal() const
     {
@@ -321,7 +325,7 @@ union mat33_base
 
     inline vec3_base<T>& operator[](size_t idx) { return data[idx]; }
     inline const vec3_base<T>& operator[](size_t idx) const { return data[idx]; }
-    bool operator==(const mat33_base<T>& other) { return row0 == other.row0 && row1 == other.row1 && row2 == other.row2; }
+    inline bool operator==(const mat33_base<T>& other) const { return row0 == other.row0 && row1 == other.row1 && row2 == other.row2; }
 };
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const mat33_base<T>& op1)
@@ -487,6 +491,8 @@ union mat44_base
             xw, yw, zw, ww);
     }
 
+    T get_trace() const { return xx + yy + zz + ww; }
+
     // is orthogonal if all columns are orthonormal
     bool is_orthogonal() const
     {
@@ -619,7 +625,7 @@ union mat44_base
 
     inline vec4_base<T>& operator[](size_t idx) { return data[idx]; }
     inline const vec4_base<T>& operator[](size_t idx) const { return data[idx]; }
-    bool operator==(const mat44_base<T>& other) { return row0 == other.row0 && row1 == other.row1 && row2 == other.row2 && row3 == other.row3; }
+    inline bool operator==(const mat44_base<T>& other) const { return row0 == other.row0 && row1 == other.row1 && row2 == other.row2 && row3 == other.row3; }
 };
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const mat44_base<T>& op1)
