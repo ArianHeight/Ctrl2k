@@ -1,21 +1,14 @@
 //In chage of logging all things
-#include <iostream>
 #include <thread>
 #include <condition_variable>
 #include <mutex>
 #include <queue>
-#include <assert.h>
+#include <list>
+#include <fstream>
 
 #include "Logger.h"
 
 using namespace gbt;
-
-enum LogPrefix : uint8_t
-{
-	LOGPREFIX_SHORT,
-	LOGPREFIX_LONG,
-	LOGPREFIX_INVALID_SIZE //Keep this as the last element!
-};
 
 static const char* LogMsgPrefix[LogPrefix::LOGPREFIX_INVALID_SIZE][LogLevel::LOGLEVEL_NONE_SIZE] =
 {
@@ -35,6 +28,15 @@ static const char* LogMsgPrefix[LogPrefix::LOGPREFIX_INVALID_SIZE][LogLevel::LOG
 	"[WARNING]",
 	"[ERROR]",
 	"[FATAL ERROR]",
+	""
+},
+{
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
 	""
 }
 };
@@ -85,14 +87,24 @@ struct LogBlock
 	std::string log;
 };
 
+struct LogFile
+{
+	FilePath path;
+	std::ofstream file;
+};
+
 static std::mutex logGuard;
 static std::queue<LogBlock> pendingLogs; // TODO maybe fix size this some day?
 static std::vector<LoggingStream> outputs;
+static std::list<LogFile> logFiles; // linked list, can't use vector here because we need reference stability
 
-bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, LogVerbosity verbosity, std::ostream& os)
+static inline void ApplyLogLevelToSettings(LogLevel lvl, LoggingStreamSettings& settings)
 {
-	LoggingStreamSettings settings;
 	settings.levelFlags = (LogLevelFlag)(UINT8_MAX << lvl);
+}
+
+static inline void ApplyVerbosityToSettings(LogVerbosity verbosity, LoggingStreamSettings& settings)
+{
 	switch(verbosity)
 	{
 	case LOGVERBOSITY_LOW:
@@ -102,7 +114,50 @@ bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, LogVerbosity verbosity, std
 		settings.showLineNumber = false;
 	case LOGVERBOSITY_HIGH:
 		settings.logFullPath = false;
+	default:
+		break;
 	}
+}
+
+bool gbt::SafeLog_RegisterFile(const LoggingStreamSettings& settings, FilePath path, bool truncate)
+{
+	std::ofstream file(path.path(), truncate ? std::ios::out | std::ios::trunc : std::ios::out);
+	if(!file.is_open())
+		return false;
+
+	std::lock_guard<std::mutex> lock(logGuard);
+	LogFile& lf = logFiles.emplace_back(std::move(LogFile{ std::move(path), std::move(file) }));
+	outputs.push_back({ settings, &(lf.file) });
+	return true;
+}
+
+bool gbt::SafeLog_RegisterFile(LogLevel lvl, LogVerbosity verbosity, const FilePath& path)
+{
+	LoggingStreamSettings settings;
+	ApplyLogLevelToSettings(lvl, settings);
+	ApplyVerbosityToSettings(verbosity, settings);
+	settings.showTextColour = false;
+	settings.logFullPath = false;
+	settings.usePrefix = LOGPREFIX_SHORT;
+
+	return SafeLog_RegisterFile(settings, path, true);
+}
+
+bool gbt::SafeLog_RegisterFile(LogLevel lvl, const FilePath& path)
+{
+	return SafeLog_RegisterFile(lvl, LOGVERBOSITY_FULL, path);
+}
+
+bool gbt::SafeLog_RegisterFile(const FilePath& path)
+{
+	return SafeLog_RegisterFile(LOGLEVEL_TRACE, LOGVERBOSITY_FULL, path);
+}
+
+bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, LogVerbosity verbosity, std::ostream& os)
+{
+	LoggingStreamSettings settings;
+	ApplyLogLevelToSettings(lvl, settings);
+	ApplyVerbosityToSettings(verbosity, settings);
 
 	std::lock_guard<std::mutex> lock(logGuard);
 	outputs.push_back({ settings, &os });
@@ -121,19 +176,44 @@ bool gbt::SafeLog_RegisterOutputStream(const LoggingStreamSettings& settings, st
 	return true;
 }
 
-bool gbt::SafeLog_DeregisterOutputStream(const std::ostream& os)
+//WARNING: not thread-safe
+//YOU MUST USE THE LOG GUARD to use this function
+static bool UnsafeLog_DeregisterOutputStream(const std::ostream& os)
 {
 	const std::ostream* const osptr = &os;
-	std::lock_guard<std::mutex> lock(logGuard);
 	auto begin = outputs.begin();
 	auto end = outputs.end();
 	auto it = std::find_if(begin, end, [&osptr](const LoggingStream& ls) { return ls.os == osptr; });
-	if(it != end)
+	if(it == end)
 	{
-		outputs.erase(it);
-		return true;
+		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__, "Output stream not found, could not deregister from logging system" });
+		return false;
 	}
-	return false;
+	it->os->flush();
+	outputs.erase(it);
+	return true;
+}
+
+bool gbt::SafeLog_DeregisterFile(const FilePath& path)
+{
+	std::lock_guard<std::mutex> lock(logGuard);
+	auto begin = logFiles.begin();
+	auto end = logFiles.end();
+	auto it = std::find_if(begin, end, [&path](const LogFile& lf) { return lf.path == path; });
+	if(it == end)
+	{
+		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__, path.path() + " not found, could not deregister from logging system" });
+		return false;
+	}
+	bool success = UnsafeLog_DeregisterOutputStream(it->file);
+	logFiles.erase(it);
+	return success;
+}
+
+bool gbt::SafeLog_DeregisterOutputStream(const std::ostream& os)
+{
+	std::lock_guard<std::mutex> lock(logGuard);
+	return UnsafeLog_DeregisterOutputStream(os);
 }
 
 //WARNING: not thread-safe
@@ -157,8 +237,8 @@ static void Log_PushMessage(const LogBlock& data)
 			continue;
 		}
 
-		bool hasPrefix = LogMsgPrefix[lstream.settings.useLongPrefix][data.level][0] != '\0';
-		os << LogTextColourPrefix[lstream.settings.showTextColour][data.level] << LogMsgPrefix[lstream.settings.useLongPrefix][data.level];
+		bool hasPrefix = LogMsgPrefix[lstream.settings.usePrefix][data.level][0] != '\0';
+		os << LogTextColourPrefix[lstream.settings.showTextColour][data.level] << LogMsgPrefix[lstream.settings.usePrefix][data.level];
 		if(lstream.settings.showFile)
 		{
 			hasPrefix = true;

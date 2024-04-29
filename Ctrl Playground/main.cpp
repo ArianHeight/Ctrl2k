@@ -8,6 +8,7 @@
 int main(int argc, char *argv[])
 {
     REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_TRACE, std::cout);
+    REGISTER_FILE_FOR_LOGGING("playground.test.log");
     LOG_TRACE_QUEUE("Hello");
     LOG_FLUSH_QUEUE();
     std::string s = "some error msgs {:#b}";
@@ -16,5 +17,7 @@ int main(int argc, char *argv[])
     std::cout << formatwrapper(s, l) << std::endl;
     std::cout << l << std::endl;
     std::cout << "\033[31mHello World!" << std::endl;
+    DEREGISTER_FILE_FOR_LOGGING("somelog.txt");
+    DEREGISTER_FILE_FOR_LOGGING("playground.test.log");
     return 0;
 }

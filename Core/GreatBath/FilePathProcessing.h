@@ -45,6 +45,8 @@ public:
     FileNameNoExt fileNameNoExt() const { return m_path.substr(m_nameStartPos, m_nameEndPos - m_nameStartPos); }
     FileExt fileExt() const { return m_path.substr(m_extStartPos); }
 
+    inline bool operator==(const FilePath& other) const { return m_path == other.m_path; }
+
 private:
     void copy(const std::string& pathstring);
     void move(std::string&& pathstring);
