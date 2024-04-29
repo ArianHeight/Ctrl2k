@@ -58,7 +58,7 @@ struct LoggingStreamSettings
 	LoggingStreamSettings() { mem_set_one(this, sizeof(LoggingStreamSettings)); usePrefix = LOGPREFIX_LONG; }
 };
 
-enum LogVerbosity
+enum LogVerbosity : uint8_t
 {
 	LOGVERBOSITY_LOW,
 	LOGVERBOSITY_MEDIUM,

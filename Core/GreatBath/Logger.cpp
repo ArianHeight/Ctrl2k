@@ -78,6 +78,7 @@ struct LoggingStream
 	std::ostream* os;
 };
 
+// TODO add log time
 struct LogBlock
 {
 	LogLevel level;
@@ -122,10 +123,13 @@ static inline void ApplyVerbosityToSettings(LogVerbosity verbosity, LoggingStrea
 bool gbt::SafeLog_RegisterFile(const LoggingStreamSettings& settings, FilePath path, bool truncate)
 {
 	std::ofstream file(path.path(), truncate ? std::ios::out | std::ios::trunc : std::ios::out);
-	if(!file.is_open())
-		return false;
-
 	std::lock_guard<std::mutex> lock(logGuard);
+	if(!file.is_open())
+	{
+		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__, path.path() + " could not be opened, could not register to logging system" });
+		return false;
+	}
+
 	LogFile& lf = logFiles.emplace_back(std::move(LogFile{ std::move(path), std::move(file) }));
 	outputs.push_back({ settings, &(lf.file) });
 	return true;

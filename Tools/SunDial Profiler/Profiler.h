@@ -1,20 +1,20 @@
 #pragma once
 #include <chrono>
 #include "Core/GreatBath/FilePathProcessing.h"
-#ifdef HAS
+
 class SunDialProfiler
 {
 private:
 	std::chrono::steady_clock::time_point m_start;
 	bool m_highPrecisionMode;
-	FilePath m_file;
-	LineNumber m_line; 
+	c_string m_file;
+	gbt::LineNumber m_line;
 	std::string m_funcname;
 	std::string m_msg;
 	std::string m_timeElapsed;
 
 public:
-	SunDialProfiler(bool highPrecision, const FilePath& file, const LineNumber line, const std::string& funcname, const std::string& msg = "");
+	SunDialProfiler(bool highPrecision, c_string file, const gbt::LineNumber line, const std::string& funcname, const std::string& msg = "");
 	~SunDialProfiler();
 };
 
@@ -33,4 +33,3 @@ public:
 #define TOOLS_HP_MULTIPROFILE_LOG(profiler_name, msg) auto profiler_name = SunDialProfiler(true, __FILE__, __LINE__, __FUNCTION__, msg)
 //use when you need to give custome profiler names to have multiple profiles happening in the same scope
 #define TOOLS_HP_MULTIPROFILE(profiler_name) auto profiler_name = SunDialProfiler(true, __FILE__, __LINE__, __FUNCTION__)
-#endif

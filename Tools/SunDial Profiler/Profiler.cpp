@@ -1,10 +1,10 @@
 #include "Core/GreatBath/Logger.h"
 #include "Profiler.h"
-#ifdef HAS
+
 SunDialProfiler::SunDialProfiler(
 	bool highPrecision, 
-	const FilePath& file, 
-	const LineNumber line, 
+	c_string file,
+	const gbt::LineNumber line,
 	const std::string& funcname, 
 	const std::string& msg) : 
 	m_highPrecisionMode(highPrecision), 
@@ -30,6 +30,6 @@ SunDialProfiler::~SunDialProfiler()
 	else
 		m_msg = SD_PROFILER_MSG_TEMPLATE + ", " + m_msg;
 
-	SafeLog_ImmediatePushMessage(LogType::LOGTYPE_PROFILE, m_file, m_line, m_msg);
+	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
+	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::string(m_msg));
 }
-#endif
