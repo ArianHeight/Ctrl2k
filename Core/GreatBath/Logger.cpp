@@ -10,31 +10,75 @@
 
 using namespace gbt;
 
-static const char* LogMsgPrefix[LogPrefix::LOGPREFIX_SIZE][LogLevel::LOGLEVEL_NONE_SIZE] =
+enum LogPrefix : uint8_t
+{
+	LOGPREFIX_SHORT,
+	LOGPREFIX_LONG,
+	LOGPREFIX_INVALID_SIZE //Keep this as the last element!
+};
+
+static const char* LogMsgPrefix[LogPrefix::LOGPREFIX_INVALID_SIZE][LogLevel::LOGLEVEL_NONE_SIZE] =
 {
 {
-	"TRC ",
-	"PRF ",
-	"MSG ",
-	"WRN ",
-	"ERR ",
-	"FTL ",
+	"[TRC]",
+	"[PRF]",
+	"[MSG]",
+	"[WRN]",
+	"[ERR]",
+	"[FTL]",
 	""
 },
 {
-	"TRACE: ",
-	"PROFILE: ",
+	"[TRACE]",
+	"[PROFILE]",
 	"",
-	"WARNING: ",
-	"ERROR: ",
-	"FATAL ERROR: ",
+	"[WARNING]",
+	"[ERROR]",
+	"[FATAL ERROR]",
 	""
 }
 };
 
+enum LogTextColourUsage : uint8_t
+{
+	LOGTEXTCOLOUR_DISABLED,
+	LOGTEXTCOLOUR_ENABLED,
+	LOGTEXTCOLOUR_INVALID_SIZE //Keep this as the last element!
+};
+
+static const char* LogTextColourPrefix[LogTextColourUsage::LOGTEXTCOLOUR_INVALID_SIZE][LogLevel::LOGLEVEL_NONE_SIZE] =
+{
+{
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	""
+},
+{
+	"\033[38;5;245m",
+	"\033[38;5;250m",
+	"\033[37m",
+	"\033[33m",
+	"\033[31m",
+	"\033[35m",
+	""
+}
+};
+
+static const char* LogTextColourReset = "\033[0m";
+
+struct LoggingStream
+{
+	LoggingStreamSettings settings;
+	std::ostream* os;
+};
+
 struct LogBlock
 {
-	LogLevel type;
+	LogLevel level;
 	std::thread::id creationId;
 	FilePath file;
 	LineNumber line;
@@ -42,33 +86,102 @@ struct LogBlock
 };
 
 static std::mutex logGuard;
-static std::queue<LogBlock> pendingLogs;
+static std::queue<LogBlock> pendingLogs; // TODO maybe fix size this some day?
+static std::vector<LoggingStream> outputs;
+
+bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, LogVerbosity verbosity, std::ostream& os)
+{
+	LoggingStreamSettings settings;
+	settings.levelFlags = (LogLevelFlag)(UINT8_MAX << lvl);
+	switch(verbosity)
+	{
+	case LOGVERBOSITY_LOW:
+		settings.showFile = false;
+		settings.showThreadId = false;
+	case LOGVERBOSITY_MEDIUM:
+		settings.showLineNumber = false;
+	case LOGVERBOSITY_HIGH:
+		settings.logFullPath = false;
+	}
+
+	std::lock_guard<std::mutex> lock(logGuard);
+	outputs.push_back({ settings, &os });
+	return true;
+}
+
+bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, std::ostream& os)
+{
+	return SafeLog_RegisterOutputStream(lvl, LOGVERBOSITY_HIGH, os);
+}
+
+bool gbt::SafeLog_RegisterOutputStream(const LoggingStreamSettings& settings, std::ostream& os)
+{
+	std::lock_guard<std::mutex> lock(logGuard);
+	outputs.push_back({ settings, &os });
+	return true;
+}
+
+bool gbt::SafeLog_DeregisterOutputStream(const std::ostream& os)
+{
+	const std::ostream* const osptr = &os;
+	std::lock_guard<std::mutex> lock(logGuard);
+	auto begin = outputs.begin();
+	auto end = outputs.end();
+	auto it = std::find_if(begin, end, [&osptr](const LoggingStream& ls) { return ls.os == osptr; });
+	if(it != end)
+	{
+		outputs.erase(it);
+		return true;
+	}
+	return false;
+}
 
 //WARNING: not thread-safe
 //YOU MUST USE THE LOG GUARD to use this function
 static void Log_PushMessage(const LogBlock& data)
 {
-	assert(data.type < LogLevel::LOGLEVEL_NONE_SIZE && data.type >= 0);
+	assert(data.level < LogLevel::LOGLEVEL_NONE_SIZE && data.level >= 0);
 
-	std::cout << LogMsgPrefix[1][data.type];
-	switch(data.type)
+	LogLevelFlag levelFlag = (LogLevelFlag)(1 << data.level);
+	for(LoggingStream& lstream : outputs)
 	{
-	case LogLevel::LOGLEVEL_TRACE:
-	case LogLevel::LOGLEVEL_PROFILE:
-	case LogLevel::LOGLEVEL_MSG:
-		break;
-	case LogLevel::LOGLEVEL_WARNING:
-	case LogLevel::LOGLEVEL_ERROR:
-	case LogLevel::LOGLEVEL_FATAL:
-		std::cout << "In file " << data.file << " line " << data.line << " thread id " << data.creationId << ", ";
-		break;
-	case LogLevel::LOGLEVEL_NONE_FLUSH:
-		std::cout << data.log << std::endl;
-		return; //early return here to avoid double spacing
-	default:
-		break;
+		std::ostream& os = *(lstream.os);
+
+		if(data.level == LogLevel::LOGLEVEL_NONE_FLUSH)
+		{
+			os.flush();
+			continue;
+		}
+		else if(!(lstream.settings.levelFlags & levelFlag))
+		{
+			continue;
+		}
+
+		bool hasPrefix = LogMsgPrefix[lstream.settings.useLongPrefix][data.level][0] != '\0';
+		os << LogTextColourPrefix[lstream.settings.showTextColour][data.level] << LogMsgPrefix[lstream.settings.useLongPrefix][data.level];
+		if(lstream.settings.showFile)
+		{
+			hasPrefix = true;
+			os << "<";
+			if(lstream.settings.logFullPath)
+				os << data.file;
+			else
+				os << data.file.fileNameView();
+			if(lstream.settings.showLineNumber)
+				os << " line " << data.line;
+			os << ">";
+		}
+		if(lstream.settings.showThreadId)
+		{
+			hasPrefix = true;
+			os << "[thread " << data.creationId << "]";
+		}
+		if(hasPrefix)
+			os << ": ";
+		os << data.log << '\n';
+		if(lstream.settings.showTextColour)
+			os << LogTextColourReset;
 	}
-	std::cout << data.log << '\n';
 }
 
 //WARNING: this is not mutex locked so not thread-safe
@@ -140,15 +253,15 @@ static LoggerThread loggerThread;
 
 #endif
 
-void gbt::SafeLog_QueueMessage(const LogLevel type, c_string file, const LineNumber line, std::string&& log)
+void gbt::SafeLog_QueueMessage(const LogLevel level, c_string file, const LineNumber line, std::string&& log)
 {
 	std::lock_guard<std::mutex> lock(logGuard);
-	pendingLogs.push(LogBlock{ type, std::this_thread::get_id(), file, line, std::move(log) });
+	pendingLogs.push(LogBlock{ level, std::this_thread::get_id(), file, line, std::move(log) });
 }
 
-void gbt::SafeLog_ImmediatePushMessage(const LogLevel type, c_string file, const LineNumber line, std::string&& log)
+void gbt::SafeLog_ImmediatePushMessage(const LogLevel level, c_string file, const LineNumber line, std::string&& log)
 {
-	SafeLog_QueueMessage(type, file, line, std::move(log));
+	SafeLog_QueueMessage(level, file, line, std::move(log));
 #ifdef LOG_USE_LOGGING_THREAD
 	sleepLogger.notify_all();
 #else

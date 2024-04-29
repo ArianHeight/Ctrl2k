@@ -7,13 +7,14 @@
 
 int main(int argc, char *argv[])
 {
+    REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_TRACE, std::cout);
     LOG_TRACE_QUEUE("Hello");
     LOG_FLUSH_QUEUE();
-    std::string s = "hi {:#b}";
-    int l = 5;
-    LOG_TRACE_QUEUE(s, l);
+    std::string s = "some error msgs {:#b}";
+    int l = 5890;
+    LOG_FATAL_QUEUE(s, l);
     std::cout << formatwrapper(s, l) << std::endl;
     std::cout << l << std::endl;
-    std::cout << "Hello World!" << std::endl;
+    std::cout << "\033[31mHello World!" << std::endl;
     return 0;
 }

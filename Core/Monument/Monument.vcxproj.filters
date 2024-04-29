@@ -15,13 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="assert.h">
+    <ClInclude Include="basicassert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Monument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="basictypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basicmemory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
