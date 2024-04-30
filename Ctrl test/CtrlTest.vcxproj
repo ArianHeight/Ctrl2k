@@ -173,7 +173,7 @@
     <ProjectReference Include="..\Core\SunDial\SunDial.vcxproj">
       <Project>{eb11a967-dab8-4de2-894c-f5014e62137e}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\SunDial Profiler\SunDial Profiler.vcxproj">
+    <ProjectReference Include="..\Tools\RuhrValley\RuhrValley.vcxproj">
       <Project>{75cde69c-f1e7-4ce0-b20d-65e9c5a9dbe1}</Project>
     </ProjectReference>
   </ItemGroup>

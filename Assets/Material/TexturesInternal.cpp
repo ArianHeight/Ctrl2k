@@ -47,7 +47,7 @@ public:
 	//Loads the texture into RAM and queues it to be delivered to GPU
 	//Return the TexId of the texture
 	//Thread-safe
-	TexId load(const FilePath& path)
+	TexId load(const gbt::FilePath& path)
 	{
 		return loadAssetInternal(
 			path, 
@@ -55,7 +55,7 @@ public:
 			{
 				int width, height, channels;
 
-				img = SOIL_load_image(path.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
+				img = SOIL_load_image(path.path().c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
 				meta.width = width;
 				meta.height = height;
 				meta.channels = channels;

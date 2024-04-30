@@ -10,7 +10,7 @@
 
 #include "Core/GreatBath/Logger.h"
 #include "Core/SunDial/EngineClock.h"
-#include "Tools/SunDial Profiler/Profiler.h"
+#include "Tools/RuhrValley/Profiler.h"
 
 #define CTRLTEST_ERROR std::this_thread::sleep_for(std::chrono::seconds(1)); assert(false);
 //#define LOG_TEST

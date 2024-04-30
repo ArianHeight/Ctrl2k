@@ -7,7 +7,7 @@
 #include <set>
 #include <unordered_set>
 #include "Core/GreatBath/Logger.h"
-#include "Tools/SunDial Profiler/Profiler.h"
+#include "Tools/RuhrValley/Profiler.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 

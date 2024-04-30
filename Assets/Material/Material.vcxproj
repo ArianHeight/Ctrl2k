@@ -157,11 +157,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="AssetsCore.vcxproj">
-      <Project>{fc37a3e4-4fbe-4088-9de8-2318c80e81e6}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Textures.h" />
     <ClInclude Include="TexturesInternal.h" />
   </ItemGroup>

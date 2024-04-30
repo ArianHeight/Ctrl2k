@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Core/GreatBath/FilePathProcessing.h"
+#include "Core/GreatBath/FilePathProcessing.h"
 
 #define LOAD_FAIL_VALUE 0
 #define DEFAULT_TEX_HANDLE 0
@@ -15,7 +15,7 @@ namespace Textures
 	//Range-guarded and thread-safe
 	//Will SLEEP the current thread until the load is complete
 	//PLEASE REFRAIN from using load on an important/non-loader thread
-	TexId Load(const FilePath& path);
+	TexId Load(const gbt::FilePath& path);
 	//Decrements the internal reference count for the texture
 	//Unloads and queues the texture to be deleted from OGL if ref count hits 0
 	//Range-guarded and thread-safe
@@ -23,7 +23,7 @@ namespace Textures
 	//Returns the TexId for the given filename
 	//Returns -1 if the texture doesn't exist
 	//thread-safe
-	TexId GetTexId(const FileName& name);
+	TexId GetTexId(const gbt::FileName& name);
 	
 	//Returns the amount of textures currently loaded
 	//thread-safe

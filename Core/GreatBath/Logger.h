@@ -111,7 +111,7 @@ void SafeLog_PushAllPendingMessages();
 #define LOG_FATAL_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_FATAL, log, __VA_ARGS__)
 #define LOG_FLUSH_QUEUE() gbt::SafeLog_QueueMessage(gbt::LogLevel::LOGLEVEL_NONE_FLUSH, "", 0, "")
 
-#define LOG_PUSH(lvl, log, ...) gbt::SafeLog_ImmediatePushMessage(lvl, __FILE__, __LINE__, log, std::vformat(log, std::make_format_args(__VA_ARGS__)))
+#define LOG_PUSH(lvl, log, ...) gbt::SafeLog_ImmediatePushMessage(lvl, __FILE__, __LINE__, std::vformat(log, std::make_format_args(__VA_ARGS__)))
 #define LOG_TRACE_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_TRACE, log, __VA_ARGS__)
 #define LOG_MSG_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_MSG, log, __VA_ARGS__)
 #define LOG_WARNING_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_WARNING, log, __VA_ARGS__)

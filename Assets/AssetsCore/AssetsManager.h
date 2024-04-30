@@ -8,9 +8,9 @@
 #include <future>
 #include <atomic>
 #include <thread>
-#include "../../Core/CtrlMiscUtils/ThreadSafeVector.h"
-#include "../../Core/CtrlMiscUtils/ThreadSafeQueue.h"
-#include "../../Core/GreatBath/Logger.h"
+#include "Core/CtrlMiscUtils/ThreadSafeVector.h"
+#include "Core/CtrlMiscUtils/ThreadSafeQueue.h"
+#include "Core/GreatBath/Logger.h"
 
 #define LOAD_FAIL_VALUE 0
 typedef int AssetId;
@@ -32,7 +32,7 @@ struct AssetMetaDataTemplate
 struct AssetTemplate
 {
 	AssetState state;
-	FilePath path;
+	gbt::FilePath path;
 	unsigned int refcount;
 
 	AssetTemplate() : state(AssetState::ASSET_LOADING_QUEUED), path(""), refcount(1) {}
@@ -65,7 +65,7 @@ private:
 protected:
 	std::mutex assetMutex;
 	std::vector<Asset> assets;
-	std::unordered_map<FileNameNoExt, TexId> nameMap;
+	std::unordered_map<gbt::FileNameNoExt, TexId> nameMap;
 	std::queue<AssetId> deletedAssets;
 
 	std::mutex loadMutex;
@@ -98,13 +98,13 @@ protected:
 	//loadFunc loads data into AssetData and AssetMetaData, inputs are the data and metadata that need to be loaded into, 
 	//	has no mutex locked
 	//This is the portion of loading done by the loader threads
-	AssetId loadAssetInternal(const FilePath& path, std::function<void(AssetData&, AssetMetaData&)> loadFunc)
+	AssetId loadAssetInternal(const gbt::FilePath& path, std::function<void(AssetData&, AssetMetaData&)> loadFunc)
 	{
 		AssetId id = -1;
 		//initial load request
 		{
 			std::lock_guard<std::mutex> lock(assetMutex);
-			std::string name = FilePath_GetFileNameNoExt(path);
+			std::string name = path.fileNameNoExt();
 			auto it = nameMap.find(name);
 			if(it != nameMap.end()) //asset exists already
 			{
@@ -192,12 +192,12 @@ protected:
 #ifdef _DEBUG
 			if(assets[id].state != AssetState::ASSET_LOADED)
 			{
-				LOG_WARNING_PUSH("Trying to unload asset " + FilePath_GetFileNameNoExt(assets[id].path) + ", an already unloaded asset");
+				LOG_WARNING_PUSH("Trying to unload asset {}, an already unloaded asset", assets[id].path.fileNameNoExtView());
 				return;
 			}
 			else if(assets[id].refcount == 0)
 			{
-				LOG_FATAL_PUSH("Asset " + FilePath_GetFileNameNoExt(assets[id].path) + " has refcount 0 but is being requested to unload");
+				LOG_FATAL_PUSH("Asset {} has refcount 0 but is being requested to unload", assets[id].path.fileNameNoExtView());
 				return;
 			}
 #endif
