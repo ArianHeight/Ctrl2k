@@ -341,5 +341,7 @@ int main(int argc, char *argv[])
 
 	profileAll();
 
+	LOG_MSG_PUSH("{:}", std::chrono::current_zone()->to_local(std::chrono::system_clock::now()));
+
     return 0;
 }

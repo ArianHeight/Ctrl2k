@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <format>
 
 #include "Core/Monument/Monument.h"
@@ -44,10 +45,20 @@ enum LogPrefix : uint8_t
 	LOGPREFIX_INVALID_SIZE //Keep this as the last element!
 };
 
+enum LogTime : uint8_t
+{
+	LOGTIME_NONE, // don't log time
+	LOGTIME_HMS, // HH:mm:ss
+	LOGTIME_HMS_S, // HH:mm:ss.ssss
+	LOGTIME_FULL, // YYYY-MM-DD HH:mm:ss.ssss
+	LOGTIME_INVALID_SIZE //Keep this as the last element!
+};
+
 struct LoggingStreamSettings
 {
 	LogLevelFlag levelFlags; // flags for setting which type of msgs get logged
 	LogPrefix usePrefix; // which prefix to add to msgs
+	LogTime useLogTime; // how should time be logged
 	bool showTextColour : 1; // use ANSI escape characters to do coloured text in consoles
 	bool showThreadId : 1; // print the thread id that logged the msg
 	bool showFile : 1; // print the file name that logged the msg
@@ -55,7 +66,7 @@ struct LoggingStreamSettings
 	bool showLineNumber : 1; // only takes effect if showing File, shows the line number of the log call
 
 	//Everything is on by default
-	LoggingStreamSettings() { mem_set_one(this, sizeof(LoggingStreamSettings)); usePrefix = LOGPREFIX_LONG; }
+	LoggingStreamSettings() { mem_set_one(this, sizeof(LoggingStreamSettings)); usePrefix = LOGPREFIX_LONG; useLogTime = LOGTIME_FULL; }
 };
 
 enum LogVerbosity : uint8_t
@@ -97,26 +108,26 @@ You must register a logging output stream before being able to see logs
 
 //DONOT call this directly use the logging macros!
 //only queue the msgs, need to call SafeLog_PushAllPendingMessages for it to push
-void SafeLog_QueueMessage(const LogLevel level, c_string file, const LineNumber line, std::string&& log);
+void SafeLog_QueueMessage(const LogLevel level, c_string file, const LineNumber line, const std::chrono::system_clock::time_point time, std::string&& log);
 //DONOT call this directly use the logging macros!
-void SafeLog_ImmediatePushMessage(const LogLevel level, c_string file, const LineNumber line, std::string&& log);
+void SafeLog_ImmediatePushMessage(const LogLevel level, c_string file, const LineNumber line, const std::chrono::system_clock::time_point time, std::string&& log);
 void SafeLog_PushAllPendingMessages();
 
 //only queue the msgs, need to call SafeLog_PushAllPendingMessages for it to push
-#define LOG_QUEUE(lvl, log, ...) gbt::SafeLog_QueueMessage(lvl, __FILE__, __LINE__, std::vformat(log, std::make_format_args(__VA_ARGS__)))
+#define LOG_QUEUE(lvl, log, ...) gbt::SafeLog_QueueMessage(lvl, __FILE__, __LINE__, std::chrono::system_clock::now(), std::vformat(log, std::make_format_args(__VA_ARGS__)))
 #define LOG_TRACE_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_TRACE, log, __VA_ARGS__)
 #define LOG_MSG_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_MSG, log, __VA_ARGS__)
 #define LOG_WARNING_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_WARNING, log, __VA_ARGS__)
 #define LOG_ERROR_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_ERROR, log, __VA_ARGS__)
 #define LOG_FATAL_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_FATAL, log, __VA_ARGS__)
-#define LOG_FLUSH_QUEUE() gbt::SafeLog_QueueMessage(gbt::LogLevel::LOGLEVEL_NONE_FLUSH, "", 0, "")
+#define LOG_FLUSH_QUEUE() gbt::SafeLog_QueueMessage(gbt::LogLevel::LOGLEVEL_NONE_FLUSH, "", 0, std::chrono::system_clock::now(), "")
 
-#define LOG_PUSH(lvl, log, ...) gbt::SafeLog_ImmediatePushMessage(lvl, __FILE__, __LINE__, std::vformat(log, std::make_format_args(__VA_ARGS__)))
+#define LOG_PUSH(lvl, log, ...) gbt::SafeLog_ImmediatePushMessage(lvl, __FILE__, __LINE__, std::chrono::system_clock::now(), std::vformat(log, std::make_format_args(__VA_ARGS__)))
 #define LOG_TRACE_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_TRACE, log, __VA_ARGS__)
 #define LOG_MSG_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_MSG, log, __VA_ARGS__)
 #define LOG_WARNING_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_WARNING, log, __VA_ARGS__)
 #define LOG_ERROR_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_ERROR, log, __VA_ARGS__)
 #define LOG_FATAL_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_FATAL, log, __VA_ARGS__)
-#define LOG_FLUSH() gbt::SafeLog_ImmediatePushMessage(gbt::LogLevel::LOGLEVEL_NONE_FLUSH, "", 0, "")
+#define LOG_FLUSH() gbt::SafeLog_ImmediatePushMessage(gbt::LogLevel::LOGLEVEL_NONE_FLUSH, "", 0, std::chrono::system_clock::now(), "")
 
 }

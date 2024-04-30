@@ -26,5 +26,5 @@ SunDialProfiler::~SunDialProfiler()
 	}
 
 	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
-	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::format("function {} took {}{}", m_funcname, timeElapsed, suffix));
+	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::chrono::system_clock::now(), std::format("function {} took {}{}", m_funcname, timeElapsed, suffix));
 }

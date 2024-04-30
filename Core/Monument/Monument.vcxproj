@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="basicassert.h" />
+    <ClInclude Include="basicdefines.h" />
     <ClInclude Include="basicmemory.h" />
     <ClInclude Include="basictypes.h" />
     <ClInclude Include="Monument.h" />
