@@ -15,8 +15,8 @@ using namespace gbt;
 static const char* LogMsgPrefix[LogPrefix::LOGPREFIX_INVALID_SIZE][LogLevel::LOGLEVEL_NONE_SIZE] =
 {
 {
-	"[TRC]",
 	"[PRF]",
+	"[TRC]",
 	"[MSG]",
 	"[WRN]",
 	"[ERR]",
@@ -24,8 +24,8 @@ static const char* LogMsgPrefix[LogPrefix::LOGPREFIX_INVALID_SIZE][LogLevel::LOG
 	""
 },
 {
-	"[TRACE]",
 	"[PROFILE]",
+	"[TRACE]",
 	"",
 	"[WARNING]",
 	"[ERROR]",

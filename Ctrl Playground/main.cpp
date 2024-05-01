@@ -16,7 +16,7 @@
 template <typename T>
 int64_t profileVectorFind(const std::vector<T>& vec, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	valExists = std::find(vec.begin(), vec.end(), val) != vec.end();
 	return 0;
 }
@@ -24,7 +24,7 @@ int64_t profileVectorFind(const std::vector<T>& vec, const T& val, bool& valExis
 template <typename T>
 int64_t profileVectorFindManual(const std::vector<T>& vec, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	valExists = false;
 	for(size_t i = 0; i < vec.size(); i++)
 	{
@@ -40,7 +40,7 @@ int64_t profileVectorFindManual(const std::vector<T>& vec, const T& val, bool& v
 template <typename T>
 int64_t profileVectorFindManualCachedSize(const std::vector<T>& vec, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	valExists = false;
 	size_t size = vec.size();
 	for(size_t i = 0; i < size; i++)
@@ -57,7 +57,7 @@ int64_t profileVectorFindManualCachedSize(const std::vector<T>& vec, const T& va
 template <typename T>
 int64_t profileVectorFindIterate(const std::vector<T>& vec, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	for(auto it = vec.begin(); it != vec.end(); it++)
 	{
 		if(*it == val)
@@ -72,7 +72,7 @@ int64_t profileVectorFindIterate(const std::vector<T>& vec, const T& val, bool& 
 template <typename T>
 int64_t profileVectorFindIterateCachedEnd(const std::vector<T>& vec, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	auto endIt = vec.end();
 	for(auto it = vec.begin(); it != endIt; it++)
 	{
@@ -90,7 +90,7 @@ int64_t profileVectorFindIterateCachedEnd(const std::vector<T>& vec, const T& va
 template <typename T>
 int64_t profileUnorderedSetFind(const std::unordered_set<T>& set, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	valExists = set.count(val) != 0;
 	return 0;
 }
@@ -98,7 +98,7 @@ int64_t profileUnorderedSetFind(const std::unordered_set<T>& set, const T& val, 
 template <typename T>
 int64_t profileSetFind(const std::set<T>& set, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	valExists = set.count(val) != 0;
 	return 0;
 }
@@ -108,7 +108,7 @@ int64_t profileSetFind(const std::set<T>& set, const T& val, bool& valExists)
 template <typename T, typename C>
 int64_t profileUnorderedMapFind(const std::unordered_map<T, C>& map, const T& val, bool& valExists)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	valExists = map.find(val) != map.end();
 	return 0;
 }
@@ -119,7 +119,7 @@ int64_t profileVectorStringPush(std::vector<std::string>& vec, int numVals)
 {
 	vec.clear();
 	vec.shrink_to_fit();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	for(int i = 0; i < numVals; i++)
 	{
 		vec.push_back(std::to_string(i));
@@ -131,7 +131,7 @@ int64_t profileVectorStringInsertSlow(std::vector<std::string>& vec, int numVals
 {
 	vec.clear();
 	vec.shrink_to_fit();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	for(int i = numVals; i >= 0; i--)
 	{
 		vec.insert(vec.begin(), std::to_string(i));
@@ -143,7 +143,7 @@ int64_t profileVectorStringReservePush(std::vector<std::string>& vec, int numVal
 {
 	vec.clear();
 	vec.shrink_to_fit();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	vec.reserve(numVals);
 	for(int i = 0; i < numVals; i++)
 	{
@@ -156,7 +156,7 @@ int64_t profileVectorStringResizeAssign(std::vector<std::string>& vec, int numVa
 {
 	vec.clear();
 	vec.shrink_to_fit();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	vec.resize(numVals);
 	for(int i = 0; i < numVals; i++)
 	{
@@ -170,7 +170,7 @@ int64_t profileVectorStringResizeMove(std::vector<std::string>& vec, int numVals
 {
 	vec.clear();
 	vec.shrink_to_fit();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	vec.resize(numVals);
 	for(int i = 0; i < numVals; i++)
 	{
@@ -182,7 +182,7 @@ int64_t profileVectorStringResizeMove(std::vector<std::string>& vec, int numVals
 
 int64_t profileVectorStringInsertOneSlow(std::vector<std::string>& vec)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	vec.insert(vec.begin(), TEST_STRING_ONE);
 	
 	return 0;
@@ -190,7 +190,7 @@ int64_t profileVectorStringInsertOneSlow(std::vector<std::string>& vec)
 
 int64_t profileVectorStringEraseOneSlow(std::vector<std::string>& vec)
 {
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	vec.erase(vec.begin(), vec.begin() + 1);
 	
 	return 0;
@@ -201,7 +201,7 @@ int64_t profileVectorStringEraseOneSlow(std::vector<std::string>& vec)
 int64_t profileUnorderedSetStringFromInsert(std::unordered_set<std::string>& set, int numVals)
 {
 	set.clear();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	for(int i = 0; i < numVals; i++)
 	{
 		set.insert(std::to_string(i));
@@ -214,7 +214,7 @@ template <typename T>
 int64_t profileUnorderedSetFromVec(std::unordered_set<T>& set, const std::vector<T>& vec)
 {
 	set.clear();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	set = std::unordered_set<T>(vec.begin(), vec.end());
 	
 	return 0;
@@ -225,7 +225,7 @@ int64_t profileUnorderedSetFromVec(std::unordered_set<T>& set, const std::vector
 int64_t profileSetStringFromInsert(std::set<std::string>& set, int numVals)
 {
 	set.clear();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	for(int i = 0; i < numVals; i++)
 	{
 		set.insert(std::to_string(i));
@@ -238,7 +238,7 @@ template <typename T>
 int64_t profileSetFromVec(std::set<T>& set, const std::vector<T>& vec)
 {
 	set.clear();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	set = std::set<T>(vec.begin(), vec.end());
 	
 	return 0;
@@ -249,7 +249,7 @@ int64_t profileSetFromVec(std::set<T>& set, const std::vector<T>& vec)
 int64_t profileUnorderedMapStringFromInsert(std::unordered_map<std::string, int>& map, int numVals)
 {
 	map.clear();
-	TOOLS_PROFILE();
+	PROFILE_SCOPED();
 	for(int i = 0; i < numVals; i++)
 	{
 		map[std::to_string(i)] = i;
@@ -336,12 +336,19 @@ void profileAll()
 
 int main(int argc, char *argv[])
 {
-    REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_TRACE, std::cout);
+    REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_PROFILE, std::cout);
     REGISTER_FILE_FOR_LOGGING("logs/playground.log");
 
+	PROFILE_SECTION_START(allTests);
 	profileAll();
+	PROFILE_SECTION_END(allTests);
 
-	LOG_MSG_PUSH("{:}", std::chrono::current_zone()->to_local(std::chrono::system_clock::now()));
+	LOG_TRACE_PUSH("{:}", std::chrono::current_zone()->to_local(std::chrono::system_clock::now()));
+	LOG_MSG_PUSH("Hello");
+	LOG_WARNING_PUSH("Uh Oh");
+	LOG_ERROR_PUSH("REEEEE");
+	LOG_FATAL_PUSH("Ded");
+	LOG_FLUSH();
 
     return 0;
 }
