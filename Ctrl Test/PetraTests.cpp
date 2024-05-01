@@ -319,6 +319,18 @@ void testLerp()
 
 void testMat2()
 {
+	rqm::mat22 m = { 1,2,3,4 };
+	if(m.xx == m.flat_data[0] && m.xy == m.flat_data[1] && m.yx == m.flat_data[2] && m.yy == m.flat_data[3] &&
+		m.xx == m.data[0][0] && m.xy == m.data[0][1] && m.yx == m.data[1][0] && m.yy == m.data[1][1] &&
+		m.xx == m.row0.x && m.xy == m.row0.y && m.yx == m.row1.x && m.yy == m.row1.y)
+	{
+		std::cout << "data structure of mat22 is consistent\n";
+	}
+	else
+	{
+		assert(false);
+	}
+
 	rqm::mat22 m2 = { 1, 2, 3, 4 };
 	std::cout << m2.data[0][0] << ' ' << m2.data[0][1] << ' ' << m2.data[1][0] << ' ' << m2.data[1][1] << '\n';
 	std::cout << m2.flat_data[0] << ' ' << m2.flat_data[1] << ' ' << m2.flat_data[2] << ' ' << m2.flat_data[3] << '\n';
@@ -373,6 +385,10 @@ void testMat3()
 		m.zx == m.row2.x && m.zy == m.row2.y && m.zz == m.row2.z)
 	{
 		std::cout << "data structure of mat33 is consistent\n";
+	}
+	else
+	{
+		assert(false);
 	}
 
 	rqm::mat33 a = { 1,2,3,4,5,6,7,8,9 };
@@ -436,6 +452,10 @@ void testMat4()
 		m.wx == m.row3.x && m.wy == m.row3.y && m.wz == m.row3.z && m.ww == m.row3.w)
 	{
 		std::cout << "data structure of mat44 is consistent\n";
+	}
+	else
+	{
+		assert(false);
 	}
 
 	rqm::mat44 a = m;
