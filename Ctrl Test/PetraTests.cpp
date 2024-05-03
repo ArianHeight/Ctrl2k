@@ -284,6 +284,7 @@ void testVec4()
 
 void testQuat()
 {
+	std::cout << "===================================\nTesting Quaternions" << '\n';
 	rqm::quat rotateByZRad = rqm::gen_quat_angle_about_axis_rad(rqm::PI<float> / 2, rqm::vec3(0, 0, 1));
 	rqm::quat rotateByZDeg = rqm::gen_quat_angle_about_axis_deg(90.0f, rqm::vec3(0, 0, 1));
 	assert(rotateByZDeg == rotateByZRad);
@@ -317,6 +318,88 @@ void testLerp()
 	// TODO maybe someday can test the special behaviour of short slerp compared to normal slerp
 }
 
+template<typename MatT, typename VecT>
+struct TestMatGeneralInputs
+{
+	MatT m1;
+	MatT m2;
+	VecT v1;
+	VecT m1V1Prod;
+	VecT m2V1Prod;
+	MatT m12Sum;
+	MatT m12Diff; // m2 - m1
+	MatT m1T;
+	MatT m1Inv;
+	MatT m12Prod; // m1 * m2
+	MatT m21Prod; // m2 * m1
+	float m1Trace;
+	float m1Det;
+	bool m1Ortho;
+	bool m2Ortho;
+	float scalar;
+	MatT m1ScalarSum;
+	MatT m1ScalarDiff; // scalar - m1
+	MatT scalarM1Diff; // m1 - scalar
+	MatT m1ScalarProd;
+	MatT m1ScalarDiv; // m1 / scalar
+};
+
+template<typename MatT, typename VecT>
+void TestMatGeneral(const TestMatGeneralInputs<MatT, VecT>& in)
+{
+	std::cout << "===================================\nTesting " << in.m1 << " and " << in.m2 << '\n';
+
+	assert(in.m1 * in.v1 == in.m1V1Prod);
+	assert(in.m2 * in.v1 == in.m2V1Prod);
+
+	assert(in.m1 + in.m2 == in.m12Sum);
+	assert(in.m2 - in.m1 == in.m12Diff);
+	assert(in.m1.get_transpose() == in.m1T);
+	assert(in.m1.get_inverse() == in.m1Inv);
+	assert(in.m1 * in.m2 == in.m12Prod);
+	assert(in.m2 * in.m1 == in.m21Prod);
+	assert(in.m1.get_trace() == in.m1Trace);
+	assert(in.m1.get_determinant() == in.m1Det);
+	assert(in.m1.is_orthogonal() == in.m1Ortho);
+	assert(in.m2.is_orthogonal() == in.m2Ortho);
+
+	MatT temp = in.m1;
+	temp += in.m2;
+	assert(temp == in.m12Sum);
+	temp = in.m2;
+	temp -= in.m1;
+	assert(temp == in.m12Diff);
+	temp = in.m1;
+	temp.transpose();
+	assert(temp == in.m1T);
+	temp = in.m1;
+	temp.invert();
+	assert(temp == in.m1Inv);
+
+	assert(in.m1 + in.scalar == in.m1ScalarSum);
+	assert(in.scalar + in.m1 == in.m1ScalarSum);
+	assert(in.scalar - in.m1 == in.m1ScalarDiff);
+	assert(in.m1 - in.scalar == in.scalarM1Diff);
+	assert(in.m1 * in.scalar == in.m1ScalarProd);
+	assert(in.scalar * in.m1 == in.m1ScalarProd);
+	assert(in.m1 / in.scalar == in.m1ScalarDiv);
+
+	temp = in.m1;
+	temp += in.scalar;
+	assert(temp == in.m1ScalarSum);
+	temp = in.m1;
+	temp -= in.scalar;
+	assert(temp == in.scalarM1Diff);
+	temp = in.m1;
+	temp *= in.scalar;
+	assert(temp == in.m1ScalarProd);
+	temp = in.m1;
+	temp /= in.scalar;
+	assert(temp == in.m1ScalarDiv);
+
+	std::cout << std::endl;
+}
+
 void testMat2()
 {
 	rqm::mat22 m = { 1,2,3,4 };
@@ -331,44 +414,42 @@ void testMat2()
 		assert(false);
 	}
 
-	rqm::mat22 m2 = { 1, 2, 3, 4 };
-	std::cout << m2.data[0][0] << ' ' << m2.data[0][1] << ' ' << m2.data[1][0] << ' ' << m2.data[1][1] << '\n';
-	std::cout << m2.flat_data[0] << ' ' << m2.flat_data[1] << ' ' << m2.flat_data[2] << ' ' << m2.flat_data[3] << '\n';
-	std::cout << m2.x << ' ' << m2.y << '\n';
-	rqm::mat22 a = { 2, 4, 7, 9 };
-	rqm::mat22 b = { 3, 5, 6, 8 };
-	rqm::mat22 c = a * b; // should be 30, 42, 75, 107
-	std::cout << c << '\n';
-	rqm::vec2 v = { 3, 5 };
-	rqm::vec2 u = a * v;
-	std::cout << u << '\n'; // should be 26,66
-	rqm::mat22 ident = rqm::gen_mat22_identity<float>();
-	std::cout << ident << '\n';
-	rqm::mat22 ct = c;
-	std::cout << ct << '\n';
-	ct.transpose();
-	std::cout << ct << '\n';
-	rqm::mat22 ainv = a.get_inverse();
-	std::cout << a << ' ' << ainv << '\n';
-	std::cout << v << ' ' << ainv * u << '\n';
-	std::cout << b << ' ' << a.get_inverse() * c << ' ' << a.get_inverse() * c << '\n';
+	TestMatGeneralInputs<rqm::mat22, rqm::vec2> inputs =
+	{
+		{ 1.f, 2.f, 3.f, 4.f }, // m1
+		{ 5.f, 6.f, 7.f, 8.f }, // m2
+		{ 9.f, 10.f }, // v1
+		{ 29.f, 67.f }, // m1V1Prod
+		{ 105.f, 143.f }, // m2V1Prod
+		{ 6.f, 8.f, 10.f, 12.f }, // m12Sum
+		{ 4.f, 4.f, 4.f, 4.f }, // m12Diff // m2 - m1
+		{ 1.f, 3.f, 2.f, 4.f }, // m1T
+		{ -2.f, 1.f, 3.f /2.f, -1.f /2.f }, // m1Inv
+		{ 19.f, 22.f, 43.f, 50.f }, // m12Prod // m1 * m2
+		{ 23.f, 34.f, 31.f, 46.f }, // m21Prod // m2 * m1
+		5.0f, // m1Trace
+		-2.0f, // m1Det
+		false, // m1Ortho
+		false, // m2Ortho
+		-12.0f, // scalar
+		{ -11.f, -10.f, -9.f, -8.f }, // m1ScalarSum
+		{ -13.f, -14.f, -15.f, -16.f }, // m1ScalarDiff // scalar - m1
+		{ 13.f, 14.f, 15.f, 16.f }, // scalarM1Diff // m1 - scalar
+		{ -12.f, -24.f, -36.f, -48.f }, // m1ScalarProd
+		{ 1.f/-12.f, 2.f/-12.f, 3.f/-12.f, 4.f/-12.f } // m1ScalarDiv // m1 / scalar
+	};
+	TestMatGeneral(inputs);
 
 	rqm::mat22 transform = rqm::gen_mat22_from_cols(rqm::vec2(0, 1), rqm::vec2(-1, 0)); // rotate 90 degrees
 	std::vector<rqm::vec2> verts = { {1, 0}, {0, 1}, {-1, 0}, {0, -1}, {5 , 1}, {-2, 10}, {-4, -3} };
-	for(int i = 0; i < verts.size(); i++)
-		std::cout << '[' << verts[i] << ']';
-	std::cout << '\n';
-	std::vector<rqm::vec2> newverts = transform * verts;
-	for(int i = 0; i < newverts.size(); i++)
-		std::cout << '[' << newverts[i] << ']';
-	std::cout << '\n';
-	transform.invert();
-	rqm::mat22_mul_in_place(transform, newverts);
-	for(int i = 0; i < newverts.size(); i++)
-		std::cout << '[' << newverts[i] << ']';
-	std::cout << '\n';
+	std::vector<rqm::vec2> correct = { {0, 1}, {-1, 0}, {0, -1}, {1, 0}, {-1 , 5}, {-10, -2}, {3, -4} };
+	assert(transform * verts == correct);
+	rqm::mat22_mul_in_place(transform, verts);
+	assert(verts == correct);
 
-	std::cout << "\n";
+	rqm::mat22 i;
+	rqm::set_identity(i);
+	assert(i == rqm::identity22<float>());
 }
 
 void testMat3()
@@ -391,48 +472,54 @@ void testMat3()
 		assert(false);
 	}
 
-	rqm::mat33 a = { 1,2,3,4,5,6,7,8,9 };
-	rqm::mat33 b = a;
-	b.transpose();
-	rqm::mat33 c = a * b;
-	std::cout << c << '\n'; // should be [14 32 50 | 32 77 122 | 50 122 194]
-	std::cout << "a^T " << ((a.get_transpose() == b) ? "is equal to b" : "is not equal to b") << '\n';
-	std::cout << "a " << ((a == b) ? "is equal to b" : "is not equal to b") << '\n';
+	TestMatGeneralInputs<rqm::mat33, rqm::vec3> inputs =
+	{
+		{ -4.f, -3.f, -2.f, -1.f, 1.f, 2.f, 3.f, 4.f, 5.f }, // m1
+		{ 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f }, // m2
+		{ 9.f, 10.f, 11.f }, // v1
+		{ -88.f, 23.f, 122.f }, // m1V1Prod
+		{ 62.f, 152.f, 242.f }, // m2V1Prod
+		{ -3.f, -1.f, 1.f, 3.f, 6.f, 8.f, 10.f, 12.f, 14.f }, // m12Sum
+		{ 5.f, 5.f, 5.f, 5.f, 4.f, 4.f, 4.f, 4.f, 4.f }, // m12Diff // m2 - m1
+		{ -4.f, -1.f, 3.f, -3.f, 1.f, 4.f, -2.f, 2.f, 5.f }, // m1T
+		{ 3.f/7.f, -1.f, 4.f/7.f, -11.f/7.f, 2.f, -10.f/7.f, 1.f, -1.f, 1.f }, // m1Inv
+		{ -30.f, -39.f, -48.f, 17.f, 19.f, 21.f, 54.f, 66.f, 78.f }, // m12Prod // m1 * m2
+		{ 3.f, 11.f, 17.f, -3.f, 17.f, 32.f, -9.f, 23.f, 47.f }, // m21Prod // m2 * m1
+		2.0f, // m1Trace
+		-7.0f, // m1Det
+		false, // m1Ortho
+		false, // m2Ortho
+		3.0f, // scalar
+		{ -1.f, 0.f, 1.f, 2.f, 4.f, 5.f, 6.f, 7.f, 8.f }, // m1ScalarSum
+		{ 7.f, 6.f, 5.f, 4.f, 2.f, 1.f, 0.f, -1.f, -2.f }, // m1ScalarDiff // scalar - m1
+		{ -7.f, -6.f, -5.f, -4.f, -2.f, -1.f, 0.f, 1.f, 2.f }, // scalarM1Diff // m1 - scalar
+		{ -12.f, -9.f, -6.f, -3.f, 3.f, 6.f, 9.f, 12.f, 15.f }, // m1ScalarProd
+		{ -4.f / 3.f, -3.f / 3.f, -2.f / 3.f, -1.f / 3.f, 1.f / 3.f, 2.f / 3.f, 3.f / 3.f, 4.f / 3.f, 5.f / 3.f } // m1ScalarDiv // m1 / scalar
+	};
+	TestMatGeneral(inputs);
 
-	rqm::mat33 d = { 4,2,1,3,3,4,1,-4,-2 };
-	rqm::mat33 dinv = d.get_inverse();
-	std::cout << dinv << '\n'; // should be [0.2222 0 0.11111 | 0.2222 -0.2 -0.28888 | -0.3333 0.4 0.13333]
+	{
+		rqm::mat33 transform3 = gen_mat33_from_cols(rqm::vec3(0, -1, 0), rqm::vec3(-1, 0, 0), rqm::vec3(0, 0, -1));
+		std::vector<rqm::vec3> verts3 = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {-1, 0, 1}, {2, 0, -1}, {5 , 1, -10}, {2, 10, 3}, {-4, -3, -5} };
+		std::vector<rqm::vec3> points3 = { {0, -1, 0}, {-1, 0, 0}, {0, 0, -1}, {0, 1, -1}, {0, -2, 1}, {-1 , -5, 10}, {-10, -2, -3}, {3, 4, 5} };
+		assert(rqm::mat33_mul(transform3, verts3) == points3);
+		rqm::mat33_mul_in_place(transform3, verts3);
+		assert(verts3 == points3);
+	}
+	{
+		rqm::mat33 transform2 = rqm::gen_mat33_from_cols<float>({ 0, 1, 0 }, { -1, 0, 0 }, { 5, 0, 1 });
+		std::vector<rqm::vec2> verts2 = { {1, 0}, {0, 1}, {-1, 0}, {0, -1}, {5, 1}, {-2, 10}, {-4, -3} };
+		std::vector<rqm::vec2> points2 = { {5, 1}, {4, 0}, {5, -1}, {6, 0}, {4, 5}, {-5, -2}, {8, -4} };
+		std::vector<rqm::vec2> dir2 = { {0, 1}, {-1, 0}, {0, -1}, {1, 0}, {-1, 5}, {-10, -2}, {3, -4} };
+		assert(rqm::mat33_mul(transform2, verts2, 1.0f) == points2);
+		assert(rqm::mat33_mul(transform2, verts2, 0.0f) == dir2);
+		rqm::mat33_mul_in_place(transform2, verts2, 1.0f);
+		assert(verts2 == points2);
+	}
 
-	rqm::mat33 transform3 = gen_mat33_from_cols(rqm::vec3(0, -1, 0), rqm::vec3(-1, 0, 0), rqm::vec3(0, 0, -1));
-	std::vector<rqm::vec3> verts3 = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {-1, 0, 1}, {2, 0, -1}, {5 , 1, -10}, {2, 10, 3}, {-4, -3, -5} };
-	for(int i = 0; i < verts3.size(); i++)
-		std::cout << '[' << verts3[i] << ']';
-	std::cout << '\n';
-	std::vector<rqm::vec3> transformedverts3 = transform3 * verts3;
-	for(int i = 0; i < transformedverts3.size(); i++)
-		std::cout << '[' << transformedverts3[i] << ']';
-	std::cout << '\n';
-	rqm::mat33_mul_in_place(transform3.get_inverse(), transformedverts3);
-	for(int i = 0; i < transformedverts3.size(); i++)
-		std::cout << '[' << transformedverts3[i] << ']';
-	std::cout << '\n';
-
-	rqm::mat33 transform2 = rqm::gen_mat33_from_cols<float>({ 0, 1, 0 }, { -1, 0, 0 }, { 5, 0, 1 });
-	std::vector<rqm::vec2> verts2 = { {1, 0}, {0, 1}, {-1, 0}, {0, -1}, {5 , 1}, {-2, 10}, {-4, -3} };
-	for(int i = 0; i < verts2.size(); i++)
-		std::cout << '[' << verts2[i] << ']';
-	std::cout << '\n';
-	std::vector<rqm::vec2> transformedverts2 = rqm::mat33_mul(transform2, verts2, 1.0f);
-	for(int i = 0; i < transformedverts2.size(); i++)
-		std::cout << '[' << transformedverts2[i] << ']';
-	std::cout << '\n';
-	transform2.invert();
-	rqm::mat33_mul_in_place(transform2, transformedverts2, 1.0f);
-	for(int i = 0; i < transformedverts2.size(); i++)
-		std::cout << '[' << transformedverts2[i] << ']';
-	std::cout << '\n';
-
-	std::cout << "\n";
+	rqm::mat33 i;
+	rqm::set_identity(i);
+	assert(i == rqm::identity33<float>());
 }
 
 void testMat4()
@@ -458,49 +545,84 @@ void testMat4()
 		assert(false);
 	}
 
-	rqm::mat44 a = m;
-	rqm::mat44 b = a;
-	b.transpose();
-	rqm::mat44 c = a * b;
-	std::cout << a << ' ' << b << '\n';
-	std::cout << c << '\n'; // should be [30 70 110 150 | 70 174 278 382 | 110 278 446 614 | 150 382 614 846]
-	std::cout << "a^T " << ((a.get_transpose() == b) ? "is equal to b" : "is not equal to b") << '\n';
-	std::cout << "a " << ((a == b) ? "is equal to b" : "is not equal to b") << '\n';
+	TestMatGeneralInputs<rqm::mat44, rqm::vec4> inputs =
+	{
+		{ 4.f, 0.f, 0.f, 0.f, 0.f, 0.f, 2.f, 0.f, 0.f, 1.f, 2.f, 0.f, 1.f, 0.f, 0.f, 1.f }, // m1
+		{ 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f, 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f }, // m2
+		{ 9.f, 10.f, 11.f, 12.f }, // v1
+		{ 36.f, 22.f, 32.f, 21.f }, // m1V1Prod
+		{ 110.f, 278.f, 446.f, 614.f }, // m2V1Prod
+		{ 5.f, 2.f, 3.f, 4.f, 5.f, 6.f, 9.f, 8.f, 9.f, 11.f, 13.f, 12.f, 14.f, 14.f, 15.f, 17.f }, // m12Sum
+		{ -3.f, 2.f, 3.f, 4.f, 5.f, 6.f, 5.f, 8.f, 9.f, 9.f, 9.f, 12.f, 12.f, 14.f, 15.f, 15.f }, // m12Diff // m2 - m1
+		{ 4.f, 0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 2.f, 2.f, 0.f, 0.f, 0.f, 0.f, 1.f }, // m1T
+		{ 0.25f, 0.f, 0.f, 0.f, 0.f, -1.f, 1.f, 0.f, 0.f, 0.5f, 0.f, 0.f, -0.25f, 0.f, 0.f, 1.0f }, // m1Inv
+		{ 4.f, 8.f, 12.f, 16.f, 18.f, 20.f, 22.f, 24.f, 23.f, 26.f, 29.f, 32.f, 14.f, 16.f, 18.f, 20.f }, // m12Prod // m1 * m2
+		{ 8.f, 3.f, 10.f, 4.f, 28.f, 7.f, 26.f, 8.f, 48.f, 11.f, 42.f, 12.f, 68.f, 15.f, 58.f, 16.f }, // m21Prod // m2 * m1
+		7.0f, // m1Trace
+		-8.0f, // m1Det
+		false, // m1Ortho
+		false, // m2Ortho
+		-2.0f, // scalar
+		{ 2.f, -2.f, -2.f, -2.f, -2.f, -2.f, 0.f, -2.f, -2.f, -1.f, 0.f, -2.f, -1.f, -2.f, -2.f, -1.f }, // m1ScalarSum
+		{ -6.f, -2.f, -2.f, -2.f, -2.f, -2.f, -4.f, -2.f, -2.f, -3.f, -4.f, -2.f, -3.f, -2.f, -2.f, -3.f }, // m1ScalarDiff // scalar - m1
+		{ 6.f, 2.f, 2.f, 2.f, 2.f, 2.f, 4.f, 2.f, 2.f, 3.f, 4.f, 2.f, 3.f, 2.f, 2.f, 3.f }, // scalarM1Diff // m1 - scalar
+		{ -8.f, 0.f, 0.f, 0.f, 0.f, 0.f, -4.f, 0.f, 0.f, -2.f, -4.f, 0.f, -2.f, 0.f, 0.f, -2.f }, // m1ScalarProd
+		{ -2.f, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 1.f/-2.f, -1.f, 0.f, 1.f/-2.f, 0.f, 0.f, 1.f/-2.f } // m1ScalarDiv // m1 / scalar
+	};
+	TestMatGeneral(inputs);
 
-	rqm::mat44 d = { 1,1,1,0,0,3,1,2,2,3,1,0,1,0,2,1 };
-	rqm::mat44 dinv = d.get_inverse();
-	std::cout << dinv << '\n'; // should be [-3 -0.5 1.5 1 | 1 0.25 -0.25 -0.5 | 3 0.25 -1.25 -0.5 | -3 0 1 1]
+	{
+		rqm::mat44 transform4 = gen_mat44_from_cols(rqm::vec4(0, -1, 0, 0), rqm::vec4(-1, 0, 0, 0), rqm::vec4(0, 0, -1, 0), rqm::vec4(0, 0, 0, 1));
+		std::vector<rqm::vec4> verts4 = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {-1, 0, 1, 1}, {2, 0, -1, 1}, {5 , 1, -10, 1}, {2, 10, 3, 1}, {-4, -3, -5, 1} };
+		std::vector<rqm::vec4> results = { {0, -1, 0, 0}, {-1, 0, 0, 0}, {0, 0, -1, 0}, {0, 1, -1, 1}, {0, -2, 1, 1}, {-1, -5, 10, 1}, {-10, -2, -3, 1}, {3, 4, 5, 1} };
+		assert(transform4 * verts4 == results);
+		rqm::mat44_mul_in_place(transform4, verts4);
+		assert(verts4 == results);
+	}
 
-	rqm::mat44 transform4 = gen_mat44_from_cols(rqm::vec4(0, -1, 0, 0), rqm::vec4(-1, 0, 0, 0), rqm::vec4(0, 0, -1, 0), rqm::vec4(0, 0, 0, 1));
-	std::vector<rqm::vec4> verts4 = { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {-1, 0, 1, 1}, {2, 0, -1, 1}, {5 , 1, -10, 1}, {2, 10, 3, 1}, {-4, -3, -5, 1} };
-	for(int i = 0; i < verts4.size(); i++)
-		std::cout << '[' << verts4[i] << ']';
-	std::cout << '\n';
-	std::vector<rqm::vec4> transformedverts4 = transform4 * verts4;
-	for(int i = 0; i < transformedverts4.size(); i++)
-		std::cout << '[' << transformedverts4[i] << ']';
-	std::cout << '\n';
-	rqm::mat44_mul_in_place(transform4.get_inverse(), transformedverts4);
-	for(int i = 0; i < transformedverts4.size(); i++)
-		std::cout << '[' << transformedverts4[i] << ']';
-	std::cout << '\n';
+	{
+		rqm::mat44 transform3 = rqm::gen_mat44_from_cols<float>({ 0, -1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, -1, 0 }, { 5, -2, 1, 1 });
+		std::vector<rqm::vec3> verts3 = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {-1, 0, 1}, {2, 0, -1}, {5 , 1, -10}, {2, 10, 3}, {-4, -3, -5} };
+		std::vector<rqm::vec3> points3 = { {5, -3, 1}, {6, -2, 1}, {5, -2, 0}, {5, -1, 0}, {5, -4, 2}, {6, -7, 11}, {15, -4, -2}, {2, 2, 6} };
+		std::vector<rqm::vec3> dir3 = { {0, -1, 0}, {1, 0, 0}, {0, 0, -1}, {0, 1, -1}, {0, -2, 1}, {1, -5, 10}, {10, -2, -3}, {-3, 4, 5} };
+		assert(rqm::mat44_mul(transform3, verts3, 1.0f) == points3);
+		assert(rqm::mat44_mul(transform3, verts3, 0.0f) == dir3);
+		rqm::mat44_mul_in_place(transform3, verts3, 1.0f);
+		assert(verts3 == points3);
+	}
 
-	rqm::mat44 transform3 = rqm::gen_mat44_from_cols<float>({ 0, 1, 0, 0 }, { -1, 0, 0, 0 }, { 0, 0, -1, 0 }, { 5, -2, 1, 1 });
-	std::vector<rqm::vec3> verts3 = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {-1, 0, 1}, {2, 0, -1}, {5 , 1, -10}, {2, 10, 3}, {-4, -3, -5} };
-	for(int i = 0; i < verts3.size(); i++)
-		std::cout << '[' << verts3[i] << ']';
-	std::cout << '\n';
-	std::vector<rqm::vec3> transformedverts3 = rqm::mat44_mul(transform3, verts3, 1.0f);
-	for(int i = 0; i < transformedverts3.size(); i++)
-		std::cout << '[' << transformedverts3[i] << ']';
-	std::cout << '\n';
-	transform3.invert();
-	rqm::mat44_mul_in_place(transform3, transformedverts3, 1.0f);
-	for(int i = 0; i < transformedverts3.size(); i++)
-		std::cout << '[' << transformedverts3[i] << ']';
-	std::cout << '\n';
+	rqm::mat44 i;
+	rqm::set_identity(i);
+	assert(i == rqm::identity44<float>());
+}
 
-	std::cout << "\n";
+void testBasic()
+{
+	std::cout << "===================================\nTesting Basic Math Header" << '\n';
+
+	assert(rqm::epsilon_equals(rqm::rad2deg(rqm::deg2rad(90.f)), 90.f));
+	assert(rqm::PI<float> > 3.1415 && rqm::PI<float> < 3.15);
+	assert(rqm::epsilon_equals(rqm::sin(rqm::PI<float> / 6.f), 0.5f));
+	assert(rqm::epsilon_equals(rqm::cos(rqm::PI<float> / 3.f), 0.5f));
+	assert(rqm::epsilon_equals(rqm::tan(rqm::PI<float> / 4.f), 1.f));
+	assert(rqm::epsilon_equals(rqm::asin(0.5f), rqm::PI<float> / 6.f));
+	assert(rqm::epsilon_equals(rqm::acos(0.5f), rqm::PI<float> / 3.f));
+	assert(rqm::epsilon_equals(rqm::atan(1.f), rqm::PI<float> / 4.f));
+
+	assert(rqm::signum(0.f) == 0.f);
+	assert(rqm::signum(20.f) == 1.f);
+	assert(rqm::signum(-33.f) == -1.f);
+	assert(rqm::signum_no_zero(0.f) == 1.f);
+	assert(rqm::signum_no_zero(20.f) == 1.f);
+	assert(rqm::signum_no_zero(-33.f) == -1.f);
+
+	assert(rqm::max(-2.f, 5.f) == 5.f);
+	assert(rqm::min(-3.f, 4.f) == -3.f);
+	assert(rqm::abs(3.f) == 3.f);
+	assert(rqm::abs(-12.f) == 12.f);
+
+	assert(rqm::sqrt(1.f) == 1.f);
+	assert(rqm::sqrt(36.f) == 6.f);
 }
 
 void runMathTests()
@@ -514,4 +636,5 @@ void runMathTests()
 	testMat2();
 	testMat3();
 	testMat4();
+	testBasic();
 }

@@ -36,11 +36,17 @@ inline T sqrt(const T& val) { return std::sqrt(val); }
 // trig
 
 template <typename T>
+inline T asin(const T& val) { return std::asin(val); }
+template <typename T>
 inline T acos(const T& val) { return std::acos(val); }
+template <typename T>
+inline T atan(const T& val) { return std::atan(val); }
 template <typename T>
 inline T sin(const T& val) { return std::sin(val); }
 template <typename T>
 inline T cos(const T& val) { return std::cos(val); }
+template <typename T>
+inline T tan(const T& val) { return std::tan(val); }
 
 template <typename T> constexpr T PI;
 template <> constexpr float PI<float> = 3.141592653f;

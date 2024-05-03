@@ -141,13 +141,19 @@ inline mat22_base<T> operator-(const T& val, const mat22_base<T>& mat) { return 
 template <typename T>
 inline mat22_base<T> operator*(const T& val, const mat22_base<T>& mat) { return mat * val; }
 template <typename T>
-inline mat22_base<T> gen_mat22_identity()
+inline constexpr mat22_base<T> identity22()
 {
     return
     {
         1, 0,
         0, 1
     };
+}
+template <typename T>
+void set_identity(mat22_base<T>& mat)
+{
+    mat.xx = 1; mat.xy = 0;
+    mat.yx = 0; mat.yy = 1;
 }
 template <typename T>
 inline mat22_base<T> gen_mat22_from_cols(const vec2_base<T>& col0, const vec2_base<T>& col1)
@@ -339,7 +345,7 @@ inline mat33_base<T> operator-(const T& val, const mat33_base<T>& mat) { return 
 template <typename T>
 inline mat33_base<T> operator*(const T& val, const mat33_base<T>& mat) { return mat * val; }
 template <typename T>
-inline mat33_base<T> gen_mat33_identity()
+inline constexpr mat33_base<T> identity33()
 {
     return
     {
@@ -347,6 +353,13 @@ inline mat33_base<T> gen_mat33_identity()
         0, 1, 0,
         0, 0, 1
     };
+}
+template <typename T>
+void set_identity(mat33_base<T>& mat)
+{
+    mat.xx = 1; mat.xy = 0; mat.xz = 0;
+    mat.yx = 0; mat.yy = 1; mat.yz = 0;
+    mat.zx = 0; mat.zy = 0; mat.zz = 1;
 }
 template <typename T>
 inline mat33_base<T> gen_mat33_from_cols(const vec3_base<T>& col0, const vec3_base<T>& col1, const vec3_base<T>& col2)
@@ -599,7 +612,7 @@ union mat44_base
         out.x = xx * other.x + xy * other.y + xz * other.z + xw * other.w;
         out.y = yx * other.x + yy * other.y + yz * other.z + yw * other.w;
         out.z = zx * other.x + zy * other.y + zz * other.z + zw * other.w;
-        out.z = wx * other.x + wy * other.y + wz * other.z + ww * other.w;
+        out.w = wx * other.x + wy * other.y + wz * other.z + ww * other.w;
 #endif
         return out;
     }
@@ -639,7 +652,7 @@ inline mat44_base<T> operator-(const T& val, const mat44_base<T>& mat) { return 
 template <typename T>
 inline mat44_base<T> operator*(const T& val, const mat44_base<T>& mat) { return mat * val; }
 template <typename T>
-inline mat44_base<T> gen_mat44_identity()
+inline constexpr mat44_base<T> identity44()
 {
     return
     {
@@ -648,6 +661,14 @@ inline mat44_base<T> gen_mat44_identity()
         0, 0, 1, 0,
         0, 0, 0, 1
     };
+}
+template <typename T>
+void set_identity(mat44_base<T>& mat)
+{
+    mat.xx = 1; mat.xy = 0; mat.xz = 0; mat.xw = 0;
+    mat.yx = 0; mat.yy = 1; mat.yz = 0; mat.yw = 0;
+    mat.zx = 0; mat.zy = 0; mat.zz = 1; mat.zw = 0;
+    mat.wx = 0; mat.wy = 0; mat.wz = 0; mat.ww = 1;
 }
 template <typename T>
 inline mat44_base<T> gen_mat44_from_cols(const vec4_base<T>& col0, const vec4_base<T>& col1, const vec4_base<T>& col2, const vec4_base<T>& col3)
