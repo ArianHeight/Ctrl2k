@@ -18,17 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Profiler.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Profiler.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{75cde69c-f1e7-4ce0-b20d-65e9c5a9dbe1}</ProjectGuid>
-    <RootNamespace>SunDialProfiler</RootNamespace>
+    <ProjectGuid>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</ProjectGuid>
+    <RootNamespace>Monument</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -78,9 +72,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d</TargetName>
     <OutDir>$(SolutionDir)\$(Platform)\</OutDir>
     <IntDir>$(ProjectDir)\Bin\$(Platform)\</IntDir>
-    <TargetName>$(ProjectName)d</TargetName>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -91,9 +85,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d</TargetName>
     <OutDir>$(SolutionDir)\$(Platform)\</OutDir>
     <IntDir>$(ProjectDir)\Bin\$(Platform)\</IntDir>
-    <TargetName>$(ProjectName)d</TargetName>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,6 +156,25 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="basicassert.h" />
+    <ClInclude Include="basicdefines.h" />
+    <ClInclude Include="basicmemory.h" />
+    <ClInclude Include="basictypes.h" />
+    <ClInclude Include="Monument.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Monument.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Monument.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Monument.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Monument.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Monument.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

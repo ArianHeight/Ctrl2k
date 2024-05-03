@@ -159,6 +159,23 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\GreatBath\GreatBath.vcxproj">
+      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Monument\Monument.vcxproj">
+      <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Petra\Petra.vcxproj">
+      <Project>{15ad7afd-0ddb-4b7c-823f-3b54cf4d41af}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\SunDial\SunDial.vcxproj">
+      <Project>{eb11a967-dab8-4de2-894c-f5014e62137e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\RuhrValley\RuhrValley.vcxproj">
+      <Project>{75cde69c-f1e7-4ce0-b20d-65e9c5a9dbe1}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

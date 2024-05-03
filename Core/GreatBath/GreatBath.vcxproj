@@ -26,11 +26,19 @@
     <ClCompile Include="FilePathProcessing.cpp" />
     <ClCompile Include="Logger.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Monument\Monument.vcxproj">
+      <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Petra\Petra.vcxproj">
+      <Project>{15ad7afd-0ddb-4b7c-823f-3b54cf4d41af}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{55bb3977-e4aa-4c08-b457-b1214977396c}</ProjectGuid>
-    <RootNamespace>CtrlDump</RootNamespace>
+    <RootNamespace>GreatBath</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

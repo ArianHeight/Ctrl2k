@@ -71,25 +71,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>$(ProjectName)d</TargetName>
     <IntDir>$(ProjectDir)\Bin\$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\lib\x86;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\lib;$(ProjectDir)\Dependencies\SDL2-2.0.7\lib\x86;$(ProjectDir)\Dependencies\freeglut-3.0.0\lib;$(ProjectDir)\Dependencies\glew-2.0.0\lib\Debug\Win32;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(ProjectDir)\Bin\$(Platform)\</IntDir>
-    <IncludePath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\lib\x86;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\lib;$(ProjectDir)\Dependencies\SDL2-2.0.7\lib\x86;$(ProjectDir)\Dependencies\freeglut-3.0.0\lib;$(ProjectDir)\Dependencies\glew-2.0.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\lib\x64;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\lib\x64;$(ProjectDir)\Dependencies\SDL2-2.0.7\lib\x64;$(ProjectDir)\Dependencies\freeglut-3.0.0\lib\x64;$(ProjectDir)\Dependencies\glew-2.0.0\lib\Debug\x64;$(LibraryPath)</LibraryPath>
     <IntDir>$(ProjectDir)\Bin\$(Platform)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
     <OutDir>$(SolutionDir)\$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\include;$(ProjectDir)\Include;$(ProjectDir)\Dependencies\SDL2-2.0.7\include;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\src;$(ProjectDir)\Dependencies\freeglut-3.0.0\include;$(ProjectDir)\Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Dependencies\SDL2_mixer-2.0.2\lib\x64;$(ProjectDir)\Dependencies\SOIL for opengl 3.0 context and above\lib\x64;$(ProjectDir)\Dependencies\SDL2-2.0.7\lib\x64;$(ProjectDir)\Dependencies\freeglut-3.0.0\lib\x64;$(ProjectDir)\Dependencies\glew-2.0.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\$(Platform)\</OutDir>
     <IntDir>$(ProjectDir)\Bin\$(Platform)\</IntDir>
@@ -298,6 +298,26 @@
     <None Include="Shaders\Tiled\Ctrl 2k widgetRender.frag" />
     <None Include="Shaders\Tiled\Ctrl 2k widgetRender.vert" />
     <None Include="Shaders\Tiled\Ctrl 2k widgetTexRender.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Assets\Material\Material.vcxproj">
+      <Project>{460d5759-6f03-499d-8a8f-dbc87004e0b4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\GreatBath\GreatBath.vcxproj">
+      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Monument\Monument.vcxproj">
+      <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Petra\Petra.vcxproj">
+      <Project>{15ad7afd-0ddb-4b7c-823f-3b54cf4d41af}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\SunDial\SunDial.vcxproj">
+      <Project>{eb11a967-dab8-4de2-894c-f5014e62137e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\RuhrValley\RuhrValley.vcxproj">
+      <Project>{75cde69c-f1e7-4ce0-b20d-65e9c5a9dbe1}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

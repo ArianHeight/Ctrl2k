@@ -6,9 +6,11 @@
 #include <vector>
 #include <assert.h>
 
+#include "tests.h"
+
 #include "Core/GreatBath/Logger.h"
 #include "Core/SunDial/EngineClock.h"
-#include "Tools/SunDial Profiler/Profiler.h"
+#include "Tools/RuhrValley/Profiler.h"
 
 #define CTRLTEST_ERROR std::this_thread::sleep_for(std::chrono::seconds(1)); assert(false);
 //#define LOG_TEST
@@ -258,6 +260,8 @@ int main()
 	runEngineBaseClockTest(0.2);
 	runCtrlEngineClockTest(0.2);
 	runProfilerTest();
+	runFilePathTests();
+	runMathTests();
 
 	return 0;
 }
