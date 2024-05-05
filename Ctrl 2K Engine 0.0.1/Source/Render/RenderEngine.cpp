@@ -1,4 +1,5 @@
 #include <Ctrl 2kPCH.h>
+#include "Core/GreatBath/Logger.h"
 
 /*
 
@@ -22,7 +23,7 @@ RenderEngine::RenderEngine(CoreEngine &engine, int w, int h, std::string &s) :
 
 void RenderEngine::init()
 {
-	std::cout << "Initializing Rendering Engine..." << std::endl;
+	LOG_MSG_QUEUE("Initializing Rendering Engine...");
 	this->activateWindow();
 	this->createQuadVao();
 	this->createLineVao();
@@ -30,11 +31,11 @@ void RenderEngine::init()
 
 	if (!this->mainWindow.isActive() || this->quadVao == 0 || this->lineVao == 0)
 	{
-		std::cerr << "The Render Engine Was Not Initialized Properly..." << std::endl;
+		LOG_FATAL_PUSH("The Render Engine Was Not Initialized Properly...");
 		exit(-1);
 	}
 
-	std::cout << "Rendering Engine Has Been Initialized Successfully" << std::endl;
+	LOG_MSG_PUSH("Rendering Engine Has Been Initialized Successfully");
 
 	this->recreateScreenBuffer();
 }

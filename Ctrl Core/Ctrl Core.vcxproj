@@ -18,6 +18,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="setup.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="setup.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\GreatBath\GreatBath.vcxproj">
+      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{4FC5CA38-4069-48EF-85E2-2ED66EE13F54}</ProjectGuid>

@@ -7,6 +7,8 @@ Ctrl 2K 2D Game Engine
 //#include "stdafx.h"
 //#include <Ctrl 2kPCH.h>
 #include "../Include/Ctrl 2kPCH.h"
+#include "Ctrl Core/setup.h"
+#include "Tools/RuhrValley/profiler.h"
 
 /*
 
@@ -535,6 +537,8 @@ void cleanUp()
 
 int main(int argc, char *argv[])
 {
+	SetUpLoggingSystem("Ctrl2kEngine");
+
 	Parser temp(maps, textures, fonts, animations);
 	std::string name; //for game configs
 	std::vector<int> data;
