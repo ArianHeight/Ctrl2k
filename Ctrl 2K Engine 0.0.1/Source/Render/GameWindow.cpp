@@ -1,4 +1,5 @@
 #include <Ctrl 2kPCH.h>
+#include "Core/GreatBath/Logger.h"
 
 /*
 
@@ -43,25 +44,25 @@ void GameWindow::swapBuffers()
 
 void GameWindow::initSDL()
 {
-	std::cout << "Initializing SDL..." << std::endl;
+	LOG_MSG_QUEUE("Initializing SDL...");
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) //inits sdl
 	{
 		//did not work
-		std::cerr << "Falied to initialize SDL 2...\nExiting" << std::endl;
+		LOG_FATAL_PUSH("Falied to initialize SDL 2, Exiting...");
 		exit(-1);
 	}
 
 	this->m_sdlWindow = SDL_CreateWindow(this->m_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->m_windowWidth, this->m_windowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if (this->m_sdlWindow == nullptr) //check if sucessful
 	{
-		std::cerr << "Failed to create SDL2 window...\nExiting" << std::endl;
+		LOG_FATAL_PUSH("Failed to create SDL2 window, Exiting...");
 		exit(-1);
 	}
 	
 	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096) == -1) //check if sdl_mixer has been initialized successfully
 	{
-		std::cerr << "Failed to initialize SDL_mixer...\nExiting" << std::endl;
+		LOG_FATAL_PUSH("Failed to initialize SDL_mixer, Exiting...");
 		exit(-1);
 	}
 	Mix_Volume(-1, MIX_MAX_VOLUME / 4);
@@ -77,12 +78,12 @@ void GameWindow::initSDL()
 	//disables v-sync
 	SDL_GL_SetSwapInterval(this->m_vSync);
 
-	std::cout << "SDL Has Been Initalized Successfully" << std::endl;
+	LOG_MSG_PUSH("SDL Has Been Initalized Successfully");
 }
 
 void GameWindow::initOGL()
 {
-	std::cout << "Initalizing OpenGL..." << std::endl;
+	LOG_MSG_QUEUE("Initalizing OpenGL...");
 
 	//Window Stuffs
 	SDL_DisplayMode sdlDeskTop; //for dimensions
@@ -107,22 +108,22 @@ void GameWindow::initOGL()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	std::cout << "OpenGL Has Initialized Successfully" << std::endl;
+	LOG_MSG_PUSH("OpenGL Has Initialized Successfully");
 }
 
 void GameWindow::initGLEW() //for vertex array and buffer objects
 {
-	std::cout << "Initalizing GLEW..." << std::endl;
+	LOG_MSG_QUEUE("Initalizing GLEW...");
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) //not initialized properly
 	{
-		std::cerr << "There was a problem initializing GL Extension Wrangler...\nExiting...." << std::endl;
+		LOG_FATAL_PUSH("There was a problem initializing GL Extension Wrangler, Exiting...");
 		exit(-1);
 	}
 	if (!GLEW_VERSION_3_3) //wrong opengl vesion support
 	{
-		std::cerr << "OpenGL 3.3 Version Support Not Present For Engine Use...." << std::endl;
+		LOG_FATAL_PUSH("OpenGL 3.3 Version Support Not Present For Engine Use...");
 		exit(-1);
 	}
 #ifdef _WIN32
@@ -132,7 +133,7 @@ void GameWindow::initGLEW() //for vertex array and buffer objects
 	}
 #endif
 
-	std::cout << "GLEW Has Been Initalized Successfully" << std::endl;
+	LOG_MSG_PUSH("GLEW Has Been Initalized Successfully");
 }
 
 void GameWindow::updateCenter()

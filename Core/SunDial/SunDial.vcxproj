@@ -20,9 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineClock.h" />
+    <ClInclude Include="LifeTimeClock.h" />
+    <ClInclude Include="timedefines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineClock.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Monument\Monument.vcxproj">
+      <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
