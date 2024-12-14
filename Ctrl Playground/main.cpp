@@ -8,6 +8,8 @@
 #include <unordered_set>
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
+#include "Core/OracleBone/stackstring.h"
+#include "Core/OracleBone/heapstring.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -348,6 +350,31 @@ int main(int argc, char *argv[])
 	LOG_WARNING_PUSH("Uh Oh");
 	LOG_ERROR_PUSH("REEEEE");
 	LOG_FATAL_PUSH("Ded");
+	LOG_FLUSH();
+	
+	obn::small_string128 sstring;
+	sstring = "blue";
+	LOG_MSG_PUSH("256 stack string max length {}, capacity {}, struct size {}, data {}, length {}", sstring.max_length(), sstring.capacity(), sizeof(sstring), sstring.data(), sstring.length());
+	obn::small_string16 ssstring;
+	ssstring = "helloworldgoodbyereeeeee";
+	LOG_MSG_PUSH("128 stack string max length {}, capacity {}, struct size {}, data {}, length {}", ssstring.max_length(), ssstring.capacity(), sizeof(ssstring), ssstring.c_str(), ssstring.length());
+	obn::small_string8 sssstring;
+	sssstring = "helloworldgoodbye";
+	LOG_MSG_PUSH("8 stack string max length {}, capacity {}, struct size {}, data {}, length {}", sssstring.max_length(), sssstring.capacity(), sizeof(sssstring), sssstring.data(), sssstring.length());
+	obn::fixed_string<12> fstring = "helloworldgoodbye";
+	LOG_MSG_PUSH("fixed string max length {}, capacity {}, struct size {}, data {}, length {}", fstring.max_length(), fstring.capacity(), sizeof(fstring), fstring.data(), fstring.length());
+	obn::dynamic_string dstring;
+	LOG_MSG_PUSH("dyn string max length {}, capacity {}, struct size {}, data {}, length {}", dstring.max_length(), dstring.capacity(), sizeof(dstring), dstring.data(), dstring.length());
+	dstring = "hello, I am a test string and I";
+	LOG_MSG_PUSH("dyn string max length {}, capacity {}, struct size {}, data {}, length {}", dstring.max_length(), dstring.capacity(), sizeof(dstring), dstring.data(), dstring.length());
+	dstring = "hello, I am a test string and I clearly do not know what I am doing at all";
+	LOG_MSG_PUSH("dyn string max length {}, capacity {}, struct size {}, data {}, length {}", dstring.max_length(), dstring.capacity(), sizeof(dstring), dstring.data(), dstring.length());
+	obn::dynamic_string0 d0string;
+	LOG_MSG_PUSH("dyn string0 max length {}, capacity {}, struct size {}, data {}, length {}", d0string.max_length(), d0string.capacity(), sizeof(d0string), d0string.data(), d0string.length());
+	d0string = "testing widening";
+	LOG_MSG_PUSH("dyn string0 max length {}, capacity {}, struct size {}, data {}, length {}", d0string.max_length(), d0string.capacity(), sizeof(d0string), d0string.data(), d0string.length());
+	d0string = fstring;
+	LOG_MSG_PUSH("dyn string0 max length {}, capacity {}, struct size {}, data {}, length {}", d0string.max_length(), d0string.capacity(), sizeof(d0string), d0string.data(), d0string.length());
 	LOG_FLUSH();
 
     return 0;
