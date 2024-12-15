@@ -336,6 +336,12 @@ void profileAll()
 	int64_t umapfindus = profileUnorderedMapFind(umap, stringElement, found);
 }
 
+template <typename stringtype>
+void testString(const c_string title, const stringtype& string)
+{
+	LOG_MSG_PUSH("{} max length {}, capacity {}, struct size {}, length {}, data \"{}\"", title, string.max_length(), string.capacity(), sizeof(string), string.length(), string.data());
+}
+
 int main(int argc, char *argv[])
 {
     REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_PROFILE, std::cout);
@@ -354,27 +360,46 @@ int main(int argc, char *argv[])
 	
 	obn::small_string128 sstring;
 	sstring = "blue";
-	LOG_MSG_PUSH("256 stack string max length {}, capacity {}, struct size {}, data {}, length {}", sstring.max_length(), sstring.capacity(), sizeof(sstring), sstring.data(), sstring.length());
+	testString("128 small string", sstring);
 	obn::small_string16 ssstring;
 	ssstring = "helloworldgoodbyereeeeee";
-	LOG_MSG_PUSH("128 stack string max length {}, capacity {}, struct size {}, data {}, length {}", ssstring.max_length(), ssstring.capacity(), sizeof(ssstring), ssstring.c_str(), ssstring.length());
+	testString("16 small string", ssstring);
 	obn::small_string8 sssstring;
 	sssstring = "helloworldgoodbye";
-	LOG_MSG_PUSH("8 stack string max length {}, capacity {}, struct size {}, data {}, length {}", sssstring.max_length(), sssstring.capacity(), sizeof(sssstring), sssstring.data(), sssstring.length());
+	testString("8 small string", sssstring);
 	obn::fixed_string<12> fstring = "helloworldgoodbye";
-	LOG_MSG_PUSH("fixed string max length {}, capacity {}, struct size {}, data {}, length {}", fstring.max_length(), fstring.capacity(), sizeof(fstring), fstring.data(), fstring.length());
+	testString("fixed string", fstring);
 	obn::dynamic_string dstring;
-	LOG_MSG_PUSH("dyn string max length {}, capacity {}, struct size {}, data {}, length {}", dstring.max_length(), dstring.capacity(), sizeof(dstring), dstring.data(), dstring.length());
+	testString("dynamic string", dstring);
 	dstring = "hello, I am a test string and I";
-	LOG_MSG_PUSH("dyn string max length {}, capacity {}, struct size {}, data {}, length {}", dstring.max_length(), dstring.capacity(), sizeof(dstring), dstring.data(), dstring.length());
+	testString("dynamic string", dstring);
 	dstring = "hello, I am a test string and I clearly do not know what I am doing at all";
-	LOG_MSG_PUSH("dyn string max length {}, capacity {}, struct size {}, data {}, length {}", dstring.max_length(), dstring.capacity(), sizeof(dstring), dstring.data(), dstring.length());
+	testString("dynamic string", dstring);
 	obn::dynamic_string0 d0string;
-	LOG_MSG_PUSH("dyn string0 max length {}, capacity {}, struct size {}, data {}, length {}", d0string.max_length(), d0string.capacity(), sizeof(d0string), d0string.data(), d0string.length());
+	testString("0 dynamic string", d0string);
 	d0string = "testing widening";
-	LOG_MSG_PUSH("dyn string0 max length {}, capacity {}, struct size {}, data {}, length {}", d0string.max_length(), d0string.capacity(), sizeof(d0string), d0string.data(), d0string.length());
+	testString("test widening ", d0string);
 	d0string = fstring;
-	LOG_MSG_PUSH("dyn string0 max length {}, capacity {}, struct size {}, data {}, length {}", d0string.max_length(), d0string.capacity(), sizeof(d0string), d0string.data(), d0string.length());
+	testString("test copy", d0string);
+	d0string = std::move(sstring);
+	testString("test move but copy", d0string);
+	testString("test move but copy old", sstring);
+	if(d0string != sstring.c_str() && sstring != d0string.c_str())
+		LOG_FATAL_PUSH("d0string != sstring.c_str()");
+	if(d0string != sstring && sstring != d0string)
+		LOG_FATAL_PUSH("d0string != sstring");
+	d0string = std::move(dstring);
+	testString("test move new", d0string);
+	testString("test move old", dstring);
+	if(d0string == sstring.c_str() && sstring != d0string.c_str())
+		LOG_FATAL_PUSH("d0string == sstring.c_str()");
+	if(d0string == sstring && sstring != d0string)
+		LOG_FATAL_PUSH("d0string == sstring");
+	if(sstring[0] != 'b' || sstring[1] != 'l' || sstring[2] != 'u' || sstring[3] != 'e' )
+		LOG_FATAL_PUSH("sstring wrong access");
+	sstring[3] = 'd';
+	if(sstring[3] != 'd')
+		LOG_FATAL_PUSH("sstring wrong access");
 	LOG_FLUSH();
 
     return 0;

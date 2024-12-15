@@ -1,10 +1,17 @@
 #pragma once
-#include "stringutil.h"
+#include "simplestring.h"
 
 namespace obn
 {
 
-// DO NOT USE DIRECTLY, use the related typedefs with a simple_string interface
+/*
+
+DO NOT USE DIRECTLY, use the related typedefs with a simple_string interface
+
+This is a form of compressed string where we use a total of 2^2, 2^3, ..., 2^7 chars for storing everything.
+Allocated on the stack.
+
+*/
 template <typename chartype, size_t exp>
 requires (exp < 8 && exp > 1)
 struct small_string_data
@@ -19,7 +26,13 @@ struct small_string_data
     small_string_data() : error(false), len(0) { buf[0] = 0; }
 };
 
-// DO NOT USE DIRECTLY, use the related typedefs with a simple_string interface
+/*
+
+DO NOT USE DIRECTLY, use the related typedefs with a simple_string interface
+
+This is a standard fixed string allocated on the stack.
+
+*/
 template <typename chartype, size_t buf_size>
 struct fixed_string_data
 {
@@ -39,7 +52,11 @@ typedef simple_string<small_string_data, char, 5> small_string32;
 typedef simple_string<small_string_data, char, 6> small_string64;
 typedef simple_string<small_string_data, char, 7> small_string128;
 
+typedef simple_string<small_string_data, wchar_t, 6> wsmall_string64;
+
 template <size_t size>
 using fixed_string = simple_string<fixed_string_data, char, size>;
+template <size_t size>
+using wfixed_string = simple_string<fixed_string_data, wchar_t, size>;
 
 }

@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="heapstring.h" />
     <ClInclude Include="obn.h" />
+    <ClInclude Include="simplestring.h" />
     <ClInclude Include="stackstring.h" />
     <ClInclude Include="stringutil.h" />
   </ItemGroup>

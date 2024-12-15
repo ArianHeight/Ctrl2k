@@ -27,6 +27,9 @@
     <ClInclude Include="heapstring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="simplestring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="obn.cpp">
