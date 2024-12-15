@@ -51,9 +51,9 @@ struct dynamic_string_data
         len = 0;
     }
 
-    // This is dangerous, as it does not always update len
 private:
-    void change_capacity(size_t target_capacity)
+    // This is dangerous, as it does not always update len
+    void change_capacity_erase_data(size_t target_capacity)
     {
         delete_memory();
         if(target_capacity > 1)
@@ -69,14 +69,35 @@ private:
     }
 
 public:
-    void increase_capacity(size_t target_capacity)
+    // can return false if shrinking causes truncation
+    void change_capacity(size_t target_capacity)
+    {
+        if(target_capacity == capacity)
+            return;
+        if(target_capacity > 1)
+        {
+            chartype* new_buf = new chartype[target_capacity];
+            error = string_ncopy(new_buf, buf, target_capacity) != 0;
+            delete_memory();
+            buf = new_buf;
+            len = target_capacity < capacity ? target_capacity - 1 : len;
+            capacity = target_capacity;
+        }
+        else
+        {
+            delete_memory();
+            reset_values();
+        }
+    }
+
+    void increase_capacity_erase_data(size_t target_capacity)
     {
         if(target_capacity <= capacity)
             return;
-        change_capacity(target_capacity);
+        change_capacity_erase_data(target_capacity);
     }
 
-    inline void shrink_capacity()
+    void shrink_to_fit()
     {
         if(len + 1 >= capacity)
             return;

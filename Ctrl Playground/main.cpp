@@ -400,6 +400,29 @@ int main(int argc, char *argv[])
 	sstring[3] = 'd';
 	if(sstring[3] != 'd')
 		LOG_FATAL_PUSH("sstring wrong access");
+	sssstring += 'c';
+	testString("append overflow char", sssstring);
+	sssstring += "cccc";
+	testString("append overflow chars", sssstring);
+	sssstring += sstring;
+	testString("append overflow string", sssstring);
+	sstring += ' ';
+	testString("append char", sstring);
+	sstring += "and ";
+	testString("append chars", sstring);
+	fstring = "red";
+	sstring += fstring;
+	testString("append string", sstring);
+	dstring = "red";
+	dstring.shrink_to_fit();
+	dstring += ' ';
+	testString("dyn append char", dstring);
+	dstring.shrink_to_fit();
+	dstring += "and ";
+	testString("dyn append chars", dstring);
+	dstring.shrink_to_fit();
+	dstring += fstring;
+	testString("dyn append string", dstring);
 	LOG_FLUSH();
 
     return 0;
