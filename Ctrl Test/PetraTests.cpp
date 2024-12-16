@@ -627,6 +627,7 @@ void testBasic()
 
 void runMathTests()
 {
+	std::cout << "\n***********************************\nRunning Tests For Petra...\n";
 	testVec1();
 	testVec2();
 	testVec3();

@@ -8,6 +8,8 @@
 #include <unordered_set>
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
+#include "Core/OracleBone/stackstring.h"
+#include "Core/OracleBone/heapstring.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -332,6 +334,12 @@ void profileAll()
 	// ------------- map stuff
 
 	int64_t umapfindus = profileUnorderedMapFind(umap, stringElement, found);
+}
+
+template <typename stringtype>
+void testString(const c_string title, const stringtype& string)
+{
+	LOG_MSG_PUSH("{} max length {}, capacity {}, struct size {}, length {}, data \"{}\"", title, string.max_length(), string.capacity(), sizeof(string), string.length(), string.data());
 }
 
 int main(int argc, char *argv[])
