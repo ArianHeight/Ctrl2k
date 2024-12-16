@@ -52,11 +52,13 @@ typedef simple_string<small_string_data, char, 5> small_string32;
 typedef simple_string<small_string_data, char, 6> small_string64;
 typedef simple_string<small_string_data, char, 7> small_string128;
 
+typedef simple_string<small_string_data, wchar_t, 3> wsmall_string8;
 typedef simple_string<small_string_data, wchar_t, 6> wsmall_string64;
+typedef simple_string<small_string_data, wchar_t, 7> wsmall_string128;
 
-template <size_t size>
-using fixed_string = simple_string<fixed_string_data, char, size>;
-template <size_t size>
-using wfixed_string = simple_string<fixed_string_data, wchar_t, size>;
+template <size_t buf_size>
+using fixed_string = simple_string<fixed_string_data, char, buf_size>;
+template <size_t buf_size>
+using wfixed_string = simple_string<fixed_string_data, wchar_t, buf_size>;
 
 }

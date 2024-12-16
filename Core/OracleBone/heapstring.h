@@ -49,6 +49,7 @@ struct dynamic_string_data
         buf = &zero_val;
         capacity = 1;
         len = 0;
+        error = false;
     }
 
 private:

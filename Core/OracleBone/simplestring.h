@@ -47,6 +47,13 @@ public:
         internal_data.buf[0] = 0;
     }
 
+    void replace(chartype old_c, chartype new_c)
+    {
+        const chartype* const end_ptr = &internal_data.buf[internal_data.len];
+        for(chartype* buf_ptr = internal_data.buf; buf_ptr < end_ptr; ++buf_ptr)
+            *buf_ptr = (*buf_ptr == old_c) ? new_c : *buf_ptr;
+    }
+
     void copy(const chartype* str, size_t str_len)
     {
         if constexpr(dyn)
@@ -64,20 +71,9 @@ public:
         internal_data.error = mem_copy(internal_data.buf, str, internal_data.len * sizeof(chartype)) != 0 || internal_data.error;
         internal_data.buf[internal_data.len] = 0; // add trailing 0 back in very important
     }
-
-    inline void copy(const chartype* str)
-    {
-        if constexpr(dyn)
-            copy(str, string_len(str));
-        else
-            copy(str, string_nlen(str, internal_data.capacity));
-    }
-
+    inline void copy(const chartype* str) { copy(str, string_nlen(str, internal_data.max_len)); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline void copy(const simple_string<datatype2, chartype, num2, dyn2>& other)
-    {
-        copy(other.internal_data.buf, other.internal_data.len);
-    }
+    inline void copy(const simple_string<datatype2, chartype, num2, dyn2>& other) { copy(other.internal_data.buf, other.internal_data.len); }
 
     // no move for c strings because that is kind of dangerous
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
@@ -120,7 +116,7 @@ public:
         }
         else
         {
-            internal_data.error = internal_data.len + str_len >= internal_data.max_len;
+            internal_data.error = internal_data.len + str_len > internal_data.max_len;
             str_len = internal_data.error ? internal_data.max_len - internal_data.len : str_len;
             if(str_len == 0)
                 return;
@@ -131,38 +127,67 @@ public:
         internal_data.len = internal_data.len + str_len;
         internal_data.buf[internal_data.len] = 0; // add trailing 0 back in very important
     }
-    
-    inline void append(const chartype* str)
-    {
-        if constexpr(dyn)
-            append(str, string_len(str));
-        else
-            append(str, string_nlen(str, internal_data.capacity));
-    }
-
-    inline void append(chartype c)
-    {
-        chartype temp[2] = { c, 0 };
-        append(temp, 1);
-    }
-
+    inline void append(const chartype* str) { append(str, string_nlen(str, internal_data.max_len)); }
+    inline void append(chartype c) { chartype temp[2] = { c, 0 }; append(temp, 1); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline void append(const simple_string<datatype2, chartype, num2, dyn2>& other)
+    inline void append(const simple_string<datatype2, chartype, num2, dyn2>& other) { append(other.internal_data.buf, other.internal_data.len); }
+
+    inline selftype substring(size_t idx, size_t count) const
     {
-        append(other.internal_data.buf, other.internal_data.len);
+#ifdef _DEBUG
+        assertIndex(idx, internal_data.len);
+        assertIndex(idx + count, internal_data.len + 1);
+#endif
+        return selftype(&internal_data.buf[idx], count);
     }
 
+    inline selftype substring(size_t count) const
+    {
+#ifdef _DEBUG
+        assertIndex(count, internal_data.len + 1);
+#endif
+        return selftype(internal_data.buf, count);
+    }
+
+    inline bool starts_with(chartype c) { return internal_data.len > 0 && internal_data.buf[0] == c; }
+    inline bool starts_with(const chartype* str, size_t str_len)
+    {
+        return str_len <= internal_data.len && string_ncmp(internal_data.buf, str, str_len) == 0;
+    }
+    inline bool starts_with(const chartype* str) { return starts_with(str, string_len(str)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline bool starts_with(const simple_string<datatype2, chartype, num2, dyn2>& other) { return starts_with(other.internal_data.buf, other.internal_data.len); }
+
+    inline bool ends_with(chartype c) { return internal_data.len > 0 && internal_data.buf[internal_data.len - 1] == c; }
+    inline bool ends_with(const chartype* str, size_t str_len)
+    {
+        return str_len <= internal_data.len && string_ncmp(&internal_data.buf[internal_data.len - str_len], str, str_len) == 0;
+    }
+    inline bool ends_with(const chartype* str) { return ends_with(str, string_len(str)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline bool ends_with(const simple_string<datatype2, chartype, num2, dyn2>& other) { return ends_with(other.internal_data.buf, other.internal_data.len); }
+
+    // constructors
     simple_string() {}
     simple_string(const chartype* str) { copy(str); }
-    simple_string(const selftype& other) { copy(other); } // not very efficient
-    simple_string(selftype&& other) { move(std::move(other)); } // also not very efficient
+    simple_string(const chartype* str, size_t str_len) { copy(str, str_len); }
+    simple_string(const selftype& other) { copy(other); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    simple_string(const simple_string<datatype2, chartype, num2, dyn2>& other) { copy(other); }
+    simple_string(selftype&& other) { move(other); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    simple_string(simple_string<datatype2, chartype, num2, dyn2>&& other) { move(std::move(other)); }
 
     // copy c string assignment
     inline selftype& operator=(const chartype* str) { copy(str); return *this; }
-    // copy assignment
+    // copy assignment self
+    inline selftype& operator=(const selftype& other) { copy(other); return *this; }
+    // copy assignment general
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline selftype& operator=(const simple_string<datatype2, chartype, num2, dyn2>& other) { copy(other); return *this; }
-    // move assignment
+    // move assignment self
+    inline selftype& operator=(selftype&& other) { move(std::move(other)); return *this; }
+    // move assignment general
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline selftype& operator=(simple_string<datatype2, chartype, num2, dyn2>&& other) { move(std::move(other)); return *this; }
 

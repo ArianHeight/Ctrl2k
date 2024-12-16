@@ -262,6 +262,7 @@ int main()
 	runProfilerTest();
 	runFilePathTests();
 	runMathTests();
+	runStringTests();
 
 	return 0;
 }
