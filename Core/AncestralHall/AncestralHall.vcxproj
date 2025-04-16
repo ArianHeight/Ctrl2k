@@ -22,6 +22,11 @@
     <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="ThreadSafeVector.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Monument\Monument.vcxproj">
+      <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
