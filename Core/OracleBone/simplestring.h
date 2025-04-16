@@ -56,6 +56,10 @@ public:
 
     void copy(const chartype* str, size_t str_len)
     {
+        if((chartype*)internal_data.buf == str)
+        {
+            return;
+        }
         if constexpr(dyn)
         {
             internal_data.len = str_len;
@@ -79,6 +83,10 @@ public:
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     void move(simple_string<datatype2, chartype, num2, dyn2>&& other)
     {
+        if((chartype*)internal_data.buf == (chartype*)other.internal_data.buf)
+        {
+            return;
+        }
         if constexpr(dyn && dyn2) // only with dynamic strings that own heap memory
         {
             internal_data.delete_memory();

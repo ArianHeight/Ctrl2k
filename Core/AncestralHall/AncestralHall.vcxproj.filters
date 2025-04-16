@@ -21,5 +21,8 @@
     <ClInclude Include="ThreadSafeVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fixed_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
