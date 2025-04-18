@@ -237,6 +237,9 @@
     <ClCompile Include="Source\Entity\PathFinding.cpp">
       <Filter>Source\Entity</Filter>
     </ClCompile>
+    <ClCompile Include="CtrlEngine.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Ctrl 2kPCH.h">
@@ -421,6 +424,9 @@
     </ClInclude>
     <ClInclude Include="Include\Classes\Entity\PathFinding.h">
       <Filter>Header\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="CtrlEngine.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OracleBone", "Core\OracleBo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AncestralHall", "Core\AncestralHall\AncestralHall.vcxproj", "{385BC729-58FA-49D3-8609-0A33B280E111}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Palace", "Core\Palace\Palace.vcxproj", "{0B727D62-245B-41BC-BC3C-FFB86BABF79E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -151,6 +153,14 @@ Global
 		{385BC729-58FA-49D3-8609-0A33B280E111}.Release|x64.Build.0 = Release|x64
 		{385BC729-58FA-49D3-8609-0A33B280E111}.Release|x86.ActiveCfg = Release|Win32
 		{385BC729-58FA-49D3-8609-0A33B280E111}.Release|x86.Build.0 = Release|Win32
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Debug|x64.ActiveCfg = Debug|x64
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Debug|x64.Build.0 = Debug|x64
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Debug|x86.ActiveCfg = Debug|Win32
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Debug|x86.Build.0 = Debug|Win32
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Release|x64.ActiveCfg = Release|x64
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Release|x64.Build.0 = Release|x64
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Release|x86.ActiveCfg = Release|Win32
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,6 +175,7 @@ Global
 		{75CDE69C-F1E7-4CE0-B20D-65E9C5A9DBE1} = {3563BD10-00F7-4A33-8B02-4D6FE68EABB8}
 		{E71233C6-C1CF-44E7-B5D3-571A5E5AAB66} = {EFEC0CF7-F3B7-4C5B-A685-2441C61A6147}
 		{385BC729-58FA-49D3-8609-0A33B280E111} = {EFEC0CF7-F3B7-4C5B-A685-2441C61A6147}
+		{0B727D62-245B-41BC-BC3C-FFB86BABF79E} = {EFEC0CF7-F3B7-4C5B-A685-2441C61A6147}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {70BAD174-8BA7-4F92-9815-19B71A819840}
