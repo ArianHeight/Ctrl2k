@@ -18,23 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="consistent_vector.h" />
-    <ClInclude Include="fixed_vector.h" />
-    <ClInclude Include="threadsafe.h" />
-    <ClInclude Include="ThreadSafeQueue.h" />
-    <ClInclude Include="ThreadSafeVector.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Monument\Monument.vcxproj">
-      <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{385bc729-58fa-49d3-8609-0a33b280e111}</ProjectGuid>
-    <RootNamespace>CtrlMiscUtils</RootNamespace>
+    <ProjectGuid>{f61936bb-a46c-4b4f-937e-4df534819b5b}</ProjectGuid>
+    <RootNamespace>Scribe</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -168,6 +156,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OracleBone\OracleBone.vcxproj">
+      <Project>{e71233c6-c1cf-44e7-b5d3-571a5e5aab66}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

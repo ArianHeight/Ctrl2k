@@ -10,7 +10,7 @@ namespace plc
 
 typedef std::unordered_map<std::string, std::string> EngineModuleConfig;
 
-class EngineModule : public Uncopyable
+class EngineModule : public uncopyable
 {
 public:
     EngineModule(const EngineModuleConfig& config) {}
