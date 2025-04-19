@@ -30,5 +30,13 @@
     <ClInclude Include="consistent_vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AncestralHall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AncestralHall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

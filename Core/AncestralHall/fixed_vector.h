@@ -1,5 +1,6 @@
 #pragma once
-#include "Core/Monument/basicassert.h"
+#include <utility>
+#include "Core/Monument/Monument.h"
 
 namespace ahl
 {
@@ -10,20 +11,20 @@ A vector allocated on the stack with a fixed max capacity.
 
 */
 
-template<typename T, size_t capacity>
+template<typename T, size_t _capacity>
 class fixed_vector
 {
 private:
-    using selftype = fixed_vector<T, capacity>;
+    using selftype = fixed_vector<T, _capacity>;
 
-    size_t size;
-    T m_data[capacity];
+    size_t m_size;
+    T m_data[_capacity];
     
 public:
     fixed_vector() : m_size(0) {}
     
     inline size_t size() const { return m_size; }
-    inline size_t capacity() const { return capacity; }
+    inline size_t capacity() const { return _capacity; }
     inline bool empty() const { return m_size == 0; }
 
     inline void clear() { m_size = 0; }
@@ -38,14 +39,14 @@ public:
 
     void push_back(T&& elem)
     {
-        assert(m_size < capacity);
+        assert(m_size < _capacity);
         m_data[m_size] = std::move(elem);
         m_size++;
     }
 
     T& emplace_back()
     {
-        assert(m_size < capacity);
+        assert(m_size < _capacity);
         T& retVal = m_data[m_size];
         m_size++;
         return retVal;

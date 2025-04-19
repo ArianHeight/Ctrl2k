@@ -156,17 +156,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AncestralHallTests.cpp" />
     <ClCompile Include="CtrlTest.cpp" />
     <ClCompile Include="GreatBathTests.cpp" />
     <ClCompile Include="OracleBoneTests.cpp" />
     <ClCompile Include="PetraTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core\AncestralHall\AncestralHall.vcxproj">
+      <Project>{385bc729-58fa-49d3-8609-0a33b280e111}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Core\GreatBath\GreatBath.vcxproj">
       <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Core\Monument\Monument.vcxproj">
       <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\OracleBone\OracleBone.vcxproj">
+      <Project>{e71233c6-c1cf-44e7-b5d3-571a5e5aab66}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Core\Petra\Petra.vcxproj">
       <Project>{15ad7afd-0ddb-4b7c-823f-3b54cf4d41af}</Project>

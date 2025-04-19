@@ -27,6 +27,9 @@
     <ClCompile Include="OracleBoneTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AncestralHallTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tests.h">

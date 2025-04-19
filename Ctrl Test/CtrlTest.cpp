@@ -263,6 +263,7 @@ int main()
 	runFilePathTests();
 	runMathTests();
 	runStringTests();
+	runSTLTests();
 
 	return 0;
 }

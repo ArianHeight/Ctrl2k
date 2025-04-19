@@ -29,7 +29,7 @@ public:
     }
 };
 
-template <class T>
-using fixed_vector = threadsafe_wrapper<ahl::fixed_vector<T>>;
+template <class T, size_t _capacity>
+using fixed_vector = threadsafe_wrapper<ahl::fixed_vector<T, _capacity>>;
 
 }
