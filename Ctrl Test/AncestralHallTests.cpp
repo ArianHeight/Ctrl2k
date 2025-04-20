@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "Core/AncestralHall/fixed_vector.h"
+#include "Core/AncestralHall/AncestralHall.h"
 
 void runFixedVectorTests()
 {
@@ -39,8 +39,44 @@ void runFixedVectorTests()
     assert(sizeof(v1) == sizeof(size_t) + sizeof(int) * 8);
 }
 
+void runConsistentVectorTests()
+{
+    std::cout << subtestPretext << "Testing consistent vector\n";
+    ahl::consistent_vector<int> v;
+    std::vector<int*> addresses;
+    assert(v.capacity() == ahl::CONSISTENT_VECTOR_INITIAL_CAPACITY);
+    assert(v.size() == 0);
+    assert(v.empty());
+
+    for(int i = 0; i < 1024; i++)
+    {
+        if((i & 1) == 1)
+        {
+            int& val = v.emplace_back();
+            val = i;
+            addresses.push_back(&val);
+        }
+        else
+        {
+            v.push_back(i);
+            addresses.push_back(&(v.at(v.size() - 1)));
+        }
+    }
+
+    assert(v.capacity() == 2016);
+    assert(v.size() == 1024);
+    assert(!v.empty());
+
+    for(int i = 0; i < 1024; i++)
+    {
+        assert(v[i] == i);
+        assert(&v[i] == addresses[i]);
+    }
+}
+
 void runSTLTests()
 {
     std::cout << "\n***********************************\nRunning Tests For AncestralHall...\n";
     runFixedVectorTests();
+    runConsistentVectorTests();
 }

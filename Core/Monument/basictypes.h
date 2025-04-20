@@ -13,6 +13,7 @@ struct uncopyable
 
 struct unmoveable
 {
+    unmoveable() = default;
     unmoveable(unmoveable&& other) = delete;
     unmoveable& operator=(unmoveable&& other) = delete;
 };

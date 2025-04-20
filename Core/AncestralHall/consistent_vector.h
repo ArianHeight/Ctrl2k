@@ -11,8 +11,8 @@ A dynamically sized vector with guarunteed pointer/address consistency
 
 */
 
-constexpr size_t CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS = 5;
-constexpr size_t CONSISTENT_VECTOR_INITIAL_CAPACITY = 1 << CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
+constexpr size_t CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS = 5ULL;
+constexpr size_t CONSISTENT_VECTOR_INITIAL_CAPACITY = 1ULL << CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
 
 template<typename T>
 class consistent_vector : public unmoveable
@@ -28,7 +28,7 @@ private:
     {
         size_t digit = CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
         for(; i >> digit != 0; digit++);
-        i &= ((1 << (digit - 1)) - 1);
+        i &= ((1ULL << (digit - (digit == CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS ? 0ULL : 1ULL))) - 1ULL);
         return digit - CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
     }
 
@@ -42,7 +42,7 @@ private:
         const size_t bucketIndex = getBucketIndex(i);
         for(size_t j = m_buckets.size(); j <= bucketIndex; j++)
         {
-            const size_t newSize = 1 << (CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS + j);
+            const size_t newSize = 1ULL << (CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS + j);
             m_buckets.push_back(new T[newSize]);
             m_capacity += newSize;
         }
@@ -51,7 +51,15 @@ private:
 
 public:
     consistent_vector() : m_size(0), m_capacity(CONSISTENT_VECTOR_INITIAL_CAPACITY), m_buckets{ new T[CONSISTENT_VECTOR_INITIAL_CAPACITY] } {}
-    
+    ~consistent_vector()
+    {
+        for(T* data : m_buckets)
+        {
+            delete[] data;
+        }
+        m_buckets.clear();
+    }
+
     inline size_t size() const { return m_size; }
     inline size_t capacity() const { return m_capacity; }
     inline bool empty() const { return m_size == 0; }
@@ -66,7 +74,6 @@ public:
 
     void push_back(const T& elem)
     {
-        assert(m_size < m_capacity);
         size_t i = m_size;
         T* data = allocateAndGetBucket(i);
         data[i] = elem;
@@ -75,7 +82,6 @@ public:
 
     void push_back(T&& elem)
     {
-        assert(m_size < m_capacity);
         size_t i = m_size;
         T* data = allocateAndGetBucket(i);
         data[i] = std::move(elem);
@@ -84,7 +90,6 @@ public:
 
     T& emplace_back()
     {
-        assert(m_size < m_capacity);
         size_t i = m_size;
         T* data = allocateAndGetBucket(i);
         T& retVal = data[i];
@@ -99,10 +104,10 @@ public:
         {
             if(other.m_size > 0)
             {
-                size_t i = other.m_size - 1;
+                size_t i = other.m_size - 1ULL;
                 allocateAndGetBucket(i);
                 size_t bucketIdx = 0;
-                size_t bucketSize = 1 << CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
+                size_t bucketSize = 1ULL << CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
                 size_t localIdx = 0;
                 for(i = 0; i < other.m_size; i++)
                 {

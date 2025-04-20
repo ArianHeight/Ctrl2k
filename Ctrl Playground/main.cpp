@@ -358,7 +358,5 @@ int main(int argc, char *argv[])
 	LOG_FATAL_PUSH("Ded");
 	LOG_FLUSH();
 
-	
-
     return 0;
 }
