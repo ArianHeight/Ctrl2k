@@ -369,16 +369,19 @@ static LoggerThread loggerThread;
 
 void gbt::SafeLog_QueueMessage(const LogLevel level, c_string file, const LineNumber line, const std::chrono::system_clock::time_point time, std::string&& log)
 {
-	std::lock_guard<std::mutex> lock(logGuard);
-	pendingLogs.push(LogBlock{ level, std::this_thread::get_id(), file, line, time, std::move(log) });
+	{
+		std::lock_guard<std::mutex> lock(logGuard);
+		pendingLogs.push(LogBlock{ level, std::this_thread::get_id(), file, line, time, std::move(log) });
+	}
+#ifdef LOG_USE_LOGGING_THREAD
+	sleepLogger.notify_all();
+#endif
 }
 
 void gbt::SafeLog_ImmediatePushMessage(const LogLevel level, c_string file, const LineNumber line, const std::chrono::system_clock::time_point time, std::string&& log)
 {
 	SafeLog_QueueMessage(level, file, line, time, std::move(log));
-#ifdef LOG_USE_LOGGING_THREAD
-	sleepLogger.notify_all();
-#else
+#ifndef LOG_USE_LOGGING_THREAD
 	SafeLog_PushAllPendingMessages();
 #endif
 }

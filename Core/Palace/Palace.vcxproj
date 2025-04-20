@@ -18,15 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ThreadSafeQueue.h" />
-    <ClInclude Include="ThreadSafeVector.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{385bc729-58fa-49d3-8609-0a33b280e111}</ProjectGuid>
-    <RootNamespace>CtrlMiscUtils</RootNamespace>
+    <ProjectGuid>{0b727d62-245b-41bc-bc3c-ffb86babf79e}</ProjectGuid>
+    <RootNamespace>Palace</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -160,6 +156,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AncestralHall\AncestralHall.vcxproj">
+      <Project>{385bc729-58fa-49d3-8609-0a33b280e111}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EngineModule.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

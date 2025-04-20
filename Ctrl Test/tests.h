@@ -7,3 +7,4 @@ static const char* const subtestPretext = "===================================\n
 void runFilePathTests();
 void runMathTests();
 void runStringTests();
+void runSTLTests();

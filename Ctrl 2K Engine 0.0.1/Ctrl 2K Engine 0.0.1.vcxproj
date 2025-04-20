@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CtrlEngine.cpp" />
     <ClCompile Include="Source\Audio\AudioEngine.cpp" />
     <ClCompile Include="Source\Audio\BGM.cpp" />
     <ClCompile Include="Source\Audio\SFX.cpp" />
@@ -212,6 +213,7 @@
     <ClCompile Include="Source\System\Widget\Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CtrlEngine.h" />
     <ClInclude Include="Include\Classes\Audio\AudioEngine.h" />
     <ClInclude Include="Include\Classes\Audio\BGM.h" />
     <ClInclude Include="Include\Classes\Audio\SFX.h" />
