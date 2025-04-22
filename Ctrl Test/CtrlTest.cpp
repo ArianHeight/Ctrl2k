@@ -260,6 +260,7 @@ int main()
 	runEngineBaseClockTest(0.2);
 	runCtrlEngineClockTest(0.2);
 	runProfilerTest();
+	runBasicTests();
 	runFilePathTests();
 	runMathTests();
 	runStringTests();

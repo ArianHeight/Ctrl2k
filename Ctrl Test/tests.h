@@ -4,6 +4,7 @@
 
 static const char* const subtestPretext = "===================================\n";
 
+void runBasicTests();
 void runFilePathTests();
 void runMathTests();
 void runStringTests();

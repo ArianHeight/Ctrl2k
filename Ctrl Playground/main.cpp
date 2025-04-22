@@ -358,5 +358,23 @@ int main(int argc, char *argv[])
 	LOG_FATAL_PUSH("Ded");
 	LOG_FLUSH();
 
+	int arr[6] = { 1, 2, 3, 4, 5, 6 };
+	hash32_t hash32 = checksum32(arr, 5 * sizeof(int));
+	hash64_t hash64 = checksum64(arr, 5 * sizeof(int));
+	hash128_t hash128 = checksum128(arr, 5 * sizeof(int));
+	hash256_t hash256 = checksum256(arr, 5 * sizeof(int));
+	LOG_MSG_PUSH("hash32 {}", hash32.val);
+	LOG_MSG_PUSH("hash64 {}", hash64.val);
+	LOG_MSG_PUSH("hash128 {} {}", hash128.sub64.a, hash128.sub64.b );
+	LOG_MSG_PUSH("hash256 {} {} {} {}", hash256.sub64.a, hash256.sub64.b, hash256.sub64.c, hash256.sub64.d);
+	std::string testStr = "Hello, this is a test yeeeet. Please see the checksum.";
+	hash64 = checksum64(testStr.data(), sizeof(char) * testStr.length());
+	LOG_MSG_PUSH("hash64 string {}", hash64.val);
+	hash64 = checksum64(testStr.data(), sizeof(char) * testStr.length());
+	LOG_MSG_PUSH("hash64 string again {}", hash64.val);
+	testStr.pop_back();
+	hash64 = checksum64(testStr.data(), sizeof(char) * testStr.length());
+	LOG_MSG_PUSH("hash64 string changed {}", hash64.val);
+
     return 0;
 }

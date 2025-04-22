@@ -4,3 +4,4 @@
 #include "basictypes.h"
 #include "basicmemory.h"
 #include "basicdefines.h"
+#include "basichash.h"

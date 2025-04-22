@@ -24,12 +24,17 @@ private:
     size_t m_size;
     size_t m_capacity;
 
-    size_t getBucketIndex(size_t& i)
+    size_t getBucketIndex(size_t& i) const
     {
         size_t digit = CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
         for(; i >> digit != 0; digit++);
         i &= ((1ULL << (digit - (digit == CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS ? 0ULL : 1ULL))) - 1ULL);
         return digit - CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
+    }
+
+    inline const T* getBucket(size_t& i) const
+    {
+        return m_buckets[getBucketIndex(i)];
     }
 
     inline T* getBucket(size_t& i)

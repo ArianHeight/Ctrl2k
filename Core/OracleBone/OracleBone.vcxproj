@@ -173,6 +173,7 @@
     <ClInclude Include="obn.h" />
     <ClInclude Include="simplestring.h" />
     <ClInclude Include="stackstring.h" />
+    <ClInclude Include="stringpool.h" />
     <ClInclude Include="stringutil.h" />
   </ItemGroup>
   <ItemGroup>
