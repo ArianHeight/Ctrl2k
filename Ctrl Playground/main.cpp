@@ -342,6 +342,66 @@ void testString(const c_string title, const stringtype& string)
 	LOG_MSG_PUSH("{} max length {}, capacity {}, struct size {}, length {}, data \"{}\"", title, string.max_length(), string.capacity(), sizeof(string), string.length(), string.data());
 }
 
+template<typename T>
+size_t test_search(const T* data, size_t len, const T& val)
+{
+	if(data)
+	{
+		size_t start = 0;
+		size_t end = len;
+		size_t i = len >> 1;
+		while(start < end)
+		{
+			if(data[i] == val)
+			{
+				return i;
+			}
+
+			if(data[i] < val)
+			{
+				start = i + 1;
+			}
+			else
+			{
+				end = i;
+			}
+			i = start + ((end - start) >> 1);
+		}
+	}
+	return INVALID_SIZE_T;
+}
+
+template<typename T, typename V>
+size_t test_search_nearest(const T& arr, size_t len, const V& val)
+{
+	size_t start = 0;
+	size_t end = len;
+	size_t i = len >> 1;
+	while(start < end)
+	{
+		const bool smaller = arr[i] < val;
+		if(!smaller && (i == 0 || arr[i - 1] < val))
+		{
+			return i;
+		}
+		else if(smaller && i == len - 1)
+		{
+			return len;
+		}
+
+		if(smaller)
+		{
+			start = i + 1;
+		}
+		else
+		{
+			end = i;
+		}
+		i = start + ((end - start) >> 1);
+	}
+	return INVALID_SIZE_T;
+}
+
 int main(int argc, char *argv[])
 {
     REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_PROFILE, std::cout);
@@ -358,23 +418,22 @@ int main(int argc, char *argv[])
 	LOG_FATAL_PUSH("Ded");
 	LOG_FLUSH();
 
-	int arr[6] = { 1, 2, 3, 4, 5, 6 };
-	hash32_t hash32 = checksum32(arr, 5 * sizeof(int));
-	hash64_t hash64 = checksum64(arr, 5 * sizeof(int));
-	hash128_t hash128 = checksum128(arr, 5 * sizeof(int));
-	hash256_t hash256 = checksum256(arr, 5 * sizeof(int));
-	LOG_MSG_PUSH("hash32 {}", hash32.val);
-	LOG_MSG_PUSH("hash64 {}", hash64.val);
-	LOG_MSG_PUSH("hash128 {} {}", hash128.sub64.a, hash128.sub64.b );
-	LOG_MSG_PUSH("hash256 {} {} {} {}", hash256.sub64.a, hash256.sub64.b, hash256.sub64.c, hash256.sub64.d);
-	std::string testStr = "Hello, this is a test yeeeet. Please see the checksum.";
-	hash64 = checksum64(testStr.data(), sizeof(char) * testStr.length());
-	LOG_MSG_PUSH("hash64 string {}", hash64.val);
-	hash64 = checksum64(testStr.data(), sizeof(char) * testStr.length());
-	LOG_MSG_PUSH("hash64 string again {}", hash64.val);
-	testStr.pop_back();
-	hash64 = checksum64(testStr.data(), sizeof(char) * testStr.length());
-	LOG_MSG_PUSH("hash64 string changed {}", hash64.val);
+	std::vector<int> test = { 1, 2, 3, 4, 5, 6 };
+	LOG_MSG_PUSH("find 4 {}", linear_search(test.data(), test.size(), 4));
+	LOG_MSG_PUSH("find 3 {}", linear_search(test, 3));
+	LOG_MSG_PUSH("find 5 {}", binary_search(test.data(), test.size(), 5));
+	LOG_MSG_PUSH("find 4 {}", binary_search(test.data(), test.size(), 4));
+	LOG_MSG_PUSH("find 3 {}", binary_search(test.data(), test.size(), 3));
+	LOG_MSG_PUSH("find 2 {}", binary_search(test.data(), test.size(), 2));
+	LOG_MSG_PUSH("find 1 {}", binary_search(test.data(), test.size(), 1));
+	LOG_MSG_PUSH("find 6 {}", binary_search_nearest(test.data(), test.size(), 6));
+	LOG_MSG_PUSH("find 5 {}", binary_search_nearest(test.data(), test.size(), 5));
+	LOG_MSG_PUSH("find 4 {}", binary_search_nearest(test.data(), test.size(), 4));
+	LOG_MSG_PUSH("find 3 {}", binary_search_nearest(test.data(), test.size(), 3));
+	LOG_MSG_PUSH("find 2 {}", binary_search_nearest(test.data(), test.size(), 2));
+	LOG_MSG_PUSH("find 1 {}", binary_search_nearest(test.data(), test.size(), 1));
+	LOG_MSG_PUSH("find 0 {}", binary_search_nearest(test.data(), test.size(), 0));
+	LOG_MSG_PUSH("find 7 {}", binary_search_nearest(test.data(), test.size(), 7));
 
     return 0;
 }

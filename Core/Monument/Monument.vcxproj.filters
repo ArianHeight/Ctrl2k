@@ -33,6 +33,9 @@
     <ClInclude Include="basichash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="basicfuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Monument.cpp">

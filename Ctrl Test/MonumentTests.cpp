@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include "Core/Monument/Monument.h"
 
@@ -40,8 +41,51 @@ void runCheckSumTests()
     assert(hash256 != checksum256(test_string.data(), test_string.length(), checksum256(test_string2.data(), test_string2.length())));
 }
 
+void runSearchTests()
+{
+    std::vector<int> vals;
+    for(int i = 0; i < 32; i++)
+    {
+        vals.push_back(i);
+    }
+
+    std::cout << subtestPretext << "Testing linear_search\n";
+    for(int i = 0; i < 32; i++)
+    {
+        assert(linear_search(vals, i) == i);
+        assert(linear_search(vals.data(), vals.size(), i) == i);
+    }
+    assert(linear_search(vals, -1) == INVALID_SIZE_T);
+    assert(linear_search(vals, 33) == INVALID_SIZE_T);
+
+    std::cout << subtestPretext << "Testing binary_search\n";
+    for(int i = 0; i < 32; i++)
+    {
+        assert(binary_search(vals, i) == i);
+        assert(binary_search(vals.data(), vals.size(), i) == i);
+    }
+    assert(binary_search(vals, -1) == INVALID_SIZE_T);
+    assert(binary_search(vals, 33) == INVALID_SIZE_T);
+
+    std::cout << subtestPretext << "Testing binary_search_nearest\n";
+    for(int i = 0; i < 32; i++)
+    {
+        assert(binary_search_nearest(vals, i) == i);
+        assert(binary_search_nearest(vals.data(), vals.size(), i) == i);
+    }
+    assert(binary_search_nearest(vals, -1) == 0);
+    assert(binary_search_nearest(vals, 33) == 32);
+
+    std::vector<int> vals2 = { 1, 3, 3, 3, 6, 6, 7 };
+    assert(binary_search_nearest(vals2, 2) == 1);
+    assert(binary_search_nearest(vals2, 5) == 4);
+    assert(binary_search_nearest(vals2, 3) == 1);
+    assert(binary_search_nearest(vals2, 6) == 4);
+}
+
 void runBasicTests()
 {
     std::cout << "\n***********************************\nRunning Tests For Monument...\n";
     runCheckSumTests();
+    runSearchTests();
 }

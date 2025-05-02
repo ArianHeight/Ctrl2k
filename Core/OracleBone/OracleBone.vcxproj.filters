@@ -30,7 +30,10 @@
     <ClInclude Include="simplestring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stringpool.h">
+    <ClInclude Include="string_pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="string_registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

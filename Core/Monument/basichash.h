@@ -136,3 +136,6 @@ template <typename T>
 inline hash128_t checksum128(const T& obj) { return checksum128(&obj, sizeof(obj)); }
 template <typename T>
 inline hash256_t checksum256(const T& obj) { return checksum256(&obj, sizeof(obj)); }
+
+inline hash64_t checksum64_string(const char* str, size_t len) { return checksum64(str, len); }
+//TODO do wchar_t while forcing big-endianness

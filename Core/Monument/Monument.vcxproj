@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="basicassert.h" />
     <ClInclude Include="basicdefines.h" />
+    <ClInclude Include="basicfuncs.h" />
     <ClInclude Include="basichash.h" />
     <ClInclude Include="basicmemory.h" />
     <ClInclude Include="basictypes.h" />
