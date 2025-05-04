@@ -83,9 +83,26 @@ void runSearchTests()
     assert(binary_search_nearest(vals2, 6) == 4);
 }
 
+void runDataBucketTests()
+{
+    std::cout << subtestPretext << "Testing data_bucket\n";
+    data_bucket<int> test(5);
+    assert(test.capacity() == 5);
+    assert(test.size() == 0);
+    assert(test.data() != nullptr);
+    test[0] = 1;
+    test[1] = 2;
+    test.size() = 2;
+    assert(test.size() == 2);
+    data_bucket<int> test2 = std::move(test);
+    assert(test2[0] == 1 && test2[1] == 2);
+    assert(test.data() == nullptr);
+}
+
 void runBasicTests()
 {
     std::cout << "\n***********************************\nRunning Tests For Monument...\n";
     runCheckSumTests();
     runSearchTests();
+    runDataBucketTests();
 }

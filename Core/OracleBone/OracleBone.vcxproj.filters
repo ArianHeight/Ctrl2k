@@ -30,15 +30,15 @@
     <ClInclude Include="simplestring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="string_pool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="string_registry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="obn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="string_registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

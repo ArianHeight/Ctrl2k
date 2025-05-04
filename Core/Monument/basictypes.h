@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <utility>
 
 // null-terminated c-string, please do not use non null-terminated char* buffers if we're specifiying a c_string
 typedef const char* c_string;
@@ -52,7 +53,7 @@ private:
 public:
     data_bucket() : m_size(0), m_capacity(0), m_data(nullptr) {}
     data_bucket(size_t bucket_size) : m_size(0), m_capacity(bucket_size), m_data(new T[bucket_size]) {}
-    data_bucket(selftype&& other) { move(other); }
+    data_bucket(selftype&& other) noexcept { move(std::move(other)); }
     data_bucket(const selftype& other) = delete; // TODO maybe add this later?? Would have to do bounds check
     ~data_bucket() { clear_data(); }
 
@@ -62,9 +63,9 @@ public:
     inline const T* data() const { return m_data; }
     inline T* data() { return m_data; }
 
-    inline selftype& operator=(selftype&& other) { move(other); return *this; }
+    inline selftype& operator=(selftype&& other) { move(std::move(other)); return *this; }
     inline selftype& operator=(const selftype& other) = delete; // TODO maybe add this later?? Would have to do bounds check
 
-    inline const T& operator[](const size_t i) const { return data[i]; }
-    inline T& operator[](const size_t i) { return data[i]; }
+    inline const T& operator[](const size_t i) const { return m_data[i]; }
+    inline T& operator[](const size_t i) { return m_data[i]; }
 };

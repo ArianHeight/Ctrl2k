@@ -2,8 +2,7 @@
 
 #include <iostream>
 
-#include "Core/OracleBone/stackstring.h"
-#include "Core/OracleBone/heapstring.h"
+#include "Core/OracleBone/obn.h"
 
 struct ExpectedSize
 {
@@ -221,6 +220,38 @@ void runStringMiscTest()
     assert(d2 == "blueteeth");
 }
 
+template<typename T>
+void testStringRegistry(T& test)
+{
+    std::string val = "testing";
+    assert(!test.is_registered(val.c_str(), val.size()));
+    const char* val_ptr = test.register_string(val.c_str(), val.size());
+    assert(val_ptr != nullptr);
+    assert(test.is_registered(val.c_str(), val.size()));
+    assert(test.find_registered_string(val.c_str(), val.size()) == val_ptr);
+    std::string val2 = "bluey";
+    const char* val_ptr2 = test.register_string(val2.c_str(), val2.size());
+    std::string val3 = "Hello, this string needs to be longer thatn 32 bytes";
+    const char* val_ptr3 = test.register_string(val3.c_str(), val3.size());
+    assert(test.find_registered_string(val.c_str(), val.size()) == val_ptr);
+    assert(test.find_registered_string(val2.c_str(), val2.size()) == val_ptr2);
+    assert(test.find_registered_string(val3.c_str(), val3.size()) == val_ptr3);
+}
+
+void runStringRegistryTests()
+{
+    {
+        std::cout << subtestPretext << "Testing String Registry Functionality\n";
+        obn::string_registry testRegistry(16);
+        testStringRegistry(testRegistry);
+    }
+    {
+        std::cout << subtestPretext << "Testing Fixed String Registry Functionality\n";
+        obn::fixed_string_registry_default testRegistry;
+        testStringRegistry(testRegistry);
+    }
+}
+
 void runStringTests()
 {
     std::cout << "\n***********************************\nRunning Tests For OracleBone...\n";
@@ -232,4 +263,5 @@ void runStringTests()
     runStringAppendTest();
     runStringFindTest();
     runStringMiscTest();
+    runStringRegistryTests();
 }

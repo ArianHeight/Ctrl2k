@@ -173,7 +173,6 @@
     <ClInclude Include="obn.h" />
     <ClInclude Include="simplestring.h" />
     <ClInclude Include="stackstring.h" />
-    <ClInclude Include="string_pool.h" />
     <ClInclude Include="stringutil.h" />
     <ClInclude Include="string_registry.h" />
   </ItemGroup>
@@ -184,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="obn.cpp" />
+    <ClCompile Include="string_registry.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
