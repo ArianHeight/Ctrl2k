@@ -225,14 +225,14 @@ void testStringRegistry(T& test)
 {
     std::string val = "testing";
     assert(!test.is_registered(val.c_str(), val.size()));
-    const char* val_ptr = test.register_string(val.c_str(), val.size());
-    assert(val_ptr != nullptr);
+    obn::string_registry_id val_ptr = test.register_string(val.c_str(), val.size());
+    assert(val_ptr != obn::INVALID_STRING_REGISTRY_ID);
     assert(test.is_registered(val.c_str(), val.size()));
     assert(test.find_registered_string(val.c_str(), val.size()) == val_ptr);
     std::string val2 = "bluey";
-    const char* val_ptr2 = test.register_string(val2.c_str(), val2.size());
+    obn::string_registry_id val_ptr2 = test.register_string(val2.c_str(), val2.size());
     std::string val3 = "Hello, this string needs to be longer thatn 32 bytes";
-    const char* val_ptr3 = test.register_string(val3.c_str(), val3.size());
+    obn::string_registry_id val_ptr3 = test.register_string(val3.c_str(), val3.size());
     assert(test.find_registered_string(val.c_str(), val.size()) == val_ptr);
     assert(test.find_registered_string(val2.c_str(), val2.size()) == val_ptr2);
     assert(test.find_registered_string(val3.c_str(), val3.size()) == val_ptr3);

@@ -75,40 +75,66 @@ public:
     const string_pool_chartype* add(const string_pool_chartype* str, size_t len);
 };
 
-using view_index = size_t;
-constexpr view_index view_index_invalid = INVALID_SIZE_T;
-
-struct string_registry_view
-{
-    hash64_t hash;
-    const string_pool_chartype* data;
-    size_t len;
-
-    inline bool operator<(const hash64_t& hash_val) const { return hash < hash_val; }
-};
-
 /*
 
 The string registry holds metadata required to search through and utilise a string_pool
 
 */
 
+using string_registry_id = uint32_t;
+constexpr string_registry_id INVALID_STRING_REGISTRY_ID = UINT32_MAX;
+
+struct string_registry_view
+{
+    hash64_t hash;
+    string_registry_id id;
+    uint32_t len;
+
+    inline bool operator<(const hash64_t& hash_val) const { return hash < hash_val; }
+};
+
+class string_registry_base
+{
+protected:
+    string_registry_base() = default;
+
+public:
+    virtual string_registry_id register_string(const string_pool_chartype* str, size_t len) = 0;
+    virtual string_registry_id find_registered_string(const string_pool_chartype* str, size_t len) const = 0;
+
+    inline bool is_registered(const string_pool_chartype* str, size_t len) const
+    {
+        return find_registered_string(str, len) != INVALID_STRING_REGISTRY_ID;
+    }
+
+    inline bool is_equal(const string_registry_id id, const string_pool_chartype* str, size_t len) const
+    {
+        return find_registered_string(str, len) == id;
+    }
+
+    virtual const string_pool_chartype* get_string(const string_registry_id id) const = 0;
+
+    virtual size_t num_strings() const = 0;
+};
+
 template<size_t _pool_capacity, size_t _view_capacity>
-class fixed_string_registry : public unmoveable, public uncopyable
+class fixed_string_registry : public unmoveable, public uncopyable, public string_registry_base
 {
 private:
     fixed_string_pool<_pool_capacity> m_pool;
     size_t m_num_views;
     string_registry_view m_views[_view_capacity];
+    const string_pool_chartype* m_id_map[_view_capacity];
 
 public:
     fixed_string_registry() : m_num_views(0) {}
 
-    const string_pool_chartype* register_string(const string_pool_chartype* str, size_t len)
+    string_registry_id register_string(const string_pool_chartype* str, size_t len)
     {
+        assert(len < UINT32_MAX);
         if(!str)
         {
-            return nullptr;
+            return INVALID_STRING_REGISTRY_ID;
         }
 
         const hash64_t hash = checksum64_string(str, len);
@@ -116,16 +142,16 @@ public:
 
         for(; idx < m_num_views && m_views[idx].hash == hash; ++idx)
         {
-            if(m_views[idx].len == len && string_ncmp(m_views[idx].data, str, len) == 0)
+            if(m_views[idx].len == len && string_ncmp(m_id_map[m_views[idx].id], str, len) == 0)
             {
-                return m_views[idx].data;
+                return m_views[idx].id;
             }
         }
 
         const string_pool_chartype* ptr = m_pool.add(str, len);
         if(!ptr)
         {
-            return nullptr;
+            return INVALID_STRING_REGISTRY_ID;
         }
 
         if(idx > m_num_views)
@@ -139,17 +165,20 @@ public:
                 m_views[i + 1] = m_views[i];
             }
         }
-        m_views[idx] = { hash, ptr, len };
+        const string_registry_id new_id = (string_registry_id)m_num_views;
+        m_views[idx] = { hash, new_id, (uint32_t)len };
+        m_id_map[m_num_views] = ptr;
         m_num_views++;
 
-        return ptr;
+        return new_id;
     }
 
-    const string_pool_chartype* find_registered_string(const string_pool_chartype* str, size_t len) const
+    string_registry_id find_registered_string(const string_pool_chartype* str, size_t len) const
     {
+        assert(len < UINT32_MAX);
         if(!str || m_num_views == 0)
         {
-            return nullptr;
+            return INVALID_STRING_REGISTRY_ID;
         }
 
         const hash64_t hash = checksum64_string(str, len);
@@ -157,42 +186,37 @@ public:
 
         for(; idx < m_num_views && m_views[idx].hash == hash; ++idx)
         {
-            if(m_views[idx].len == len && string_ncmp(m_views[idx].data, str, len) == 0)
+            if(m_views[idx].len == len && string_ncmp(m_id_map[m_views[idx].id], str, len) == 0)
             {
-                return m_views[idx].data;
+                return m_views[idx].id;
             }
         }
 
-        return nullptr;
+        return INVALID_STRING_REGISTRY_ID;
     }
 
-    inline bool is_registered(const string_pool_chartype* str, size_t len) const
-    {
-        return find_registered_string(str, len) != nullptr;
-    }
+    const string_pool_chartype* get_string(const string_registry_id id) const override { return m_id_map[id]; }
 
-    inline size_t num_strings() const { return m_num_views; }
+    size_t num_strings() const override { return m_num_views; }
 };
 
-class string_registry : public uncopyable, public unmoveable
+class string_registry : public uncopyable, public unmoveable, public string_registry_base
 {
 private:
     string_pool m_pool;
     std::vector<string_registry_view> m_views;
+    std::vector<const string_pool_chartype*> m_id_map;
 
 public:
     string_registry(size_t mem_block_size = STRING_POOL_STARTING_CAPACITY) : m_pool(mem_block_size) {}
 
-    const string_pool_chartype* register_string(const string_pool_chartype* str, size_t len);
+    string_registry_id register_string(const string_pool_chartype* str, size_t len) override;
 
-    const string_pool_chartype* find_registered_string(const string_pool_chartype* str, size_t len) const;
+    string_registry_id find_registered_string(const string_pool_chartype* str, size_t len) const override;
 
-    inline bool is_registered(const string_pool_chartype* str, size_t len) const
-    {
-        return find_registered_string(str, len) != nullptr;
-    }
+    const string_pool_chartype* get_string(const string_registry_id id) const override;
 
-    inline size_t num_strings() const { return m_views.size(); }
+    size_t num_strings() const override;
 };
 
 using fixed_string_registry_default = fixed_string_registry<STRING_POOL_DEFAULT_CAPACITY, STRING_REGISTRY_DEFAULT_VIEW_CAPACITY>;

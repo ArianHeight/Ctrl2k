@@ -63,11 +63,12 @@ const string_pool_chartype* string_pool::add(const string_pool_chartype* str, si
     return nullptr;
 }
 
-const string_pool_chartype* string_registry::register_string(const string_pool_chartype* str, size_t len)
+string_registry_id string_registry::register_string(const string_pool_chartype* str, size_t len)
 {
+    assert(len < UINT32_MAX);
     if(!str)
     {
-        return nullptr;
+        return INVALID_STRING_REGISTRY_ID;
     }
 
     const hash64_t hash = checksum64_string(str, len);
@@ -75,32 +76,35 @@ const string_pool_chartype* string_registry::register_string(const string_pool_c
 
     for(; idx < m_views.size() && m_views[idx].hash == hash; ++idx)
     {
-        if(m_views[idx].len == len && string_ncmp(m_views[idx].data, str, len) == 0)
+        if(m_views[idx].len == len && string_ncmp(m_id_map[m_views[idx].id], str, len) == 0)
         {
-            return m_views[idx].data;
+            return m_views[idx].id;
         }
     }
 
     const string_pool_chartype* ptr = m_pool.add(str, len);
     if(!ptr)
     {
-        return nullptr;
+        return INVALID_STRING_REGISTRY_ID;
     }
 
     if(idx > m_views.size())
     {
         idx = m_views.size(); // could have returned invalid
     }
-    m_views.insert(m_views.begin() + idx, { hash, ptr, len });
+    const string_registry_id new_id = (string_registry_id)m_id_map.size();
+    m_views.insert(m_views.begin() + idx, { hash, new_id, (uint32_t)len });
+    m_id_map.push_back(ptr);
 
-    return ptr;
+    return new_id;
 }
 
-const string_pool_chartype* string_registry::find_registered_string(const string_pool_chartype* str, size_t len) const
+string_registry_id string_registry::find_registered_string(const string_pool_chartype* str, size_t len) const
 {
+    assert(len < UINT32_MAX);
     if(!str || m_views.empty())
     {
-        return nullptr;
+        return INVALID_STRING_REGISTRY_ID;
     }
 
     const hash64_t hash = checksum64_string(str, len);
@@ -108,11 +112,21 @@ const string_pool_chartype* string_registry::find_registered_string(const string
 
     for(; idx < m_views.size() && m_views[idx].hash == hash; ++idx)
     {
-        if(m_views[idx].len == len && string_ncmp(m_views[idx].data, str, len) == 0)
+        if(m_views[idx].len == len && string_ncmp(m_id_map[m_views[idx].id], str, len) == 0)
         {
-            return m_views[idx].data;
+            return m_views[idx].id;
         }
     }
 
-    return nullptr;
+    return INVALID_STRING_REGISTRY_ID;
+}
+
+const string_pool_chartype* string_registry::get_string(const string_registry_id id) const
+{
+    return m_id_map[id];
+}
+
+size_t string_registry::num_strings() const
+{
+    return m_views.size();
 }
