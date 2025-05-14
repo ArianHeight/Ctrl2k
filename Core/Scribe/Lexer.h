@@ -55,17 +55,37 @@ private:
     {
         START,
         COMMENT,
-        KEY,
-        BOOL_T,
-        BOOL_R,
-        BOOL_U,
-        BOOL_E,//TODO do string, and number
-        KEY_END,
-        BOOL_END,
+        END_LINE,
+        SYMBOL,
+        NUMBER,
+        NEGATIVE,
+        DECIMAL,
+        ZERO,
+        BINARY,
+        HEXADECIMAL,
+        STRING_HEAD,
+        STRING_BODY,
+        STRING_TAIL,
+        STRING_ESCAPE,
+        STRING_ESCAPE_CHAR,
+        END_LINE_END,
+        SYMBOL_END,
         NUMBER_END,
+        DECIMAL_END,
+        BINARY_END,
+        HEXADECIMAL_END,
         STRING_END,
         INVALID_END,
         IGNORE_END,
+        SIZE
+    };
+
+    enum Metadata : TokenMetadata
+    {
+        DEFAULT,
+        IS_FLOAT,
+        IS_BINARY,
+        IS_HEX,
         SIZE
     };
 
@@ -73,11 +93,18 @@ private:
 
     static LexerFSMState startTransition(obn::string_pool_chartype c, LexerFSMState state);
     static LexerFSMState commentTransition(obn::string_pool_chartype c, LexerFSMState state);
-    static LexerFSMState keyTransition(obn::string_pool_chartype c, LexerFSMState state);
-    static LexerFSMState boolTTransition(obn::string_pool_chartype c, LexerFSMState state);
-    static LexerFSMState boolRTransition(obn::string_pool_chartype c, LexerFSMState state);
-    static LexerFSMState boolUTransition(obn::string_pool_chartype c, LexerFSMState state);
-    static LexerFSMState boolETransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState endlineTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState symbolTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState numberTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState negativeTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState decimalTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState zeroTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState binaryTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState hexadecimalTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState stringheadTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState stringbodyTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState stringtailTransition(obn::string_pool_chartype c, LexerFSMState state);
+    static LexerFSMState stringescapeTransition(obn::string_pool_chartype c, LexerFSMState state);
 
 public:
     DotConfigLexerFSM();

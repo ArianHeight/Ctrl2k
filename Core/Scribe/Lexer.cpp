@@ -53,27 +53,71 @@ static LexerFSMState selfTransition(obn::string_pool_chartype c, LexerFSMState s
     return state;
 }
 
+static obn::string_pool_chartype escapeConversion(obn::string_pool_chartype c)
+{
+    switch(c)
+    {
+    case '\'':
+    case '\"':
+        return c;
+    case '?':
+        return '\?';
+    case '\\':
+        return c;
+    case 'a':
+        return '\a';
+    case 'b':
+        return '\b';
+    case 'f':
+        return '\f';
+    case 'n':
+        return '\n';
+    case 'r':
+        return '\r';
+    case 't':
+        return '\t';
+    case 'v':
+        return '\v';
+    default:
+        break;
+    }
+    return '\0';
+}
+
 // Make sure to rewrite the transition functions if string pool chartype changes
 compile_assert(sizeof(obn::string_pool_chartype) == sizeof(char));
 LexerFSMState DotConfigLexerFSM::startTransition(obn::string_pool_chartype c, LexerFSMState state)
 {
-    if(c == 'T' || c == 't')
+    if(obn::char_isblank(c))
     {
-        return State::BOOL_T;
+        return state;
     }
     else if(obn::char_isalpha(c) || c == '_')
     {
-        return State::KEY;
+        return State::SYMBOL;
     }
+    else if(c == '0')
+    {
+        return State::ZERO;
+    }
+    else if(obn::char_isdigit(c))
+    {
+        return State::NUMBER;
+    }
+    
     switch(c)
     {
     case '#':
         return State::COMMENT;
-    case ' ':
-    case '\t':
-        return state;
+    case '-':
+        return State::NEGATIVE;
+    case '\"':
+        return State::STRING_HEAD;
+    case '\n':
+    case '\r':
+        return State::END_LINE;
     }
-    return state;
+    return state; // TODO invalid
 }
 
 LexerFSMState DotConfigLexerFSM::commentTransition(obn::string_pool_chartype c, LexerFSMState state)
@@ -81,75 +125,174 @@ LexerFSMState DotConfigLexerFSM::commentTransition(obn::string_pool_chartype c, 
     return c == '\n' ? State::IGNORE_END : state;
 }
 
-LexerFSMState DotConfigLexerFSM::keyTransition(obn::string_pool_chartype c, LexerFSMState state)
+LexerFSMState DotConfigLexerFSM::endlineTransition(obn::string_pool_chartype c, LexerFSMState state)
+{
+    if(c == '\n' || c == '\r')
+    {
+        return state;
+    }
+    return END_LINE_END;
+}
+
+LexerFSMState DotConfigLexerFSM::symbolTransition(obn::string_pool_chartype c, LexerFSMState state)
 {
     if(!(obn::char_isalnum(c) || c == '_'))
     {
-        return State::KEY_END;
+        return State::SYMBOL_END;
     }
     return state;
 }
 
-LexerFSMState DotConfigLexerFSM::boolTTransition(obn::string_pool_chartype c, LexerFSMState state)
+LexerFSMState DotConfigLexerFSM::numberTransition(obn::string_pool_chartype c, LexerFSMState state)
 {
-    if(c == 'r')
+    if(c == '.')
     {
-        return State::BOOL_R;
+        return State::DECIMAL;
     }
-    else if(obn::char_isalpha(c) || c == '_')
+    else if(!obn::char_isdigit(c))
     {
-        return State::KEY;
+        return State::NUMBER_END;
     }
-    return State::KEY_END;
+    return state;
 }
 
-LexerFSMState DotConfigLexerFSM::boolRTransition(obn::string_pool_chartype c, LexerFSMState state)
+LexerFSMState DotConfigLexerFSM::negativeTransition(obn::string_pool_chartype c, LexerFSMState state)
 {
-    if(c == 'u')
+    if(obn::char_isblank(c))
     {
-        return State::BOOL_U;
+        return state;
     }
-    else if(obn::char_isalpha(c) || c == '_')
+    else if(obn::char_isdigit(c))
     {
-        return State::KEY;
+        return State::NUMBER;
     }
-    return State::KEY_END;
+    return State::INVALID_END;
 }
 
-LexerFSMState DotConfigLexerFSM::boolUTransition(obn::string_pool_chartype c, LexerFSMState state)
+LexerFSMState DotConfigLexerFSM::decimalTransition(obn::string_pool_chartype c, LexerFSMState state)
 {
-    if(c == 'e')
+    if(!obn::char_isdigit(c))
     {
-        return State::BOOL_R;
+        return State::DECIMAL_END;
     }
-    else if(obn::char_isalpha(c) || c == '_')
-    {
-        return State::KEY;
-    }
-    return State::KEY_END;
+    return state;
 }
 
-LexerFSMState DotConfigLexerFSM::boolETransition(obn::string_pool_chartype c, LexerFSMState state)
+LexerFSMState DotConfigLexerFSM::zeroTransition(obn::string_pool_chartype c, LexerFSMState state)
 {
-    if(obn::char_isalpha(c) || c == '_')
+    if(c == 'x' || c == 'X')
     {
-        return State::KEY;
+        return State::HEXADECIMAL;
     }
-    return State::BOOL_END;
+    else if(c == 'b' || c == 'B')
+    {
+        return State::BINARY;
+    }
+    else if(obn::char_isdigit(c))
+    {
+        return State::NUMBER;
+    }
+    return State::NUMBER_END;
+}
+
+LexerFSMState DotConfigLexerFSM::binaryTransition(obn::string_pool_chartype c, LexerFSMState state)
+{
+    if(c == '0' || c == '1')
+    {
+        return state;
+    }
+    return State::BINARY_END;
+}
+
+LexerFSMState DotConfigLexerFSM::hexadecimalTransition(obn::string_pool_chartype c, LexerFSMState state)
+{
+    if(obn::char_isxdigit(c))
+    {
+        return state;
+    }
+    return State::HEXADECIMAL_END;
+}
+
+LexerFSMState DotConfigLexerFSM::stringheadTransition(obn::string_pool_chartype c, LexerFSMState state)
+{
+    if(c == '\"')
+    {
+        return State::STRING_TAIL;
+    }
+    else if(c == '\n' || c == '\r')
+    {
+        return State::INVALID_END;
+    }
+    else if(c == '\\')
+    {
+        return State::STRING_ESCAPE;
+    }
+    return State::STRING_BODY;
+}
+
+LexerFSMState DotConfigLexerFSM::stringbodyTransition(obn::string_pool_chartype c, LexerFSMState state)
+{
+    if(c == '\"')
+    {
+        return State::STRING_TAIL;
+    }
+    else if(c == '\n' || c == '\r')
+    {
+        return State::INVALID_END;
+    }
+    else if(c == '\\')
+    {
+        return State::STRING_ESCAPE;
+    }
+    return state;
+}
+
+LexerFSMState DotConfigLexerFSM::stringtailTransition(obn::string_pool_chartype c, LexerFSMState state)
+{
+    return State::STRING_END;
+}
+
+LexerFSMState DotConfigLexerFSM::stringescapeTransition(obn::string_pool_chartype c, LexerFSMState state)
+{
+    switch(c)
+    {
+    case '\'':
+    case '\"':
+    case '\\':
+    case 'n':
+    case 'r':
+    case 't':
+        return State::STRING_ESCAPE_CHAR;
+    default:
+        return State::INVALID_END;
+    }
+
+    return state;
 }
 
 DotConfigLexerFSM::DotConfigLexerFSM()
 {
     m_transitionFuncs[State::START] = startTransition;
     m_transitionFuncs[State::COMMENT] = commentTransition;
-    m_transitionFuncs[State::KEY] = keyTransition;
-    m_transitionFuncs[State::BOOL_T] = boolTTransition;
-    m_transitionFuncs[State::BOOL_R] = boolRTransition;
-    m_transitionFuncs[State::BOOL_U] = boolUTransition;
-    m_transitionFuncs[State::BOOL_E] = boolETransition;
-    m_transitionFuncs[State::KEY_END] = selfTransition;
-    m_transitionFuncs[State::BOOL_END] = selfTransition;
+    m_transitionFuncs[State::END_LINE] = endlineTransition;
+    m_transitionFuncs[State::SYMBOL] = symbolTransition;
+    m_transitionFuncs[State::NUMBER] = numberTransition;
+    m_transitionFuncs[State::NEGATIVE] = negativeTransition;
+    m_transitionFuncs[State::DECIMAL] = decimalTransition;
+    m_transitionFuncs[State::ZERO] = zeroTransition;
+    m_transitionFuncs[State::BINARY] = binaryTransition;
+    m_transitionFuncs[State::HEXADECIMAL] = hexadecimalTransition;
+    m_transitionFuncs[State::STRING_HEAD] = stringheadTransition;
+    m_transitionFuncs[State::STRING_BODY] = stringbodyTransition;
+    m_transitionFuncs[State::STRING_TAIL] = stringtailTransition;
+    m_transitionFuncs[State::STRING_ESCAPE] = stringescapeTransition;
+    m_transitionFuncs[State::STRING_ESCAPE_CHAR] = stringheadTransition;
+    m_transitionFuncs[State::END_LINE_END] = selfTransition;
+    m_transitionFuncs[State::SYMBOL_END] = selfTransition;
     m_transitionFuncs[State::NUMBER_END] = selfTransition;
+    m_transitionFuncs[State::DECIMAL_END] = selfTransition;
+    m_transitionFuncs[State::BINARY_END] = selfTransition;
+    m_transitionFuncs[State::HEXADECIMAL_END] = selfTransition;
     m_transitionFuncs[State::STRING_END] = selfTransition;
     m_transitionFuncs[State::INVALID_END] = selfTransition;
     m_transitionFuncs[State::IGNORE_END] = selfTransition;
@@ -173,25 +316,51 @@ bool DotConfigLexerFSM::updateState(
     {
     case State::START:
     case State::COMMENT:
+    case State::STRING_HEAD:
+    case State::STRING_TAIL:
+    case State::STRING_ESCAPE:
         break;
-    case State::KEY_END:
-        outType = TokenType::SYMBOL;
+    case State::STRING_ESCAPE_CHAR:
+        m_currentToken.push_back(escapeConversion(c));
+        break;
+    case State::END_LINE_END:
+        outType = TokenType::END_OF_LINE;
+        outMeta = Metadata::DEFAULT;
         outString = m_currentToken;
         return true;
-    case State::BOOL_END:
-        outType = TokenType::BOOL;
+    case State::SYMBOL_END:
+        outType = TokenType::SYMBOL;
+        outMeta = Metadata::DEFAULT;
         outString = m_currentToken;
         return true;
     case State::NUMBER_END:
         outType = TokenType::NUMBER;
+        outMeta = Metadata::DEFAULT;
+        outString = m_currentToken;
+        return true;
+    case State::DECIMAL_END:
+        outType = TokenType::NUMBER;
+        outMeta = Metadata::IS_FLOAT;
+        outString = m_currentToken;
+        return true;
+    case State::BINARY_END:
+        outType = TokenType::NUMBER;
+        outMeta = Metadata::IS_BINARY;
+        outString = m_currentToken;
+        return true;
+    case State::HEXADECIMAL_END:
+        outType = TokenType::NUMBER;
+        outMeta = Metadata::IS_HEX;
         outString = m_currentToken;
         return true;
     case State::STRING_END:
         outType = TokenType::STRING;
+        outMeta = Metadata::DEFAULT;
         outString = m_currentToken;
         return true;
     case State::INVALID_END:
         outType = TokenType::INVALID;
+        outMeta = Metadata::DEFAULT;
         outString = m_currentToken;
         return true;
     case State::IGNORE_END:
@@ -206,5 +375,5 @@ bool DotConfigLexerFSM::updateState(
 
 bool DotConfigLexerFSM::goToEndState(std::string& outString, TokenType& outType, TokenMetadata& outMeta)
 {
-    return false;
+    return updateState('\n', outString, outType, outMeta);
 }
