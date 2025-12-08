@@ -86,7 +86,7 @@ private:
         IS_FLOAT,
         IS_BINARY,
         IS_HEX,
-        SIZE
+        META_SIZE
     };
 
     std::array<LexerNextStateFuncPtr, State::SIZE> m_transitionFuncs;

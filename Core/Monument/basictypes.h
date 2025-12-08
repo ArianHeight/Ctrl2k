@@ -7,20 +7,19 @@ typedef const char* c_string;
 
 #define ENUM_ENTRY_RAW(x) x,
 #define ENUM_ENTRY_STR(x) #x,
-#define ENUM_CLASS_GEN(name, type) \
+#define ENUM_MAP_GEN(name, type) \
     enum class name : type { ENUM_CLASS(ENUM_ENTRY_RAW) SIZE };\
     const c_string name##Map[] = { ENUM_CLASS(ENUM_ENTRY_STR) };
 
+#define ENUM_CLASS_CONVERT(name, underlying) static_cast<name>(underlying)
 #define ENUM_CLASS_UNDERLYING(name, val) static_cast<std::underlying_type_t<name>>(name##::##val)
 #define ENUM_CLASS_INST_UNDERLYING(name, inst) static_cast<std::underlying_type_t<name>>(inst)
 
-#define ENUM_CLASS_STRING(name, val) name##Map[ENUM_CLASS_UNDERLYING(name, val)]
-#define ENUM_CLASS_INST_STRING(name, inst) name##Map[ENUM_CLASS_INST_UNDERLYING(name, inst)]
-
-#define ENUM_CLASS_CONVERT(name, underlying) static_cast<name>(underlying)
-
 #define ENUM_CLASS_SET(inst, name, underlying) inst = ENUM_CLASS_CONVERT(name, underlying)
 #define ENUM_CLASS_COMPARE(name, val, op, underlying) name##::##val op ENUM_CLASS_CONVERT(name, underlying)
+
+#define ENUM_MAP_STRING(name, val) name##Map[ENUM_CLASS_UNDERLYING(name, val)]
+#define ENUM_MAP_INST_STRING(name, inst) name##Map[ENUM_CLASS_INST_UNDERLYING(name, inst)]
 
 struct uncopyable
 {

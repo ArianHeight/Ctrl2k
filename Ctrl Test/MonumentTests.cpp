@@ -107,7 +107,7 @@ void runEnumClassMacroTests()
 ENUM_ENTRY(RED)\
 ENUM_ENTRY(BLUE)\
 ENUM_ENTRY(GREEN)
-    ENUM_CLASS_GEN(Colours, uint16_t);
+    ENUM_MAP_GEN(Colours, uint16_t);
 #undef ENUM_CLASS
 
     assert(ENUM_CLASS_UNDERLYING(Colours, SIZE) == 3);
@@ -116,16 +116,16 @@ ENUM_ENTRY(GREEN)
     assert(ENUM_CLASS_COMPARE(Colours, GREEN, > , 1) && ENUM_CLASS_COMPARE(Colours, GREEN, <= , 2));
 
     Colours c = Colours::BLUE;
-    std::string str = ENUM_CLASS_STRING(Colours, BLUE);
+    std::string str = ENUM_MAP_STRING(Colours, BLUE);
     assert(str == "BLUE");
 
     ENUM_CLASS_SET(c, Colours, 0);
-    str = ENUM_CLASS_INST_STRING(Colours, c);
+    str = ENUM_MAP_INST_STRING(Colours, c);
     assert(str == "RED");
     assert(c == Colours::RED);
 
     ENUM_CLASS_SET(c, Colours, 2);
-    str = ENUM_CLASS_INST_STRING(Colours, c);
+    str = ENUM_MAP_INST_STRING(Colours, c);
     assert(str == "GREEN");
     assert(c == Colours::GREEN);
 }
