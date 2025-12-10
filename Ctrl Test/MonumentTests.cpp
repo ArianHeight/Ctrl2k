@@ -99,16 +99,24 @@ void runDataBucketTests()
     assert(test.data() == nullptr);
 }
 
+enum class TestFlag : int
+{
+    F1 = 1 << 0,
+    F2 = 1 << 1,
+    F3 = 1 << 2,
+    F4 = 1 << 3
+};
+ENUM_CLASS_FULL_OP_GEN(TestFlag);
 void runEnumClassMacroTests()
 {
     std::cout << subtestPretext << "Testing enum class macros\n";
 
-#define ENUM_CLASS(ENUM_ENTRY)\
+#define ENUM_COLOURS(ENUM_ENTRY)\
 ENUM_ENTRY(RED)\
 ENUM_ENTRY(BLUE)\
 ENUM_ENTRY(GREEN)
-    ENUM_MAP_GEN(Colours, uint16_t);
-#undef ENUM_CLASS
+    ENUM_MAP_GEN(Colours, uint16_t, ENUM_COLOURS);
+#undef ENUM_COLOURS
 
     assert(ENUM_CLASS_UNDERLYING(Colours, SIZE) == 3);
     assert(Colours::RED == ENUM_CLASS_CONVERT(Colours, 0));
@@ -128,6 +136,29 @@ ENUM_ENTRY(GREEN)
     str = ENUM_MAP_INST_STRING(Colours, c);
     assert(str == "GREEN");
     assert(c == Colours::GREEN);
+
+    TestFlag f = TestFlag::F1;
+    assert(f < TestFlag::F2);
+    assert(f <= 1);
+    assert(f >= 0);
+    assert(f >= TestFlag::F1);
+    assert(f != TestFlag::F2);
+    f <<= 1;
+    assert(f == TestFlag::F2);
+    assert(f << 1 == TestFlag::F3);
+    assert(f >> 1 == TestFlag::F1);
+    f = TestFlag::F4;
+    f >>= 2;
+    assert(f == TestFlag::F2);
+    f |= TestFlag::F4;
+    assert(FlagAnySet(f, 3));
+    assert(FlagAllSet(f, TestFlag::F4 | 2));
+    assert(FlagAllSet(~f, TestFlag::F1 | TestFlag::F3));
+    f ^= TestFlag::F4;
+    assert(f == TestFlag::F2);
+    f &= TestFlag::F1 | TestFlag::F2;
+    assert(f == TestFlag::F2);
+    assert(((TestFlag::F1 | TestFlag::F3) & ((TestFlag::F1 | TestFlag::F4) ^ TestFlag::F4)) == 1);
 }
 
 void runBasicTests()

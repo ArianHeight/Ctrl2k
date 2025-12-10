@@ -342,6 +342,16 @@ void testString(const c_string title, const stringtype& string)
 	LOG_MSG_PUSH("{} max length {}, capacity {}, struct size {}, length {}, data \"{}\"", title, string.max_length(), string.capacity(), sizeof(string), string.length(), string.data());
 }
 
+enum class flags : int
+{
+	F1 = 1 << 0,
+	F2 = 1 << 1,
+	F3 = 1 << 2,
+};
+//*
+ENUM_CLASS_FULL_OP_GEN(flags);
+//*/
+
 int main(int argc, char *argv[])
 {
     REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_PROFILE, std::cout);
@@ -364,6 +374,17 @@ int main(int argc, char *argv[])
 	{
 		LOG_MSG_PUSH("peek {}, get {}", (int)issm.peek(), (int)issm.get());
 	}
+
+	flags f = flags::F1;
+	f |= flags::F2 | flags::F3;
+	LOG_MSG_PUSH("flags {}", (int)f);
+
+	if(f >= 4)
+	{
+	}
+
+	uint32_t b = 2;
+	b <<= 2;
 
     return 0;
 }

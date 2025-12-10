@@ -36,6 +36,9 @@
     <ClInclude Include="basicfuncs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="basicenums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Monument.cpp">
