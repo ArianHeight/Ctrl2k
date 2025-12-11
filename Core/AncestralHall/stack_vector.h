@@ -12,16 +12,16 @@ A vector allocated on the stack with a fixed max capacity.
 */
 
 template<typename T, size_t _capacity>
-class fixed_vector
+class stack_vector
 {
 private:
-    using selftype = fixed_vector<T, _capacity>;
+    using selftype = stack_vector<T, _capacity>;
 
     size_t m_size;
     T m_data[_capacity];
     
 public:
-    fixed_vector() : m_size(0) {}
+    stack_vector() : m_size(0) {}
     
     inline size_t size() const { return m_size; }
     inline size_t capacity() const { return _capacity; }
@@ -65,7 +65,7 @@ public:
         }
         return *this;
     }
-    //TODO make this compatible with all other fixed_vector types
+    //TODO make this compatible with all other stack_vector types
 
     inline const T& at(size_t i) const { return m_data[i]; }
     inline T& at(size_t i) { return m_data[i]; }

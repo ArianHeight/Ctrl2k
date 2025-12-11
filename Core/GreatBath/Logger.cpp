@@ -255,7 +255,7 @@ bool gbt::SafeLog_DeregisterOutputStream(const std::ostream& os)
 //YOU MUST USE THE LOG GUARD to use this function
 static void Log_PushMessage(const LogBlock& data)
 {
-	assertIndex(data.level, LogLevel::LOGLEVEL_NONE_SIZE);
+	index_assert(data.level, LogLevel::LOGLEVEL_NONE_SIZE);
 
 	LogLevelFlag levelFlag = (LogLevelFlag)(1 << data.level);
 	const auto localTime = std::chrono::current_zone()->to_local(data.time);

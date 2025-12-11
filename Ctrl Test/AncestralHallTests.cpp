@@ -7,7 +7,7 @@
 void runFixedVectorTests()
 {
     std::cout << subtestPretext << "Testing fixed vector of size 8\n";
-    ahl::fixed_vector<int, 8> v1;
+    ahl::stack_vector<int, 8> v1;
     assert(v1.size() == 0);
     assert(v1.capacity() == 8);
     assert(v1.empty());

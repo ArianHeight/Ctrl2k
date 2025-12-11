@@ -143,8 +143,8 @@ public:
     inline selftype substring(size_t idx, size_t count) const
     {
 #ifdef _DEBUG
-        assertIndex(idx, internal_data.len);
-        assertIndex(idx + count, internal_data.len + 1);
+        index_assert(idx, internal_data.len);
+        index_assert(idx + count, internal_data.len + 1);
 #endif
         return selftype(&internal_data.buf[idx], count);
     }
@@ -152,7 +152,7 @@ public:
     inline selftype substring(size_t count) const
     {
 #ifdef _DEBUG
-        assertIndex(count, internal_data.len + 1);
+        index_assert(count, internal_data.len + 1);
 #endif
         return selftype(internal_data.buf, count);
     }
@@ -217,7 +217,7 @@ public:
     inline chartype operator[](size_t idx) const
     {
 #ifdef _DEBUG
-        assertIndex(idx, internal_data.len);
+        index_assert(idx, internal_data.len);
 #endif
         return internal_data.buf[idx];
     }
@@ -225,7 +225,7 @@ public:
     inline chartype& operator[](size_t idx)
     {
 #ifdef _DEBUG
-        assertIndex(idx, internal_data.len);
+        index_assert(idx, internal_data.len);
 #endif
         return internal_data.buf[idx];
     }

@@ -41,7 +41,7 @@ FourPoints* const Component::getTargetHB() { return nullptr; }
 
 //VisualData
 const RenderType Component::getCurrentRenderTarget(int& targetIndex) const { return TEXTURE; }
-double& const Component::getTimerRef() { double d = 0.0; return d; } //will cause error
+double& Component::getTimerRef() { double d = 0.0; return d; } //will cause error
 const glm::vec2 Component::getAR() const { return glm::vec2(1.0f); }
 
 //Entity Data
@@ -258,7 +258,7 @@ const RenderType VisualData::getCurrentRenderTarget(int& targetIndex) const {
 	return this->m_renderType;
 }
 
-double& const VisualData::getTimerRef() {
+double& VisualData::getTimerRef() {
 	return this->m_timer;
 }
 

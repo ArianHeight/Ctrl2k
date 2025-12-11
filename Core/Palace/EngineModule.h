@@ -71,7 +71,7 @@ public:
 };
 
 template<class Module> requires std::is_base_of_v<EngineModule, Module>
-class EngineModuleSlot : public Uncopyable
+class EngineModuleSlot : public uncopyable
 {
 protected:
     std::shared_ptr<Module> m_module;

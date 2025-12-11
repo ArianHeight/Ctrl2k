@@ -52,7 +52,7 @@ public:
 
 	//VisualData
 	virtual const RenderType getCurrentRenderTarget(int& targetIndex) const;
-	virtual double& const getTimerRef();
+	virtual double& getTimerRef();
 	virtual const glm::vec2 getAR() const;
 
 	//EntityData
@@ -193,7 +193,7 @@ public:
 	~VisualData();
 
 	const RenderType getCurrentRenderTarget(int& targetIndex) const override; //returns either texture, animation, or otherwise. target name will be set to the target's name
-	double& const getTimerRef() override; //returns ref to animation timer
+	double& getTimerRef() override; //returns ref to animation timer
 	const glm::vec2 getAR() const override; //returns the aspect ratio of animation/texture
 private:
 	std::string m_name;

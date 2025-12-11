@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClInclude Include="AncestralHall.h" />
     <ClInclude Include="consistent_vector.h" />
-    <ClInclude Include="fixed_vector.h" />
+    <ClInclude Include="stack_vector.h" />
     <ClInclude Include="threadsafe.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="ThreadSafeVector.h" />

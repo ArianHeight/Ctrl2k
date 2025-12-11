@@ -4,6 +4,16 @@
 
 // null-terminated c-string, please do not use non null-terminated char* buffers if we're specifiying a c_string
 typedef const char* c_string;
+typedef const wchar_t* wc_string;
+
+typedef uint8_t uint1B;
+typedef int8_t int1B;
+typedef uint16_t uint2B;
+typedef int16_t int2B;
+typedef uint32_t uint4B;
+typedef int32_t int4B;
+typedef uint64_t uint8B;
+typedef int64_t int8B;
 
 struct uncopyable
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include <mutex>
 #include <functional>
-#include "fixed_vector.h"
+#include "stack_vector.h"
 
 namespace ahl::threadsafe
 {
@@ -30,6 +30,6 @@ public:
 };
 
 template <class T, size_t _capacity>
-using fixed_vector = threadsafe_wrapper<ahl::fixed_vector<T, _capacity>>;
+using stack_vector = threadsafe_wrapper<ahl::stack_vector<T, _capacity>>;
 
 }
