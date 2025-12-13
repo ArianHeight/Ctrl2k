@@ -8,7 +8,7 @@ Lexer::Lexer(std::unique_ptr<LexerFSM> fsm) : m_fsm(std::move(fsm))
 {
 }
 
-bool Lexer::tokenizeStream(std::istream& is, obn::string_registry& registry, std::vector<Token>& out)
+bool Lexer::tokenizeStream(std::istream& is, obn::dyn::string_registry& registry, std::vector<Token>& out)
 {
     TokenType currentType;
     TokenMetadata currentMeta;
@@ -36,13 +36,13 @@ bool Lexer::tokenizeStream(std::istream& is, obn::string_registry& registry, std
     return true;
 }
 
-bool Lexer::tokenizeFile(const gbt::FilePath& filepath, obn::string_registry& registry, std::vector<Token>& out)
+bool Lexer::tokenizeFile(const gbt::FilePath& filepath, obn::dyn::string_registry& registry, std::vector<Token>& out)
 {
     std::ifstream file(filepath.path(), std::ios::in);
     return tokenizeStream(file, registry, out);
 }
 
-bool Lexer::tokenizeString(const std::string& str, obn::string_registry& registry, std::vector<Token>& out)
+bool Lexer::tokenizeString(const std::string& str, obn::dyn::string_registry& registry, std::vector<Token>& out)
 {
     std::istringstream issm(str);
     return tokenizeStream(issm, registry, out);

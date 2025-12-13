@@ -120,13 +120,13 @@ class Lexer
 private:
     std::unique_ptr<LexerFSM> m_fsm;
     
-    bool tokenizeStream(std::istream& is, obn::string_registry& registry, std::vector<Token>& out);
+    bool tokenizeStream(std::istream& is, obn::dyn::string_registry& registry, std::vector<Token>& out);
 
 public:
     Lexer(std::unique_ptr<LexerFSM> fsm);
 
-    bool tokenizeFile(const gbt::FilePath& filepath, obn::string_registry& registry, std::vector<Token>& out);
-    bool tokenizeString(const std::string& str, obn::string_registry& registry, std::vector<Token>& out);
+    bool tokenizeFile(const gbt::FilePath& filepath, obn::dyn::string_registry& registry, std::vector<Token>& out);
+    bool tokenizeString(const std::string& str, obn::dyn::string_registry& registry, std::vector<Token>& out);
 };
 
 }

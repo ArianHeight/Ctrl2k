@@ -20,7 +20,7 @@ static const string_pool_chartype* try_add_string_to_bucket(
     return nullptr;
 }
 
-string_pool::string_pool(size_t mem_block_size) :
+dyn::string_pool::string_pool(size_t mem_block_size) :
     m_size(0),
     m_capacity(mem_block_size)
 {
@@ -28,7 +28,7 @@ string_pool::string_pool(size_t mem_block_size) :
     mem_set_zero(m_mem_block[0].data(), m_mem_block[0].capacity());
 }
 
-const string_pool_chartype* string_pool::add(const string_pool_chartype* str, size_t len)
+const string_pool_chartype* dyn::string_pool::add(const string_pool_chartype* str, size_t len)
 {
     for(size_t i = 0; i < m_mem_block.size(); ++i)
     {
@@ -63,7 +63,7 @@ const string_pool_chartype* string_pool::add(const string_pool_chartype* str, si
     return nullptr;
 }
 
-string_registry_id string_registry::register_string(const string_pool_chartype* str, size_t len)
+string_registry_id dyn::string_registry::register_string(const string_pool_chartype* str, size_t len)
 {
     assert(len < UINT32_MAX);
     if(!str)
@@ -99,7 +99,7 @@ string_registry_id string_registry::register_string(const string_pool_chartype* 
     return new_id;
 }
 
-string_registry_id string_registry::find_registered_string(const string_pool_chartype* str, size_t len) const
+string_registry_id dyn::string_registry::find_registered_string(const string_pool_chartype* str, size_t len) const
 {
     assert(len < UINT32_MAX);
     if(!str || m_views.empty())
@@ -121,12 +121,12 @@ string_registry_id string_registry::find_registered_string(const string_pool_cha
     return INVALID_STRING_REGISTRY_ID;
 }
 
-const string_pool_chartype* string_registry::get_string(const string_registry_id id) const
+const string_pool_chartype* dyn::string_registry::get_string(const string_registry_id id) const
 {
     return m_id_map[id];
 }
 
-size_t string_registry::num_strings() const
+size_t dyn::string_registry::num_strings() const
 {
     return m_views.size();
 }

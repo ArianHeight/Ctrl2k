@@ -169,6 +169,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dyn_string_registry.h" />
     <ClInclude Include="heap_string.h" />
     <ClInclude Include="obn.h" />
     <ClInclude Include="simple_string.h" />
@@ -183,7 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="obn.cpp" />
-    <ClCompile Include="string_registry.cpp" />
+    <ClCompile Include="dyn_string_registry.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

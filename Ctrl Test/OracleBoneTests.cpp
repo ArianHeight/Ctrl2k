@@ -71,20 +71,20 @@ void testFixedStringSize()
 void testDynamicStringSize()
 {
     std::cout << subtestPretext << "Testing Dynamic String 0 Size\n";
-    testStringSize<obn::dynamic_string0, char>("", { 32, 1, SIZE_MAX - 1, 0 });
-    testStringSize<obn::dynamic_string0, char>("blue", { 32, 5, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::heap_string0, char>("", { 32, 1, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::heap_string0, char>("blue", { 32, 5, SIZE_MAX - 1, 4 });
     std::cout << subtestPretext << "Testing Dynamic String Size\n";
-    testStringSize<obn::dynamic_string, char>("", { 32, 32, SIZE_MAX - 1, 0 });
-    testStringSize<obn::dynamic_string, char>("blue", { 32, 32, SIZE_MAX - 1, 4 });
-    testStringSize<obn::dynamic_string, char>("bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
+    testStringSize<obn::dyn::heap_string, char>("", { 32, 32, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::heap_string, char>("blue", { 32, 32, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::heap_string, char>("bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
 
     std::cout << subtestPretext << "Testing Wide Dynamic String 0 Size\n";
-    testStringSize<obn::wdynamic_string0, wchar_t>(L"", { 32, 1, SIZE_MAX - 1, 0 });
-    testStringSize<obn::wdynamic_string0, wchar_t>(L"blue", { 32, 5, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::wheap_string0, wchar_t>(L"", { 32, 1, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::wheap_string0, wchar_t>(L"blue", { 32, 5, SIZE_MAX - 1, 4 });
     std::cout << subtestPretext << "Testing Wide Dynamic String Size\n";
-    testStringSize<obn::wdynamic_string, wchar_t>(L"", { 32, 32, SIZE_MAX - 1, 0 });
-    testStringSize<obn::wdynamic_string, wchar_t>(L"blue", { 32, 32, SIZE_MAX - 1, 4 });
-    testStringSize<obn::wdynamic_string, wchar_t>(L"bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
+    testStringSize<obn::dyn::wheap_string, wchar_t>(L"", { 32, 32, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::wheap_string, wchar_t>(L"blue", { 32, 32, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::wheap_string, wchar_t>(L"bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
 }
 
 // DO NOT use the same string for any of the inputs
@@ -128,9 +128,9 @@ void testStringGeneral(const chartype* small_in, const chartype* in, const chart
 void runStringBasicTests()
 {
     std::cout << subtestPretext << "Testing Basic Dynamic String Functionality\n";
-    testStringGeneral<obn::dynamic_string, char>("", "blue", "bluetooth wireless headset charging", true);
+    testStringGeneral<obn::dyn::heap_string, char>("", "blue", "bluetooth wireless headset charging", true);
     std::cout << subtestPretext << "Testing Basic Wide Dynamic String Functionality\n";
-    testStringGeneral<obn::wdynamic_string, wchar_t>(L"", L"blue", L"bluetooth wireless headset charging", true);
+    testStringGeneral<obn::dyn::wheap_string, wchar_t>(L"", L"blue", L"bluetooth wireless headset charging", true);
     std::cout << subtestPretext << "Testing Basic Fixed String Functionality\n";
     testStringGeneral<obn::stack_string<12>, char>("", "blue", "bluetooth wireless headset charging", false);
     std::cout << subtestPretext << "Testing Basic Wide Small String Functionality\n";
@@ -140,8 +140,8 @@ void runStringBasicTests()
 void runDynamicStringMemTest()
 {
     std::cout << subtestPretext << "Testing Dynamic String Memory\n";
-    obn::wdynamic_string0 wd = L"blue";
-    obn::wdynamic_string wd1 = std::move(wd);
+    obn::dyn::wheap_string0 wd = L"blue";
+    obn::dyn::wheap_string wd1 = std::move(wd);
     assert(wd.c_str() != wd1.c_str());
     assert(wd.length() == 0);
     assert(wd1.length() == 4);
@@ -172,7 +172,7 @@ void runStringAppendTest()
     assert(f.length() == 6);
     assert(!f.has_error());
     assert(f == s);
-    obn::dynamic_string d = s;
+    obn::dyn::heap_string d = s;
     obn::stack_string<32> f1 = "oth wireless headset charging";
     d += f1;
     assert(d == "bluetooth wireless headset charging");
@@ -188,7 +188,7 @@ void runStringFindTest()
     assert(s.starts_with("blue"));
     assert(s.ends_with('h'));
     assert(s.ends_with("tooth"));
-    obn::dynamic_string d = s;
+    obn::dyn::heap_string d = s;
     assert(s.starts_with(d));
     assert(s.ends_with(d));
 
@@ -210,12 +210,12 @@ void runStringMiscTest()
     s2.replace('o', 'e');
     assert(s2 == "blueteeth");
 
-    const obn::dynamic_string d = "blue";
+    const obn::dyn::heap_string d = "blue";
     assert(d[0] == 'b' && d[1] == 'l' && d[2] == 'u' && d[3] == 'e');
-    obn::dynamic_string d1 = d;
+    obn::dyn::heap_string d1 = d;
     d1[3] = 'd';
     assert(d1 == "blud");
-    obn::dynamic_string d2 = "bluetooth";
+    obn::dyn::heap_string d2 = "bluetooth";
     d2.replace('o', 'e');
     assert(d2 == "blueteeth");
 }
@@ -242,12 +242,12 @@ void runStringRegistryTests()
 {
     {
         std::cout << subtestPretext << "Testing String Registry Functionality\n";
-        obn::string_registry testRegistry(16);
+        obn::dyn::string_registry testRegistry(16);
         testStringRegistry(testRegistry);
     }
     {
         std::cout << subtestPretext << "Testing Fixed String Registry Functionality\n";
-        obn::fixed_string_registry_default testRegistry;
+        obn::string_registry_default testRegistry;
         testStringRegistry(testRegistry);
     }
 }

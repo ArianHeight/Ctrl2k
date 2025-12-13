@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AncestralHall.h" />
+    <ClInclude Include="ahl.h" />
     <ClInclude Include="consistent_vector.h" />
     <ClInclude Include="stack_vector.h" />
     <ClInclude Include="threadsafe.h" />
@@ -32,7 +32,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AncestralHall.cpp" />
+    <ClCompile Include="ahl.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -120,8 +120,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>AncestralHall.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(ProjectDir)\AncestrallHall.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile>ahl.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(ProjectDir)\ahl.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,8 +138,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>AncestralHall.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(ProjectDir)\AncestrallHall.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile>ahl.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(ProjectDir)\ahl.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,8 +156,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>AncestralHall.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(ProjectDir)\AncestrallHall.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile>ahl.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(ProjectDir)\ahl.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,8 +174,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>AncestralHall.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(ProjectDir)\AncestrallHall.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile>ahl.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(ProjectDir)\ahl.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

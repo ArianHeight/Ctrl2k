@@ -1,7 +1,7 @@
 #pragma once
 #include "simple_string.h"
 
-namespace obn
+namespace obn::dyn
 {
 
 /*
@@ -15,7 +15,7 @@ This has ownership over its own data.
 
 */
 template <typename chartype, size_t initial_size>
-struct dynamic_string_data
+struct heap_string_data
 {
     static constexpr size_t max_len = SIZE_MAX - 1;
     inline static chartype zero_val = 0; // please do not touch this
@@ -31,7 +31,7 @@ struct dynamic_string_data
     // only designed to be called from simple_string and itself
     inline void delete_memory() { if(owns_memory()) delete[] buf; }
 
-    dynamic_string_data() : capacity(initial_size), len(0), error(false), buf(&zero_val)
+    heap_string_data() : capacity(initial_size), len(0), error(false), buf(&zero_val)
     {
         if constexpr(initial_size != 0)
         {
@@ -40,7 +40,7 @@ struct dynamic_string_data
         }
     }
 
-    ~dynamic_string_data() { delete_memory(); }
+    ~heap_string_data() { delete_memory(); }
 
     // This is dangerous, as we do not free the buffer
     // only designed to be called from simple_string and itself
@@ -107,9 +107,9 @@ public:
 
 };
 
-typedef simple_string<dynamic_string_data, char, 0, true> dynamic_string0;
-typedef simple_string<dynamic_string_data, char, 32, true> dynamic_string;
-typedef simple_string<dynamic_string_data, wchar_t, 0, true> wdynamic_string0;
-typedef simple_string<dynamic_string_data, wchar_t, 32, true> wdynamic_string;
+typedef simple_string<heap_string_data, char, 0, true> heap_string0;
+typedef simple_string<heap_string_data, char, 32, true> heap_string;
+typedef simple_string<heap_string_data, wchar_t, 0, true> wheap_string0;
+typedef simple_string<heap_string_data, wchar_t, 32, true> wheap_string;
 
 }

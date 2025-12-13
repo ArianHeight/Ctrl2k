@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "Core/AncestralHall/AncestralHall.h"
+#include "Core/AncestralHall/ahl.h"
 
 void runFixedVectorTests()
 {

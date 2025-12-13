@@ -1,6 +1,5 @@
 #pragma once
 #include "string_util.h"
-#include <vector>
 
 /*
 
@@ -29,14 +28,14 @@ pointer/address consistent(ie. a pointer into the internal data will always be v
 */
 
 template<size_t _capacity>
-class fixed_string_pool : public unmoveable, public uncopyable
+class string_pool : public unmoveable, public uncopyable
 {
 private:
     size_t m_size;
     string_pool_chartype m_data[_capacity];
 
 public:
-    fixed_string_pool() : m_size(0) { mem_set_zero(m_data, _capacity); }
+    string_pool() : m_size(0) { mem_set_zero(m_data, _capacity); }
 
     inline size_t size() const { return m_size; }
     inline size_t capacity() const { return _capacity; }
@@ -56,23 +55,6 @@ public:
         }
         return nullptr;
     }
-};
-
-class string_pool : public uncopyable, public unmoveable
-{
-private:
-    size_t m_size;
-    size_t m_capacity;
-    std::vector<data_bucket<string_pool_chartype>> m_mem_block;
-
-public:
-    string_pool(size_t mem_block_size = STRING_POOL_STARTING_CAPACITY);
-
-    inline size_t size() const { return m_size; }
-    inline size_t capacity() const { return m_capacity; }
-    inline bool empty() const { return m_size == 0; }
-
-    const string_pool_chartype* add(const string_pool_chartype* str, size_t len);
 };
 
 /*
@@ -118,16 +100,16 @@ public:
 };
 
 template<size_t _pool_capacity, size_t _view_capacity>
-class fixed_string_registry : public unmoveable, public uncopyable, public string_registry_base
+class string_registry : public unmoveable, public uncopyable, public string_registry_base
 {
 private:
-    fixed_string_pool<_pool_capacity> m_pool;
+    string_pool<_pool_capacity> m_pool;
     size_t m_num_views;
     string_registry_view m_views[_view_capacity];
     const string_pool_chartype* m_id_map[_view_capacity];
 
 public:
-    fixed_string_registry() : m_num_views(0) {}
+    string_registry() : m_num_views(0) {}
 
     string_registry_id register_string(const string_pool_chartype* str, size_t len)
     {
@@ -200,25 +182,6 @@ public:
     size_t num_strings() const override { return m_num_views; }
 };
 
-class string_registry : public uncopyable, public unmoveable, public string_registry_base
-{
-private:
-    string_pool m_pool;
-    std::vector<string_registry_view> m_views;
-    std::vector<const string_pool_chartype*> m_id_map;
-
-public:
-    string_registry(size_t mem_block_size = STRING_POOL_STARTING_CAPACITY) : m_pool(mem_block_size) {}
-
-    string_registry_id register_string(const string_pool_chartype* str, size_t len) override;
-
-    string_registry_id find_registered_string(const string_pool_chartype* str, size_t len) const override;
-
-    const string_pool_chartype* get_string(const string_registry_id id) const override;
-
-    size_t num_strings() const override;
-};
-
-using fixed_string_registry_default = fixed_string_registry<STRING_POOL_DEFAULT_CAPACITY, STRING_REGISTRY_DEFAULT_VIEW_CAPACITY>;
+using string_registry_default = string_registry<STRING_POOL_DEFAULT_CAPACITY, STRING_REGISTRY_DEFAULT_VIEW_CAPACITY>;
 
 }
