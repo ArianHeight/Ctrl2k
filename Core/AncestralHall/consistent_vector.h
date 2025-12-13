@@ -2,7 +2,7 @@
 #include <vector>
 #include "Core/Monument/Monument.h"
 
-namespace ahl
+namespace ahl::dyn
 {
 
 /*

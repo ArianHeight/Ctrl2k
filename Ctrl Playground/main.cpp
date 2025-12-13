@@ -8,8 +8,8 @@
 #include <unordered_set>
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
-#include "Core/OracleBone/stackstring.h"
-#include "Core/OracleBone/heapstring.h"
+#include "Core/OracleBone/stack_string.h"
+#include "Core/OracleBone/heap_string.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 

@@ -1,4 +1,4 @@
 #pragma once
-#include "stackstring.h"
-#include "heapstring.h"
+#include "stack_string.h"
+#include "heap_string.h"
 #include "string_registry.h"

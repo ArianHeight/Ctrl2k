@@ -1,5 +1,5 @@
 #pragma once
-#include "simplestring.h"
+#include "simple_string.h"
 
 namespace obn
 {
@@ -30,11 +30,11 @@ struct small_string_data
 
 DO NOT USE DIRECTLY, use the related typedefs with a simple_string interface
 
-This is a standard fixed string allocated on the stack.
+This is a standard fixed-size string allocated on the stack.
 
 */
 template <typename chartype, size_t buf_size>
-struct fixed_string_data
+struct stack_string_data
 {
     static constexpr size_t capacity = buf_size;
     static constexpr size_t max_len = capacity - 1;
@@ -43,7 +43,7 @@ struct fixed_string_data
     bool error;
     chartype buf[capacity];
 
-    fixed_string_data() : len(0), error(false) { buf[0] = 0; }
+    stack_string_data() : len(0), error(false) { buf[0] = 0; }
 };
 
 typedef simple_string<small_string_data, char, 3> small_string8;
@@ -57,8 +57,8 @@ typedef simple_string<small_string_data, wchar_t, 6> wsmall_string64;
 typedef simple_string<small_string_data, wchar_t, 7> wsmall_string128;
 
 template <size_t buf_size>
-using fixed_string = simple_string<fixed_string_data, char, buf_size>;
+using stack_string = simple_string<stack_string_data, char, buf_size>;
 template <size_t buf_size>
-using wfixed_string = simple_string<fixed_string_data, wchar_t, buf_size>;
+using wstack_string = simple_string<stack_string_data, wchar_t, buf_size>;
 
 }

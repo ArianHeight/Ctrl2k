@@ -42,9 +42,9 @@ void runFixedVectorTests()
 void runConsistentVectorTests()
 {
     std::cout << subtestPretext << "Testing consistent vector\n";
-    ahl::consistent_vector<int> v;
+    ahl::dyn::consistent_vector<int> v;
     std::vector<int*> addresses;
-    assert(v.capacity() == ahl::CONSISTENT_VECTOR_INITIAL_CAPACITY);
+    assert(v.capacity() == ahl::dyn::CONSISTENT_VECTOR_INITIAL_CAPACITY);
     assert(v.size() == 0);
     assert(v.empty());
 

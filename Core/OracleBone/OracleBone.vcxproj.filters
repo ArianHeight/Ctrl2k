@@ -18,16 +18,16 @@
     <ClInclude Include="obn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stackstring.h">
+    <ClInclude Include="stack_string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stringutil.h">
+    <ClInclude Include="string_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="heapstring.h">
+    <ClInclude Include="heap_string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="simplestring.h">
+    <ClInclude Include="simple_string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="string_registry.h">

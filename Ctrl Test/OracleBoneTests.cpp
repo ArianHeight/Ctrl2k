@@ -60,12 +60,12 @@ void testSmallStringSize()
 void testFixedStringSize()
 {
     std::cout << subtestPretext << "Testing Fixed String 12 Size\n";
-    testStringSize<obn::fixed_string<12>, char>("blue", { sizeof(obn::fixed_string<12>), 12, 11, 4 }); // don't care about struct size
-    testStringSize<obn::fixed_string<12>, char>("bluetooth headset", { sizeof(obn::fixed_string<12>), 12, 11, 11 }); // don't care about struct size
+    testStringSize<obn::stack_string<12>, char>("blue", { sizeof(obn::stack_string<12>), 12, 11, 4 }); // don't care about struct size
+    testStringSize<obn::stack_string<12>, char>("bluetooth headset", { sizeof(obn::stack_string<12>), 12, 11, 11 }); // don't care about struct size
 
     std::cout << subtestPretext << "Testing Wide Fixed String 12 Size\n";
-    testStringSize<obn::wfixed_string<12>, wchar_t>(L"blue", { sizeof(obn::wfixed_string<12>), 12, 11, 4 }); // don't care about struct size
-    testStringSize<obn::wfixed_string<12>, wchar_t>(L"bluetooth headset", { sizeof(obn::wfixed_string<12>), 12, 11, 11 }); // don't care about struct size
+    testStringSize<obn::wstack_string<12>, wchar_t>(L"blue", { sizeof(obn::wstack_string<12>), 12, 11, 4 }); // don't care about struct size
+    testStringSize<obn::wstack_string<12>, wchar_t>(L"bluetooth headset", { sizeof(obn::wstack_string<12>), 12, 11, 11 }); // don't care about struct size
 }
 
 void testDynamicStringSize()
@@ -132,7 +132,7 @@ void runStringBasicTests()
     std::cout << subtestPretext << "Testing Basic Wide Dynamic String Functionality\n";
     testStringGeneral<obn::wdynamic_string, wchar_t>(L"", L"blue", L"bluetooth wireless headset charging", true);
     std::cout << subtestPretext << "Testing Basic Fixed String Functionality\n";
-    testStringGeneral<obn::fixed_string<12>, char>("", "blue", "bluetooth wireless headset charging", false);
+    testStringGeneral<obn::stack_string<12>, char>("", "blue", "bluetooth wireless headset charging", false);
     std::cout << subtestPretext << "Testing Basic Wide Small String Functionality\n";
     testStringGeneral<obn::wsmall_string8, wchar_t>(L"", L"blue", L"bluetooth", false);
 }
@@ -167,13 +167,13 @@ void runStringAppendTest()
     s.append("ooth");
     assert(s.length() == 6);
     assert(s.has_error());
-    obn::fixed_string<7> f = "blue";
+    obn::stack_string<7> f = "blue";
     f += "to";
     assert(f.length() == 6);
     assert(!f.has_error());
     assert(f == s);
     obn::dynamic_string d = s;
-    obn::fixed_string<32> f1 = "oth wireless headset charging";
+    obn::stack_string<32> f1 = "oth wireless headset charging";
     d += f1;
     assert(d == "bluetooth wireless headset charging");
     d.shrink_to_fit();
