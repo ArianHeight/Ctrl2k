@@ -43,7 +43,7 @@ public:
 
     const string_pool_chartype* add(const string_pool_chartype* str, size_t len)
     {
-        if(m_size + len + 1 <= _capacity)
+        if(m_size + len + 1 <= _capacity && str)
         {
             string_pool_chartype* retVal = &m_data[m_size];
             if(mem_copy(retVal, str, sizeof(string_pool_chartype) * len) == 0)
@@ -99,14 +99,14 @@ public:
     virtual size_t num_strings() const = 0;
 };
 
-template<size_t _pool_capacity, size_t _view_capacity>
+template<size_t pool_capacity, size_t view_capacity>
 class string_registry : public unmoveable, public uncopyable, public string_registry_base
 {
 private:
-    string_pool<_pool_capacity> m_pool;
+    string_pool<pool_capacity> m_pool;
     size_t m_num_views;
-    string_registry_view m_views[_view_capacity];
-    const string_pool_chartype* m_id_map[_view_capacity];
+    string_registry_view m_views[view_capacity];
+    const string_pool_chartype* m_id_map[view_capacity];
 
 public:
     string_registry() : m_num_views(0) {}

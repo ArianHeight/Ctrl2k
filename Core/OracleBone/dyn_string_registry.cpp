@@ -30,6 +30,11 @@ dyn::string_pool::string_pool(size_t mem_block_size) :
 
 const string_pool_chartype* dyn::string_pool::add(const string_pool_chartype* str, size_t len)
 {
+    if(!str)
+    {
+        return nullptr;
+    }
+
     for(size_t i = 0; i < m_mem_block.size(); ++i)
     {
         const string_pool_chartype* retVal = try_add_string_to_bucket(m_mem_block[i], str, len);

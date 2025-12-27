@@ -6,4 +6,6 @@
 
 #define index_assert(index, size) range_assert(index, 0, size)
 
+#define ptr_assert(ptr) assert(ptr)
+
 #define compile_assert(cond) static_assert(cond)

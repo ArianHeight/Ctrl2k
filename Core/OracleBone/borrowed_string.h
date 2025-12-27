@@ -1,0 +1,113 @@
+#pragma once
+#include "string_util.h"
+
+namespace obn
+{
+
+/*
+
+This is essentially std::string_view, a "borrowed" string that does not own the string data it is pointed to.
+
+*/
+template <typename chartype>
+class borrowed_string
+{
+private:
+    using selftype = borrowed_string<chartype>;
+
+    const chartype* m_data;
+    size_t m_len;
+
+public:
+    inline const chartype* c_str() const { return m_data; }
+    inline const chartype* data() const { return m_data; }
+    inline size_t length() const { return m_len; }
+    inline size_t size() const { return m_len; }
+
+    inline bool empty() const { return m_len == 0 || !m_data; }
+
+    inline void clear()
+    {
+        m_data = "";
+        m_len = 0;
+    }
+
+    inline void set(const chartype* str, size_t str_len)
+    {
+        ptr_assert(str);
+        m_data = str;
+        m_len = str_len;
+    }
+
+    inline void set(const chartype* str)
+    {
+        ptr_assert(str);
+        m_data = str;
+        m_len = string_len(str) // this seems dangerous, unbounded length check
+    }
+
+    inline void set(const selftype& other)
+    {
+        m_data = other.m_data;
+        m_len = other.m_len;
+    }
+
+    inline selftype substring(size_t idx, size_t count) const
+    {
+        index_assert(idx, m_len);
+        index_assert(idx + count, m_len + 1);
+        return selftype(&m_data[idx], count);
+    }
+
+    inline selftype substring(size_t count) const
+    {
+        index_assert(count, internal_data.len + 1);
+        return selftype(m_data, count);
+    }
+
+    inline bool starts_with(chartype c) { return m_len > 0 && internal_data.buf[0] == c; }
+    inline bool starts_with(const chartype* str, size_t str_len)
+    {
+        ptr_assert(str);
+        return str_len <= m_len && string_ncmp(m_data, str, str_len) == 0;
+    }
+    inline bool starts_with(const chartype* str) { return starts_with(str, string_len(str)); }
+
+    inline bool ends_with(chartype c) { return m_len > 0 && m_data[m_len - 1] == c; }
+    inline bool ends_with(const chartype* str, size_t str_len)
+    {
+        ptr_assert(str);
+        return str_len <= m_len && string_ncmp(&m_data[internal_data.len - str_len], str, str_len) == 0;
+    }
+    inline bool ends_with(const chartype* str) { return ends_with(str, string_len(str)); }
+    
+    // constructors
+    borrowed_string() : m_data(""), m_len(0) {}
+    borrowed_string(const chartype* str) { set(str); } // this seems dangerous
+    simple_string(const chartype* str, size_t str_len) { set(str, str_len); }
+    simple_string(const selftype& other) : m_data(other.m_data), m_len(other.m_len) {}
+
+    // copy c string assignment
+    inline selftype& operator=(const chartype* str) { set(str); return *this; }
+    // copy assignment self
+    inline selftype& operator=(const selftype& other) { set(other); return *this; }
+
+    // equals c string
+    inline bool operator==(const chartype* str) const { ptr_assert(str); return string_ncmp(m_data, str, m_len) == 0; }
+    // equals other borrowed_string
+    inline bool operator==(const selftype& other) const
+    {
+        return m_len == other.m_len && string_ncmp(m_data, other.m_data, m_len) == 0;
+    }
+
+    inline chartype operator[](size_t idx) const
+    {
+        index_assert(idx, internal_data.len);
+        return internal_data.buf[idx];
+    }
+};
+
+typedef borrowed_string<char> view_string;
+typedef borrowed_string<wchar_t> view_wstring;
+
+}

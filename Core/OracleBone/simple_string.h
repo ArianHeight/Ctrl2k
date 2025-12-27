@@ -71,6 +71,7 @@ public:
             internal_data.len = internal_data.error ? internal_data.max_len : str_len;
         }
 
+        ptr_assert(str);
         // use the faster mem cpy but without the trailing 0
         internal_data.error = mem_copy(internal_data.buf, str, internal_data.len * sizeof(chartype)) != 0 || internal_data.error;
         internal_data.buf[internal_data.len] = 0; // add trailing 0 back in very important
@@ -130,6 +131,7 @@ public:
                 return;
         }
 
+        ptr_assert(str);
         // use the faster mem cpy but without the trailing 0
         internal_data.error = mem_copy(&internal_data.buf[internal_data.len], str, str_len * sizeof(chartype)) != 0 || internal_data.error;
         internal_data.len = internal_data.len + str_len;
@@ -142,24 +144,21 @@ public:
 
     inline selftype substring(size_t idx, size_t count) const
     {
-#ifdef _DEBUG
         index_assert(idx, internal_data.len);
         index_assert(idx + count, internal_data.len + 1);
-#endif
         return selftype(&internal_data.buf[idx], count);
     }
 
     inline selftype substring(size_t count) const
     {
-#ifdef _DEBUG
         index_assert(count, internal_data.len + 1);
-#endif
         return selftype(internal_data.buf, count);
     }
 
     inline bool starts_with(chartype c) { return internal_data.len > 0 && internal_data.buf[0] == c; }
     inline bool starts_with(const chartype* str, size_t str_len)
     {
+        ptr_assert(str);
         return str_len <= internal_data.len && string_ncmp(internal_data.buf, str, str_len) == 0;
     }
     inline bool starts_with(const chartype* str) { return starts_with(str, string_len(str)); }
@@ -169,6 +168,7 @@ public:
     inline bool ends_with(chartype c) { return internal_data.len > 0 && internal_data.buf[internal_data.len - 1] == c; }
     inline bool ends_with(const chartype* str, size_t str_len)
     {
+        ptr_assert(str);
         return str_len <= internal_data.len && string_ncmp(&internal_data.buf[internal_data.len - str_len], str, str_len) == 0;
     }
     inline bool ends_with(const chartype* str) { return ends_with(str, string_len(str)); }
@@ -206,27 +206,23 @@ public:
     inline selftype& operator+=(const simple_string<datatype2, chartype, num2, dyn2>& other) { append(other); return *this; }
 
     // equals c string
-    inline bool operator==(const chartype* str) const { return string_ncmp(internal_data.buf, str, internal_data.capacity) == 0; }
+    inline bool operator==(const chartype* str) const { ptr_assert(str); return string_ncmp(internal_data.buf, str, internal_data.capacity) == 0; }
     // equals other simple_string
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline bool operator==(const simple_string<datatype2, chartype, num2, dyn2>& other) const
     {
-        return internal_data.len == other.internal_data.len && string_ncmp(internal_data.buf, other.internal_data.buf, internal_data.len + 1) == 0;
+        return internal_data.len == other.internal_data.len && string_ncmp(internal_data.buf, other.internal_data.buf, internal_data.len) == 0;
     }
 
     inline chartype operator[](size_t idx) const
     {
-#ifdef _DEBUG
         index_assert(idx, internal_data.len);
-#endif
         return internal_data.buf[idx];
     }
 
     inline chartype& operator[](size_t idx)
     {
-#ifdef _DEBUG
         index_assert(idx, internal_data.len);
-#endif
         return internal_data.buf[idx];
     }
 };

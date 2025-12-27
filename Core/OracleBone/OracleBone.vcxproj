@@ -169,6 +169,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="borrowed_string.h" />
     <ClInclude Include="dyn_string_registry.h" />
     <ClInclude Include="heap_string.h" />
     <ClInclude Include="obn.h" />
