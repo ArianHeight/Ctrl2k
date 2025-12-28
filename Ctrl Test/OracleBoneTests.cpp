@@ -123,6 +123,54 @@ void testStringGeneral(const chartype* small_in, const chartype* in, const chart
         s1 = std::move(s2);
         assert(s1 == s2);
     }
+
+    constexpr size_t cutPos = 3;
+    stringtype ss1 = in;
+    assert(cutPos < ss1.length());
+    stringtype ss2 = ss1.substring(cutPos);
+    assert(ss1.starts_with(ss2));
+    stringtype ss3 = ss1.substring(cutPos, ss1.length() - cutPos);
+    assert(ss1.ends_with(ss3));
+    assert(ss2 != ss3);
+}
+
+template<typename stringtype, typename chartype>
+void testViewStringGeneral(const chartype* in)
+{
+    constexpr size_t cutPos = 10;
+    size_t len = obn::string_len(in);
+    assert(len > cutPos);
+
+    stringtype vs1(in, len);
+    assert(vs1.length() == vs1.size());
+    assert(vs1.length() == len);
+    assert(vs1.starts_with(vs1[0]));
+    assert(vs1.ends_with(vs1[len - 1]));
+    
+    stringtype vs2 = vs1.substring(cutPos);
+    assert(vs1.starts_with(vs2));
+    assert(vs1.starts_with(vs2.c_str(), vs2.length()));
+
+    stringtype vs3 = vs1.substring(cutPos, len - cutPos);
+    assert(vs1.ends_with(vs3));
+    assert(vs1.ends_with(vs3.data(), vs3.size()));
+
+    assert(!vs3.empty());
+    vs3.clear();
+    assert(vs3.empty());
+
+    stringtype vs4;
+    assert(vs4.empty());
+    const obn::simple_string<obn::stack_string_data, chartype, 64> incopy = in;
+    vs4 = incopy.view();
+    assert(vs4 == vs1);
+    assert(vs1 == vs1);
+    assert(vs1 != vs2);
+    assert(vs4 != vs3);
+
+    stringtype vs5 = incopy.subview(cutPos);
+    assert(vs5 == vs2);
+    assert(incopy.subview(cutPos, len - cutPos) == vs1.substring(cutPos, len - cutPos));
 }
 
 void runStringBasicTests()
@@ -135,6 +183,11 @@ void runStringBasicTests()
     testStringGeneral<obn::stack_string<12>, char>("", "blue", "bluetooth wireless headset charging", false);
     std::cout << subtestPretext << "Testing Basic Wide Small String Functionality\n";
     testStringGeneral<obn::wsmall_string8, wchar_t>(L"", L"blue", L"bluetooth", false);
+
+    std::cout << subtestPretext << "Testing Basic View String Functionality\n";
+    testViewStringGeneral<obn::view_string, char>("bluetooth wireless headset charging");
+    std::cout << subtestPretext << "Testing Basic Wide View String Functionality\n";
+    testViewStringGeneral<obn::view_wstring, wchar_t>(L"bluetooth wireless headset charging");
 }
 
 void runDynamicStringMemTest()

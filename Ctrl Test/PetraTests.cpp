@@ -600,7 +600,7 @@ void testBasic()
 {
 	std::cout << "===================================\nTesting Basic Math Header" << '\n';
 
-	assert(rqm::epsilon_equals(rqm::rad2deg(rqm::deg2rad(90.f)), 90.f));
+	assert(rqm::epsilon_equals(rqm::rad_to_deg(rqm::deg_to_rad(90.f)), 90.f));
 	assert(rqm::PI<float> > 3.1415 && rqm::PI<float> < 3.15);
 	assert(rqm::epsilon_equals(rqm::sin(rqm::PI<float> / 6.f), 0.5f));
 	assert(rqm::epsilon_equals(rqm::cos(rqm::PI<float> / 3.f), 0.5f));

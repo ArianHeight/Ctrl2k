@@ -136,7 +136,7 @@ quat_base<T> gen_quat_angle_about_axis_rad(T theta_rad, vec3_base<T> axis)
 template<typename T>
 inline quat_base<T> gen_quat_angle_about_axis_deg(T theta_deg, const vec3_base<T>& axis)
 {
-	return gen_quat_angle_about_axis_rad(deg2rad(theta_deg), axis);
+	return gen_quat_angle_about_axis_rad(deg_to_rad(theta_deg), axis);
 }
 
 template<typename T>

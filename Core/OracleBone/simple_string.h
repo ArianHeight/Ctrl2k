@@ -1,5 +1,5 @@
 #pragma once
-#include "string_util.h"
+#include "borrowed_string.h"
 
 namespace obn
 {
@@ -23,6 +23,7 @@ class simple_string
 private:
     using fulltype = datatype<chartype, num>;
     using selftype = simple_string<datatype, chartype, num, dyn>;
+    using viewtype = borrowed_string<chartype>;
 
     fulltype internal_data;
 
@@ -155,25 +156,44 @@ public:
         return selftype(internal_data.buf, count);
     }
 
-    inline bool starts_with(chartype c) { return internal_data.len > 0 && internal_data.buf[0] == c; }
-    inline bool starts_with(const chartype* str, size_t str_len)
+    inline viewtype subview(size_t idx, size_t count) const
+    {
+        index_assert(idx, internal_data.len);
+        index_assert(idx + count, internal_data.len + 1);
+        return viewtype(&internal_data.buf[idx], count);
+    }
+
+    inline viewtype subview(size_t count) const
+    {
+        index_assert(count, internal_data.len + 1);
+        return viewtype(internal_data.buf, count);
+    }
+
+    inline bool starts_with(chartype c) const { return internal_data.len > 0 && internal_data.buf[0] == c; }
+    inline bool starts_with(const chartype* str, size_t str_len) const
     {
         ptr_assert(str);
         return str_len <= internal_data.len && string_ncmp(internal_data.buf, str, str_len) == 0;
     }
-    inline bool starts_with(const chartype* str) { return starts_with(str, string_len(str)); }
+    inline bool starts_with(const chartype* str) const { return starts_with(str, string_len(str)); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline bool starts_with(const simple_string<datatype2, chartype, num2, dyn2>& other) { return starts_with(other.internal_data.buf, other.internal_data.len); }
+    inline bool starts_with(const simple_string<datatype2, chartype, num2, dyn2>& other) const
+    {
+        return starts_with(other.internal_data.buf, other.internal_data.len);
+    }
 
-    inline bool ends_with(chartype c) { return internal_data.len > 0 && internal_data.buf[internal_data.len - 1] == c; }
-    inline bool ends_with(const chartype* str, size_t str_len)
+    inline bool ends_with(chartype c) const { return internal_data.len > 0 && internal_data.buf[internal_data.len - 1] == c; }
+    inline bool ends_with(const chartype* str, size_t str_len) const
     {
         ptr_assert(str);
         return str_len <= internal_data.len && string_ncmp(&internal_data.buf[internal_data.len - str_len], str, str_len) == 0;
     }
-    inline bool ends_with(const chartype* str) { return ends_with(str, string_len(str)); }
+    inline bool ends_with(const chartype* str) const { return ends_with(str, string_len(str)); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline bool ends_with(const simple_string<datatype2, chartype, num2, dyn2>& other) { return ends_with(other.internal_data.buf, other.internal_data.len); }
+    inline bool ends_with(const simple_string<datatype2, chartype, num2, dyn2>& other) const
+    {
+        return ends_with(other.internal_data.buf, other.internal_data.len);
+    }
 
     // constructors
     simple_string() {}
@@ -225,6 +245,8 @@ public:
         index_assert(idx, internal_data.len);
         return internal_data.buf[idx];
     }
+
+    inline viewtype view() const { return viewtype(internal_data.buf, internal_data.len); }
 };
 
 }
