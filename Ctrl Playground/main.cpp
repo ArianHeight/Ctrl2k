@@ -8,8 +8,7 @@
 #include <unordered_set>
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
-#include "Core/OracleBone/stack_string.h"
-#include "Core/OracleBone/heap_string.h"
+#include "Core/OracleBone/obn.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -330,6 +329,35 @@ int64_t profileStringUtilEq(const std::vector<std::string>& strs)
 	return 0;
 }
 
+int64_t profileStdStringFindOf(const std::string& str, const std::vector<std::string>& charsets)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& charset : charsets)
+	{
+		volatile size_t firstOf = str.find_first_of(charset);
+		volatile size_t lastOf = str.find_last_of(charset);
+		volatile size_t firstNotOf = str.find_first_not_of(charset);
+		volatile size_t lastNotOf = str.find_last_not_of(charset);
+		//LOG_MSG_QUEUE("std string find of {}, {}, {}, {}", (int)firstOf, (int)lastOf, (int)firstNotOf, (int)lastNotOf);
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilFindOf(const std::string& str, const std::vector<std::string>& charsets)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& charset : charsets)
+	{
+		volatile size_t firstOf = obn::string_nfind_first_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		volatile size_t lastOf = obn::string_nfind_last_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		volatile size_t firstNotOf = obn::string_nfind_first_not_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		volatile size_t lastNotOf = obn::string_nfind_last_not_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		//LOG_MSG_QUEUE("string util find of {}, {}, {}, {}", (int)firstOf, (int)lastOf, (int)firstNotOf, (int)lastNotOf);
+	}
+
+	return 0;
+}
 
 void profileAll()
 {
@@ -414,6 +442,11 @@ void profileAll()
 	int64_t stdstrequs = profileStdStringEq(needles);
 	int64_t strutilncmpus = profileStringUtilCmp(needles);
 	int64_t strutilnequs = profileStringUtilEq(needles);
+
+	std::string example = "Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+	std::vector<std::string> charsets = { "", "\\+", "*/", " " };
+	profileStdStringFindOf(example, charsets);
+	profileStringUtilFindOf(example, charsets);
 }
 
 template <typename stringtype>

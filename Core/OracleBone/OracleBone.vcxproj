@@ -175,6 +175,7 @@
     <ClInclude Include="obn.h" />
     <ClInclude Include="simple_string.h" />
     <ClInclude Include="stack_string.h" />
+    <ClInclude Include="std_interface.h" />
     <ClInclude Include="string_util.h" />
     <ClInclude Include="string_registry.h" />
   </ItemGroup>

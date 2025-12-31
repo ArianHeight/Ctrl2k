@@ -222,27 +222,80 @@ public:
         return string_nfind(internal_data.buf, internal_data.len, chr, start);
     }
 
-    inline size_t rfind(const chartype* str, size_t str_len, size_t start) const
+    inline size_t rfind(const chartype* str, size_t str_len, size_t start = INVALID_SIZE_T) const
     {
         ptr_assert(str);
         return string_nrfind(internal_data.buf, internal_data.len, str, str_len, start);
     }
-    inline size_t rfind(const chartype* str, size_t str_len) const { return rfind(str, str_len, internal_data.len); }
     inline size_t rfind(const chartype* str) const { return rfind(str, string_len(str)); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline size_t rfind(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start) const
+    inline size_t rfind(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = INVALID_SIZE_T) const
     {
         return rfind(other.internal_data.buf, other.internal_data.len, start);
     }
-    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline size_t rfind(const simple_string<datatype2, chartype, num2, dyn2>& other) const { return rfind(other, internal_data.len); }
-    inline size_t rfind(const viewtype& other, size_t start) const { return rfind(other.c_str(), other.length(), start); }
-    inline size_t rfind(const viewtype& other) const { return rfind(other, internal_data.len); }
-    inline size_t rfind(const chartype chr, size_t start) const
+    inline size_t rfind(const viewtype& other, size_t start = INVALID_SIZE_T) const { return rfind(other.c_str(), other.length(), start); }
+    inline size_t rfind(const chartype chr, size_t start = INVALID_SIZE_T) const
     {
         return string_nrfind(internal_data.buf, internal_data.len, chr, start);
     }
-    inline size_t rfind(const chartype chr) const { return rfind(chr, internal_data.len); }
+
+    inline size_t find_first_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    {
+        ptr_assert(charset);
+        return string_nfind_first_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_first_of(const chartype* charset) const { return find_first_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_first_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = 0) const
+    {
+        return find_first_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_first_of(const viewtype& other, size_t start = 0) const { return find_first_of(other.c_str(), other.length(), start); }
+
+    inline size_t find_first_not_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    {
+        ptr_assert(charset);
+        return string_nfind_first_not_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_first_not_of(const chartype* charset) const { return find_first_not_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_first_not_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = 0) const
+    {
+        return find_first_not_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_first_not_of(const viewtype& other, size_t start = 0) const { return find_first_not_of(other.c_str(), other.length(), start); }
+
+    inline size_t find_last_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    {
+        ptr_assert(charset);
+        return string_nfind_last_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_last_of(const chartype* charset) const { return find_last_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_last_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_last_of(const viewtype& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_of(other.c_str(), other.length(), start);
+    }
+
+    inline size_t find_last_not_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    {
+        ptr_assert(charset);
+        return string_nfind_last_not_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_last_not_of(const chartype* charset) const { return find_last_not_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_last_not_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_not_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_last_not_of(const viewtype& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_not_of(other.c_str(), other.length(), start);
+    }
 
     // constructors
     simple_string() {}

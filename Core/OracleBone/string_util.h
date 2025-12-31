@@ -121,7 +121,7 @@ inline size_t string_nfind(const chartype* str, const size_t str_len, const char
 }
 
 template <typename chartype>
-size_t string_nrfind(const chartype* str, const size_t str_len, const chartype* substr, const size_t substr_len, const size_t start)
+size_t string_nrfind(const chartype* str, const size_t str_len, const chartype* substr, const size_t substr_len, const size_t start = INVALID_SIZE_T)
 {
     // why does std::string return start pos for 0 length substrings?
     if(str_len < substr_len || substr_len == 0)
@@ -138,21 +138,69 @@ size_t string_nrfind(const chartype* str, const size_t str_len, const chartype* 
     }
     return INVALID_SIZE_T;
 }
-template <typename chartype>
-inline size_t string_nrfind(const chartype* str, const size_t str_len, const chartype* substr, const size_t substr_len)
-{
-    return string_nrfind(str, str_len, substr, substr_len, str_len);
-}
 
 template <typename chartype>
-inline size_t string_nrfind(const chartype* str, const size_t str_len, const chartype chr, const size_t start)
+inline size_t string_nrfind(const chartype* str, const size_t str_len, const chartype chr, const size_t start = INVALID_SIZE_T)
 {
     return string_nrchr(str, str_len > start ? start : str_len, chr) - str;
 }
+
 template <typename chartype>
-inline size_t string_nrfind(const chartype* str, const size_t str_len, const chartype chr)
+size_t string_nfind_first_of(const chartype* str, const size_t str_len, const chartype* charset, const size_t charset_len, const size_t start = 0)
 {
-    return string_nrchr(str, str_len, chr) - str;
+    if(charset_len == 0 || start >= str_len)
+        return INVALID_SIZE_T;
+
+    const chartype* end = str + str_len;
+    for(const chartype* c = str + start; c < end; ++c)
+    {
+        if(string_nchr(charset, charset_len, *c))
+            return c - str;
+    }
+    return INVALID_SIZE_T;
+}
+
+template <typename chartype>
+size_t string_nfind_first_not_of(const chartype* str, const size_t str_len, const chartype* charset, const size_t charset_len, const size_t start = 0)
+{
+    if(charset_len == 0 || start >= str_len)
+        return INVALID_SIZE_T;
+
+    const chartype* end = str + str_len;
+    for(const chartype* c = str + start; c < end; ++c)
+    {
+        if(!string_nchr(charset, charset_len, *c))
+            return c - str;
+    }
+    return INVALID_SIZE_T;
+}
+
+template <typename chartype>
+size_t string_nfind_last_of(const chartype* str, const size_t str_len, const chartype* charset, const size_t charset_len, const size_t start = INVALID_SIZE_T)
+{
+    if(charset_len == 0)
+        return INVALID_SIZE_T;
+    
+    for(const chartype* end = str + ((str_len - 1 > start) ? start : (str_len - 1)); end >= str; --end)
+    {
+        if(string_nchr(charset, charset_len, *end))
+            return end - str;
+    }
+    return INVALID_SIZE_T;
+}
+
+template <typename chartype>
+size_t string_nfind_last_not_of(const chartype* str, const size_t str_len, const chartype* charset, const size_t charset_len, const size_t start = INVALID_SIZE_T)
+{
+    if(charset_len == 0)
+        return INVALID_SIZE_T;
+
+    for(const chartype* end = str + ((str_len - 1 > start) ? start : (str_len - 1)); end >= str; --end)
+    {
+        if(!string_nchr(charset, charset_len, *end))
+            return end - str;
+    }
+    return INVALID_SIZE_T;
 }
 
 #define DEFINE_CHAR_IS_TEMPLATE(charfuncname, wcharfuncname)                \

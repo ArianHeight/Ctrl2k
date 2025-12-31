@@ -107,20 +107,55 @@ public:
         return string_nfind(m_data, m_len, chr, start);
     }
 
-    inline size_t rfind(const chartype* str, size_t str_len, size_t start) const
+    inline size_t rfind(const chartype* str, size_t str_len, size_t start = INVALID_SIZE_T) const
     {
         ptr_assert(str);
         return string_nrfind(m_data, m_len, str, str_len, start);
     }
-    inline size_t rfind(const chartype* str, size_t str_len) const { return rfind(str, str_len, m_len); }
     inline size_t rfind(const chartype* str) const { return rfind(str, string_len(str)); }
-    inline size_t rfind(const selftype& other, size_t start) const { return rfind(other.m_data, other.m_len, start); }
-    inline size_t rfind(const selftype& other) const { return rfind(other, m_len); }
-    inline size_t rfind(const chartype chr, size_t start) const
+    inline size_t rfind(const selftype& other, size_t start = INVALID_SIZE_T) const { return rfind(other.m_data, other.m_len, start); }
+    inline size_t rfind(const chartype chr, size_t start = INVALID_SIZE_T) const
     {
         return string_nrfind(m_data, m_len, chr, start);
     }
-    inline size_t rfind(const chartype chr) const { return rfind(chr, m_len); }
+
+    inline size_t find_first_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    {
+        ptr_assert(charset);
+        return string_nfind_first_of(m_data, m_len, charset, charset_len, start);
+    }
+    inline size_t find_first_of(const chartype* charset) const { return find_first_of(charset, string_len(charset)); }
+    inline size_t find_first_of(const selftype& other, size_t start = 0) const { return find_first_of(other.m_data, other.m_len, start); }
+
+    inline size_t find_first_not_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    {
+        ptr_assert(charset);
+        return string_nfind_first_not_of(m_data, m_len, charset, charset_len, start);
+    }
+    inline size_t find_first_not_of(const chartype* charset) const { return find_first_not_of(charset, string_len(charset)); }
+    inline size_t find_first_not_of(const selftype& other, size_t start = 0) const { return find_first_not_of(other.m_data, other.m_len, start); }
+
+    inline size_t find_last_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    {
+        ptr_assert(charset);
+        return string_nfind_last_of(m_data, m_len, charset, charset_len, start);
+    }
+    inline size_t find_last_of(const chartype* charset) const { return find_last_of(charset, string_len(charset)); }
+    inline size_t find_last_of(const selftype& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_of(other.m_data, other.m_len, start);
+    }
+
+    inline size_t find_last_not_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    {
+        ptr_assert(charset);
+        return string_nfind_last_not_of(m_data, m_len, charset, charset_len, start);
+    }
+    inline size_t find_last_not_of(const chartype* charset) const { return find_last_not_of(charset, string_len(charset)); }
+    inline size_t find_last_not_of(const selftype& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_not_of(other.m_data, other.m_len, start);
+    }
     
     // constructors
     borrowed_string() : m_data(&zero_val), m_len(0) {}

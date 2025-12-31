@@ -186,11 +186,11 @@ void testViewStringGeneral(const chartype* in)
 }
 
 template <typename stringtype, typename chartype>
-void testStringFind(const chartype* haystack, const chartype** needles, size_t numNeedles, const std::vector<size_t>& forwardIndex, const std::vector<size_t>& reverseIndex)
+void testStringFindGeneral(const chartype* haystack, const std::vector<const chartype*>& needles, const std::vector<size_t>& forwardIndex, const std::vector<size_t>& reverseIndex)
 {
     stringtype str = haystack;
     obn::borrowed_string<chartype> str_view = str.view();
-    for(size_t i = 0; i < numNeedles; ++i)
+    for(size_t i = 0; i < needles.size(); ++i)
     {
         //std::cout << str.find(needles[i]) << ' ' << str.rfind(needles[i]) << ' ' << forwardIndex[i] << '\n';
         assert(str.find(needles[i]) == forwardIndex[i]);
@@ -223,6 +223,44 @@ void testStringFind(const chartype* haystack, const chartype** needles, size_t n
     }
 }
 
+template <typename stringtype, typename chartype>
+void testStringFindOfGeneral(const chartype* example, const std::vector<const chartype*>& charsets,
+    const std::vector<size_t>& findOfIndex, const std::vector<size_t>& findNotOfIndex,
+    const std::vector<size_t>& lastOfIndex,  const std::vector<size_t>& lastNotOfIndex)
+{
+    stringtype str = example;
+    obn::borrowed_string<chartype> str_view = str.view();
+    for(size_t i = 0; i < charsets.size(); ++i)
+    {
+        //std::cout << str.find(needles[i]) << ' ' << str.rfind(needles[i]) << ' ' << forwardIndex[i] << '\n';
+        assert(str.find_first_of(charsets[i]) == findOfIndex[i]);
+        assert(str.find_first_not_of(charsets[i]) == findNotOfIndex[i]);
+        assert(str.find_last_of(charsets[i]) == lastOfIndex[i]);
+        assert(str.find_last_not_of(charsets[i]) == lastNotOfIndex[i]);
+
+        stringtype charset = charsets[i];
+        assert(str.find_first_of(charset) == findOfIndex[i]);
+        assert(str.find_first_not_of(charset) == findNotOfIndex[i]);
+        assert(str.find_last_of(charset) == lastOfIndex[i]);
+        assert(str.find_last_not_of(charset) == lastNotOfIndex[i]);
+
+        obn::borrowed_string<chartype> view = charsets[i];
+        assert(str.find_first_of(view) == findOfIndex[i]);
+        assert(str.find_first_not_of(view) == findNotOfIndex[i]);
+        assert(str.find_last_of(view) == lastOfIndex[i]);
+        assert(str.find_last_not_of(view) == lastNotOfIndex[i]);
+
+        assert(str_view.find_first_of(charsets[i]) == findOfIndex[i]);
+        assert(str_view.find_first_not_of(charsets[i]) == findNotOfIndex[i]);
+        assert(str_view.find_last_of(charsets[i]) == lastOfIndex[i]);
+        assert(str_view.find_last_not_of(charsets[i]) == lastNotOfIndex[i]);
+        assert(str_view.find_first_of(view) == findOfIndex[i]);
+        assert(str_view.find_first_not_of(view) == findNotOfIndex[i]);
+        assert(str_view.find_last_of(view) == lastOfIndex[i]);
+        assert(str_view.find_last_not_of(view) == lastNotOfIndex[i]);
+    }
+}
+
 void runStringBasicTests()
 {
     std::cout << subtestPretext << "Testing Basic Dynamic String Functionality\n";
@@ -246,9 +284,22 @@ void runStringBasicTests()
     std::vector<size_t> fIndex = { 0, INVALID_SIZE_T, 19, 0, 31, 0 };
     std::vector<size_t> rIndex = { 36, INVALID_SIZE_T, 19, 36, 34, 0 };
     std::cout << subtestPretext << "Testing Fixed String Find Functionality\n";
-    testStringFind<obn::stack_string<64>, char>(charHayStack, charNeedles.data(), charNeedles.size(), fIndex, rIndex);
+    testStringFindGeneral<obn::stack_string<64>, char>(charHayStack, charNeedles, fIndex, rIndex);
     std::cout << subtestPretext << "Testing Wide Dynamic String Find Functionality\n";
-    testStringFind<obn::dyn::wheap_string, wchar_t>(wcharHayStack, wcharNeedles.data(), wcharNeedles.size(), fIndex, rIndex);
+    testStringFindGeneral<obn::dyn::wheap_string, wchar_t>(wcharHayStack, wcharNeedles, fIndex, rIndex);
+
+    const char* example = "Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+    std::vector<const char*> charsets = { "", "\\+", "*/", " " };
+    const wchar_t* wexample = L"Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+    std::vector<const wchar_t*> wcharsets = { L"", L"\\+", L"*/", L" " };
+    std::vector<size_t> fOfIndex = { INVALID_SIZE_T, 49, 51, 3 };
+    std::vector<size_t> lOfIndex = { INVALID_SIZE_T, 55, 53, 106 };
+    std::vector<size_t> fNotOfIndex = { INVALID_SIZE_T, 0, 0, 0 };
+    std::vector<size_t> lNotOfIndex = { INVALID_SIZE_T, 110, 110, 110 };
+    std::cout << subtestPretext << "Testing Fixed String Find Of Functionality\n";
+    testStringFindOfGeneral<obn::small_string128, char>(example, charsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
+    std::cout << subtestPretext << "Testing Wide Dynamic String Find Of Functionality\n";
+    testStringFindOfGeneral<obn::dyn::wheap_string, wchar_t>(wexample, wcharsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
 }
 
 void runDynamicStringMemTest()
