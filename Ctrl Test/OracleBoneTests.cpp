@@ -129,8 +129,10 @@ void testStringGeneral(const chartype* small_in, const chartype* in, const chart
     assert(cutPos < ss1.length());
     stringtype ss2 = ss1.substring(cutPos);
     assert(ss1.starts_with(ss2));
+    assert(ss1.starts_with(ss1[0]));
     stringtype ss3 = ss1.substring(cutPos, ss1.length() - cutPos);
     assert(ss1.ends_with(ss3));
+    assert(ss1.ends_with(ss3[ss3.length() - 1]));
     assert(ss2 != ss3);
 }
 
@@ -171,6 +173,54 @@ void testViewStringGeneral(const chartype* in)
     stringtype vs5 = incopy.subview(cutPos);
     assert(vs5 == vs2);
     assert(incopy.subview(cutPos, len - cutPos) == vs1.substring(cutPos, len - cutPos));
+
+    obn::simple_string<obn::stack_string_data, chartype, 64> vs5copy = vs5;
+    assert(vs5copy == vs5);
+
+    const obn::simple_string<obn::stack_string_data, chartype, 64> vs4copy(vs4);
+    assert(vs4copy == incopy);
+
+    vs5copy += vs1.substring(cutPos, len - cutPos);
+    assert(vs5copy != vs5);
+    assert(vs5copy == incopy);
+}
+
+template <typename stringtype, typename chartype>
+void testStringFind(const chartype* haystack, const chartype** needles, size_t numNeedles, const std::vector<size_t>& forwardIndex, const std::vector<size_t>& reverseIndex)
+{
+    stringtype str = haystack;
+    obn::borrowed_string<chartype> str_view = str.view();
+    for(size_t i = 0; i < numNeedles; ++i)
+    {
+        //std::cout << str.find(needles[i]) << ' ' << str.rfind(needles[i]) << ' ' << forwardIndex[i] << '\n';
+        assert(str.find(needles[i]) == forwardIndex[i]);
+        assert(str.rfind(needles[i]) == reverseIndex[i]);
+        
+        stringtype substr = needles[i];
+        assert(str.find(substr) == forwardIndex[i]);
+        assert(str.rfind(substr) == reverseIndex[i]);
+
+        obn::borrowed_string<chartype> view = needles[i];
+        assert(str.find(view) == forwardIndex[i]);
+        assert(str.rfind(view) == reverseIndex[i]);
+        
+        assert(str_view.find(needles[i]) == forwardIndex[i]);
+        assert(str_view.rfind(needles[i]) == reverseIndex[i]);
+        assert(str_view.find(view) == forwardIndex[i]);
+        assert(str_view.rfind(view) == reverseIndex[i]);
+
+        if(!view.empty())
+        {
+            if(view.length() > 1)
+            {
+                assert(str.find(view[1], forwardIndex[i]) == forwardIndex[i] + 1);
+                assert(str_view.find(view[1], forwardIndex[i]) == forwardIndex[i] + 1);
+            }
+
+            assert(str.rfind(view[0], reverseIndex[i] + 1) == reverseIndex[i]);
+            assert(str_view.rfind(view[0], reverseIndex[i] + 1) == reverseIndex[i]);
+        }
+    }
 }
 
 void runStringBasicTests()
@@ -188,6 +238,17 @@ void runStringBasicTests()
     testViewStringGeneral<obn::view_string, char>("bluetooth wireless headset charging");
     std::cout << subtestPretext << "Testing Basic Wide View String Functionality\n";
     testViewStringGeneral<obn::view_wstring, wchar_t>(L"bluetooth wireless headset charging");
+
+    const char* charHayStack = "bluetooth wireless headset charging bluetooth";
+    std::vector<const char*> charNeedles = { "blue", "", "headset", "bluetooth", "g", charHayStack };
+    const wchar_t* wcharHayStack = L"bluetooth wireless headset charging bluetooth";
+    std::vector<const wchar_t*> wcharNeedles = { L"blue", L"", L"headset", L"bluetooth", L"g", wcharHayStack };
+    std::vector<size_t> fIndex = { 0, INVALID_SIZE_T, 19, 0, 31, 0 };
+    std::vector<size_t> rIndex = { 36, INVALID_SIZE_T, 19, 36, 34, 0 };
+    std::cout << subtestPretext << "Testing Fixed String Find Functionality\n";
+    testStringFind<obn::stack_string<64>, char>(charHayStack, charNeedles.data(), charNeedles.size(), fIndex, rIndex);
+    std::cout << subtestPretext << "Testing Wide Dynamic String Find Functionality\n";
+    testStringFind<obn::dyn::wheap_string, wchar_t>(wcharHayStack, wcharNeedles.data(), wcharNeedles.size(), fIndex, rIndex);
 }
 
 void runDynamicStringMemTest()

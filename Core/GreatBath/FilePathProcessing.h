@@ -3,9 +3,14 @@
 #include <string>
 
 #include "Core/Monument/basictypes.h"
+#include "Core/OracleBone/stack_string.h"
 
 namespace gbt
 {
+// using the smallest value for max file path length(which is on old windows)
+constexpr size_t FILE_PATH_MAX_LEN = 260;
+constexpr size_t FILE_PATH_MAX_BUF_LEN = FILE_PATH_MAX_LEN + 1;
+
 typedef std::string FileExt;
 typedef std::string FileName;
 typedef std::string FileNameNoExt;
@@ -14,12 +19,19 @@ typedef std::string FolderPath;
 typedef size_t LineNumber;
 constexpr LineNumber INVALID_LINE_NUMBER = SIZE_MAX;
 
-constexpr const char* FILE_EXT_DELIMITER = ".";
-constexpr const char* FOLDER_DELIMITERS = "/\\";
+constexpr c_string FILE_EXT_DELIMITER = ".";
+constexpr c_string FOLDER_DELIMITERS = "/\\";
+
+template <typename chartype>
+using generic_file_path_data = obn::generic_stack_string<chartype, FILE_PATH_MAX_BUF_LEN>;
+using file_path_data = generic_file_path_data<char>;
+using wfile_path_data = generic_file_path_data<wchar_t>;
 
 class FilePath
 {
 public:
+    using viewtype = obn::borrowed_string<char>;
+
     FilePath() : m_path(""), m_nameStartPos(0), m_nameEndPos(0), m_extStartPos(0) {}
     FilePath(std::string&& pathstring);
     FilePath(const std::string& pathstring);

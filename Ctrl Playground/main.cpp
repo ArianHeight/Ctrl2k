@@ -260,6 +260,76 @@ int64_t profileUnorderedMapStringFromInsert(std::unordered_map<std::string, int>
 	return 0;
 }
 
+// string find(std and my own impl)
+
+int64_t profileStdStringFind(const std::string& str, const std::vector<std::string>& substrs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& substr : substrs)
+	{
+		volatile size_t index = str.find(substr);
+		volatile size_t otherindex = str.rfind(substr);
+		//LOG_MSG_QUEUE("std string find {}, {}", (int)index, (int)otherindex);
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilFind(const std::string& str, const std::vector<std::string>& substrs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& substr : substrs)
+	{
+		volatile size_t index = obn::string_nfind(str.c_str(), str.length(), substr.c_str(), substr.length());
+		volatile size_t otherindex = obn::string_nrfind(str.c_str(), str.length(), substr.c_str(), substr.length());
+		//LOG_MSG_QUEUE("string util find {}, {}", (int)index, (int)otherindex);
+	}
+
+	return 0;
+}
+
+int64_t profileStdStringEq(const std::vector<std::string>& strs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& str : strs)
+	{
+		for(const std::string& other : strs)
+		{
+			volatile bool equals = str == other;
+		}
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilCmp(const std::vector<std::string>& strs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& str : strs)
+	{
+		for(const std::string& other : strs)
+		{
+			volatile bool equals = obn::string_ncmp(str.c_str(), other.c_str(), str.length());
+		}
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilEq(const std::vector<std::string>& strs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& str : strs)
+	{
+		for(const std::string& other : strs)
+		{
+			volatile bool equals = obn::string_neq(str.c_str(), other.c_str(), str.length());
+		}
+	}
+
+	return 0;
+}
+
 
 void profileAll()
 {
@@ -334,6 +404,16 @@ void profileAll()
 	// ------------- map stuff
 
 	int64_t umapfindus = profileUnorderedMapFind(umap, stringElement, found);
+
+	// ------------- string util stuff
+	
+	std::string haystack = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
+	std::vector<std::string> needles = { "sit", "laborum", "sunt in culpa qui officia deserunt mollit anim id est laborum", "reprehenderit", "", haystack, "Ut enim ad minim veniam" };
+	int64_t stdstrfindus = profileStdStringFind(haystack, needles);
+	int64_t strutilfindus = profileStringUtilFind(haystack, needles);
+	int64_t stdstrequs = profileStdStringEq(needles);
+	int64_t strutilncmpus = profileStringUtilCmp(needles);
+	int64_t strutilnequs = profileStringUtilEq(needles);
 }
 
 template <typename stringtype>
@@ -367,24 +447,6 @@ int main(int argc, char *argv[])
 	LOG_ERROR_PUSH("REEEEE");
 	LOG_FATAL_PUSH("Ded");
 	LOG_FLUSH();
-
-	std::string testString = "Hello\nRip\n\r\"blue screen nawwww.\"";
-	std::istringstream issm(testString);
-	while(!issm.eof())
-	{
-		LOG_MSG_PUSH("peek {}, get {}", (int)issm.peek(), (int)issm.get());
-	}
-
-	flags f = flags::F1;
-	f |= flags::F2 | flags::F3;
-	LOG_MSG_PUSH("flags {}", (int)f);
-
-	if(f >= 4)
-	{
-	}
-
-	uint32_t b = 2;
-	b <<= 2;
 
     return 0;
 }

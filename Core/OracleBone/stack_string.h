@@ -56,9 +56,11 @@ typedef simple_string<small_string_data, wchar_t, 3> wsmall_string8;
 typedef simple_string<small_string_data, wchar_t, 6> wsmall_string64;
 typedef simple_string<small_string_data, wchar_t, 7> wsmall_string128;
 
+template <typename chartype, size_t buf_size>
+using generic_stack_string = simple_string<stack_string_data, chartype, buf_size>;
 template <size_t buf_size>
-using stack_string = simple_string<stack_string_data, char, buf_size>;
+using stack_string = generic_stack_string<char, buf_size>;
 template <size_t buf_size>
-using wstack_string = simple_string<stack_string_data, wchar_t, buf_size>;
+using wstack_string = generic_stack_string<wchar_t, buf_size>;
 
 }

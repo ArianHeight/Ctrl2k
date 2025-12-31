@@ -10,7 +10,7 @@ This is essentially std::string_view, a "borrowed" string that does not own the 
 
 */
 template <typename chartype>
-class borrowed_string
+class borrowed_string : public unmoveable
 {
 private:
     using selftype = borrowed_string<chartype>;
@@ -54,6 +54,16 @@ public:
         m_len = other.m_len;
     }
 
+    inline bool equals(const chartype* str, size_t len) const
+    {
+        return m_len == len && (m_data == str || string_neq(m_data, str, m_len));
+    }
+    inline bool equals(const chartype* str) const
+    {
+        ptr_assert(str);
+        return equals(str, string_nlen(str, m_len + 1));
+    }
+
     inline selftype substring(size_t idx, size_t count) const
     {
         index_assert(idx, m_len);
@@ -71,7 +81,7 @@ public:
     inline bool starts_with(const chartype* str, size_t str_len) const
     {
         ptr_assert(str);
-        return str_len <= m_len && string_ncmp(m_data, str, str_len) == 0;
+        return str_len <= m_len && string_neq(m_data, str, str_len);
     }
     inline bool starts_with(const chartype* str) const { return starts_with(str, string_len(str)); }
     inline bool starts_with(const selftype& other) const { return starts_with(other.m_data, other.m_len); }
@@ -80,10 +90,37 @@ public:
     inline bool ends_with(const chartype* str, size_t str_len) const
     {
         ptr_assert(str);
-        return str_len <= m_len && string_ncmp(&m_data[m_len - str_len], str, str_len) == 0;
+        return str_len <= m_len && string_neq(&m_data[m_len - str_len], str, str_len);
     }
     inline bool ends_with(const chartype* str) const { return ends_with(str, string_len(str)); }
     inline bool ends_with(const selftype& other) const { return ends_with(other.m_data, other.m_len); }
+
+    inline size_t find(const chartype* str, size_t str_len, size_t start = 0) const
+    {
+        ptr_assert(str);
+        return string_nfind(m_data, m_len, str, str_len, start);
+    }
+    inline size_t find(const chartype* str) const { return find(str, string_len(str)); }
+    inline size_t find(const selftype& other, size_t start = 0) const { return find(other.m_data, other.m_len, start); }
+    inline size_t find(const chartype chr, size_t start = 0) const
+    {
+        return string_nfind(m_data, m_len, chr, start);
+    }
+
+    inline size_t rfind(const chartype* str, size_t str_len, size_t start) const
+    {
+        ptr_assert(str);
+        return string_nrfind(m_data, m_len, str, str_len, start);
+    }
+    inline size_t rfind(const chartype* str, size_t str_len) const { return rfind(str, str_len, m_len); }
+    inline size_t rfind(const chartype* str) const { return rfind(str, string_len(str)); }
+    inline size_t rfind(const selftype& other, size_t start) const { return rfind(other.m_data, other.m_len, start); }
+    inline size_t rfind(const selftype& other) const { return rfind(other, m_len); }
+    inline size_t rfind(const chartype chr, size_t start) const
+    {
+        return string_nrfind(m_data, m_len, chr, start);
+    }
+    inline size_t rfind(const chartype chr) const { return rfind(chr, m_len); }
     
     // constructors
     borrowed_string() : m_data(&zero_val), m_len(0) {}
@@ -97,12 +134,9 @@ public:
     inline selftype& operator=(const selftype& other) { set(other); return *this; }
 
     // equals c string
-    inline bool operator==(const chartype* str) const { ptr_assert(str); return string_ncmp(m_data, str, m_len) == 0; }
+    inline bool operator==(const chartype* str) const { return equals(str); }
     // equals other borrowed_string
-    inline bool operator==(const selftype& other) const
-    {
-        return m_len == other.m_len && (m_data == other.m_data || string_ncmp(m_data, other.m_data, m_len) == 0);
-    }
+    inline bool operator==(const selftype& other) const { return equals(other.m_data, other.m_len); }
 
     inline chartype operator[](size_t idx) const
     {
