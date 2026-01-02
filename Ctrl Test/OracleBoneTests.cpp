@@ -276,30 +276,6 @@ void runStringBasicTests()
     testViewStringGeneral<obn::view_string, char>("bluetooth wireless headset charging");
     std::cout << subtestPretext << "Testing Basic Wide View String Functionality\n";
     testViewStringGeneral<obn::view_wstring, wchar_t>(L"bluetooth wireless headset charging");
-
-    const char* charHayStack = "bluetooth wireless headset charging bluetooth";
-    std::vector<const char*> charNeedles = { "blue", "", "headset", "bluetooth", "g", charHayStack };
-    const wchar_t* wcharHayStack = L"bluetooth wireless headset charging bluetooth";
-    std::vector<const wchar_t*> wcharNeedles = { L"blue", L"", L"headset", L"bluetooth", L"g", wcharHayStack };
-    std::vector<size_t> fIndex = { 0, INVALID_SIZE_T, 19, 0, 31, 0 };
-    std::vector<size_t> rIndex = { 36, INVALID_SIZE_T, 19, 36, 34, 0 };
-    std::cout << subtestPretext << "Testing Fixed String Find Functionality\n";
-    testStringFindGeneral<obn::stack_string<64>, char>(charHayStack, charNeedles, fIndex, rIndex);
-    std::cout << subtestPretext << "Testing Wide Dynamic String Find Functionality\n";
-    testStringFindGeneral<obn::dyn::wheap_string, wchar_t>(wcharHayStack, wcharNeedles, fIndex, rIndex);
-
-    const char* example = "Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
-    std::vector<const char*> charsets = { "", "\\+", "*/", " " };
-    const wchar_t* wexample = L"Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
-    std::vector<const wchar_t*> wcharsets = { L"", L"\\+", L"*/", L" " };
-    std::vector<size_t> fOfIndex = { INVALID_SIZE_T, 49, 51, 3 };
-    std::vector<size_t> lOfIndex = { INVALID_SIZE_T, 55, 53, 106 };
-    std::vector<size_t> fNotOfIndex = { INVALID_SIZE_T, 0, 0, 0 };
-    std::vector<size_t> lNotOfIndex = { INVALID_SIZE_T, 110, 110, 110 };
-    std::cout << subtestPretext << "Testing Fixed String Find Of Functionality\n";
-    testStringFindOfGeneral<obn::small_string128, char>(example, charsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
-    std::cout << subtestPretext << "Testing Wide Dynamic String Find Of Functionality\n";
-    testStringFindOfGeneral<obn::dyn::wheap_string, wchar_t>(wexample, wcharsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
 }
 
 void runDynamicStringMemTest()
@@ -361,6 +337,30 @@ void runStringFindTest()
     assert(s.substring(4, 5) == "tooth");
     assert(d.substring(4) == "blue");
     assert(d.substring(4, 5) == "tooth");
+
+    const char* charHayStack = "bluetooth wireless headset charging bluetooth";
+    std::vector<const char*> charNeedles = { "blue", "", "headset", "bluetooth", "g", charHayStack };
+    const wchar_t* wcharHayStack = L"bluetooth wireless headset charging bluetooth";
+    std::vector<const wchar_t*> wcharNeedles = { L"blue", L"", L"headset", L"bluetooth", L"g", wcharHayStack };
+    std::vector<size_t> fIndex = { 0, INVALID_SIZE_T, 19, 0, 31, 0 };
+    std::vector<size_t> rIndex = { 36, INVALID_SIZE_T, 19, 36, 34, 0 };
+    std::cout << subtestPretext << "Testing Fixed String Find Functionality\n";
+    testStringFindGeneral<obn::stack_string<64>, char>(charHayStack, charNeedles, fIndex, rIndex);
+    std::cout << subtestPretext << "Testing Wide Dynamic String Find Functionality\n";
+    testStringFindGeneral<obn::dyn::wheap_string, wchar_t>(wcharHayStack, wcharNeedles, fIndex, rIndex);
+
+    const char* example = "Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+    std::vector<const char*> charsets = { "", "\\+", "*/", " " };
+    const wchar_t* wexample = L"Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+    std::vector<const wchar_t*> wcharsets = { L"", L"\\+", L"*/", L" " };
+    std::vector<size_t> fOfIndex = { INVALID_SIZE_T, 49, 51, 3 };
+    std::vector<size_t> lOfIndex = { INVALID_SIZE_T, 55, 53, 106 };
+    std::vector<size_t> fNotOfIndex = { INVALID_SIZE_T, 0, 0, 0 };
+    std::vector<size_t> lNotOfIndex = { INVALID_SIZE_T, 110, 110, 110 };
+    std::cout << subtestPretext << "Testing Fixed String Find Of Functionality\n";
+    testStringFindOfGeneral<obn::small_string128, char>(example, charsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
+    std::cout << subtestPretext << "Testing Wide Dynamic String Find Of Functionality\n";
+    testStringFindOfGeneral<obn::dyn::wheap_string, wchar_t>(wexample, wcharsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
 }
 
 void runStringMiscTest()

@@ -155,27 +155,25 @@ public:
 
     inline selftype substring(size_t idx, size_t count) const
     {
-        index_assert(idx, internal_data.len);
-        index_assert(idx + count, internal_data.len + 1);
+        internal_full_range_assert(idx, count, internal_data.len);
         return selftype(&internal_data.buf[idx], count);
     }
 
     inline selftype substring(size_t count) const
     {
-        index_assert(count, internal_data.len + 1);
+        full_internal_full_range_assert(count, internal_data.len);
         return selftype(internal_data.buf, count);
     }
 
     inline viewtype subview(size_t idx, size_t count) const
     {
-        index_assert(idx, internal_data.len);
-        index_assert(idx + count, internal_data.len + 1);
+        internal_full_range_assert(idx, count, internal_data.len);
         return viewtype(&internal_data.buf[idx], count);
     }
 
     inline viewtype subview(size_t count) const
     {
-        index_assert(count, internal_data.len + 1);
+        full_internal_full_range_assert(count, internal_data.len);
         return viewtype(internal_data.buf, count);
     }
 

@@ -2,8 +2,8 @@
 #include <ostream>
 #include <string>
 
-#include "Core/Monument/basictypes.h"
-#include "Core/OracleBone/stack_string.h"
+#include "Core/Monument/monument.h"
+#include "Core/OracleBone/obn.h"
 
 namespace gbt
 {
@@ -26,6 +26,71 @@ template <typename chartype>
 using generic_file_path_data = obn::generic_stack_string<chartype, FILE_PATH_MAX_BUF_LEN>;
 using file_path_data = generic_file_path_data<char>;
 using wfile_path_data = generic_file_path_data<wchar_t>;
+
+typedef obn::view_string file_path_viewtype;
+typedef obn::view_wstring wfile_path_viewtype;
+
+union FilePathFlags
+{
+    struct
+    {
+        bool hasError : 1;
+        bool isFolder : 1;
+        bool hasFolder : 1;
+        bool hasExt : 1;
+    };
+    uint16_t packed;
+
+    FilePathFlags() : packed(0) { hasError = true; }
+};
+
+struct FilePathMeta
+{
+    FilePathFlags flags;
+    uint16_t filenameStart;
+    uint16_t extPos;
+};
+
+class FilePathView
+{
+public:
+    FilePathView() = default;
+    FilePathView(c_string path, size_t len) { setView(path, len); };
+    FilePathView(c_string path) { setView(path, obn::string_len(path)); }
+    FilePathView(const file_path_data& path) { setView(path.c_str(), path.length()); }
+    FilePathView(const file_path_viewtype& path) { setView(path.c_str(), path.length()); }
+
+    bool setView(c_string path, size_t len);
+    
+    inline bool hasError() const { return m_meta.flags.hasError; }
+    inline const FilePathFlags& getFlags() const { return m_meta.flags; }
+    inline bool isEmpty() const { return m_view.empty(); }
+
+    inline file_path_viewtype folderPathView() const { return m_view.substring(m_meta.filenameStart); }
+    inline file_path_viewtype fileNameView() const { return m_view.substring(m_meta.filenameStart, m_view.length() - m_meta.filenameStart); }
+    inline file_path_viewtype fileNameNoExtView() const { return m_view.substring(m_meta.filenameStart, m_meta.extPos - m_meta.filenameStart); }
+    inline file_path_viewtype fileExtView() const { return m_meta.flags.hasExt ? m_view.substring(m_meta.extPos + 1, m_view.length() - m_meta.extPos - 1) : m_view.substring(0, 0); }
+    inline file_path_viewtype fullPathView() const { return m_view; }
+
+    inline file_path_data folderPath() const { return folderPathView(); }
+    inline file_path_data fileName() const { return fileNameView(); }
+    inline file_path_data fileNameNoExt() const { return fileNameNoExtView(); }
+    inline file_path_data fileExt() const { return fileExtView(); }
+    inline file_path_data fullPath() const { return m_view; }
+
+    // just copy memory, everything is flat anyways
+    FilePathView& operator=(const FilePathView& other) = default;
+    inline FilePathView& operator=(c_string path) { setView(path, obn::string_len(path)); }
+    inline FilePathView& operator=(const file_path_data& path) { setView(path.c_str(), path.length()); }
+    inline FilePathView& operator=(const file_path_viewtype& path) { setView(path.c_str(), path.length()); }
+    
+    inline bool operator==(const FilePathView& other) const { return m_view == other.m_view; }
+
+private:
+    file_path_viewtype m_view;
+    FilePathMeta m_meta;
+};
+inline std::ostream& operator<<(std::ostream& os, const FilePathView& path) { os << path.fullPathView(); return os; }
 
 class FilePath
 {

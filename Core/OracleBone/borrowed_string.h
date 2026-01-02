@@ -66,14 +66,13 @@ public:
 
     inline selftype substring(size_t idx, size_t count) const
     {
-        index_assert(idx, m_len);
-        index_assert(idx + count, m_len + 1);
+        internal_full_range_assert(idx, count, m_len);
         return selftype(&m_data[idx], count);
     }
 
     inline selftype substring(size_t count) const
     {
-        index_assert(count, m_len + 1);
+        full_internal_full_range_assert(count, m_len);
         return selftype(m_data, count);
     }
 
