@@ -93,7 +93,7 @@ struct LogBlock
 {
 	LogLevel level;
 	std::thread::id creationId;
-	FilePath file;
+	FilePathView file;
 	LineNumber line;
 	std::chrono::system_clock::time_point time;
 	std::string log;
@@ -145,19 +145,22 @@ static inline void ApplyVerbosityToSettings(LogVerbosity verbosity, LoggingStrea
 	}
 }
 
-bool gbt::SafeLog_RegisterFile(const LoggingStreamSettings& settings, FilePath path, bool truncate)
+bool gbt::SafeLog_RegisterFile(const LoggingStreamSettings& settings, const FilePath& path, bool truncate)
 {
 	GBT_INTERNAL_STREAM_SETTING_GUARD(settings);
-	std::ofstream file(path.path(), truncate ? std::ios::out | std::ios::trunc : std::ios::out);
+	std::ofstream file(path.path().c_str(), truncate ? std::ios::out | std::ios::trunc : std::ios::out);
 	std::lock_guard<std::mutex> lock(logGuard);
 	if(!file.is_open())
 	{
 		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
-			std::chrono::system_clock::now(), path.path() + " could not be opened, could not register to logging system" });
+			std::chrono::system_clock::now(), std::format("{} could not be opened, could not register to logging system", path.path().c_str()) });
 		return false;
 	}
 
-	LogFile& lf = logFiles.emplace_back(std::move(LogFile{ std::move(path), std::move(file) }));
+	LogFile& lf = logFiles.emplace_back();
+	lf.path = path;
+	lf.file = std::move(file);
+
 	outputs.push_back({ settings, &(lf.file) });
 	return true;
 }
@@ -237,7 +240,7 @@ bool gbt::SafeLog_DeregisterFile(const FilePath& path)
 	if(it == end)
 	{
 		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
-			std::chrono::system_clock::now(), path.path() + " not found, could not deregister from logging system" });
+			std::chrono::system_clock::now(), std::format("{} could not be opened, could not register to logging system", path.path().c_str()) });
 		return false;
 	}
 	bool success = UnsafeLog_DeregisterOutputStream(it->file);

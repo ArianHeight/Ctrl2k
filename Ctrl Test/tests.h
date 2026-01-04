@@ -1,6 +1,6 @@
 #pragma once
 
-//#define MUTE_FILEPATH_TEST_COUT
+#define MUTE_FILEPATH_TEST_COUT
 
 static const char* const subtestPretext = "===================================\n";
 

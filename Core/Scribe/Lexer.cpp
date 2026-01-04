@@ -38,7 +38,7 @@ bool Lexer::tokenizeStream(std::istream& is, obn::dyn::string_registry& registry
 
 bool Lexer::tokenizeFile(const gbt::FilePath& filepath, obn::dyn::string_registry& registry, std::vector<Token>& out)
 {
-    std::ifstream file(filepath.path(), std::ios::in);
+    std::ifstream file(filepath.path().c_str(), std::ios::in);
     return tokenizeStream(file, registry, out);
 }
 

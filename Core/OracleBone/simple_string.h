@@ -303,7 +303,7 @@ public:
     simple_string(const selftype& other) { copy(other); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     simple_string(const simple_string<datatype2, chartype, num2, dyn2>& other) { copy(other); }
-    simple_string(selftype&& other) { move(other); }
+    simple_string(selftype&& other) { move(std::move(other)); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     simple_string(simple_string<datatype2, chartype, num2, dyn2>&& other) { move(std::move(other)); }
 

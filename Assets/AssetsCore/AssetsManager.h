@@ -38,9 +38,9 @@ struct AssetTemplate
 	AssetTemplate() : state(AssetState::ASSET_LOADING_QUEUED), path(""), refcount(1) {}
 };
 
-#define MSG_NAMEMAP_SYNC_ISSUE "nameMap and assets are out of sync while loading " + name
-#define MSG_DEL_ASSETS_SYNC_ISSUE "deletedAssets and assets are out of sync while loading " + name
-#define MSG_ASSET_NAME_OVERLAP_ISSUE "name: " + name + " conflicts with existing asset"
+#define MSG_NAMEMAP_SYNC_ISSUE "nameMap and assets are out of sync while loading {}"
+#define MSG_DEL_ASSETS_SYNC_ISSUE "deletedAssets and assets are out of sync while loading {}"
+#define MSG_ASSET_NAME_OVERLAP_ISSUE "name: {} conflicts with existing asset"
 
 //Internal assets manager
 //only meant to be used in one single thread
@@ -65,7 +65,7 @@ private:
 protected:
 	std::mutex assetMutex;
 	std::vector<Asset> assets;
-	std::unordered_map<gbt::FileNameNoExt, TexId> nameMap;
+	std::unordered_map<std::string, TexId> nameMap;
 	std::queue<AssetId> deletedAssets;
 
 	std::mutex loadMutex;
@@ -104,25 +104,25 @@ protected:
 		//initial load request
 		{
 			std::lock_guard<std::mutex> lock(assetMutex);
-			std::string name = path.fileNameNoExt();
+			std::string name = path.fileNameNoExt().c_str();
 			auto it = nameMap.find(name);
 			if(it != nameMap.end()) //asset exists already
 			{
 				id = it->second;
 				if(!exists(id))
 				{
-					LOG_FATAL_PUSH(MSG_NAMEMAP_SYNC_ISSUE);
+					LOG_FATAL_PUSH(MSG_NAMEMAP_SYNC_ISSUE, name);
 					return LOAD_FAIL_VALUE;
 				}
 #ifdef _DEBUG
 				if(assets[id].path != path)
 				{
-					LOG_WARNING_PUSH(MSG_ASSET_NAME_OVERLAP_ISSUE);
+					LOG_WARNING_PUSH(MSG_ASSET_NAME_OVERLAP_ISSUE, name);
 					return LOAD_FAIL_VALUE;
 				}
 				if(assets[id].state == AssetState::ASSET_DELETED)
 				{
-					LOG_FATAL_PUSH(MSG_NAMEMAP_SYNC_ISSUE);
+					LOG_FATAL_PUSH(MSG_NAMEMAP_SYNC_ISSUE, name);
 					return LOAD_FAIL_VALUE;
 				}
 #endif
@@ -141,13 +141,13 @@ protected:
 
 					if(!exists(id))
 					{
-						LOG_FATAL_PUSH(MSG_DEL_ASSETS_SYNC_ISSUE);
+						LOG_FATAL_PUSH(MSG_DEL_ASSETS_SYNC_ISSUE, name);
 						return LOAD_FAIL_VALUE;
 					}
 #ifdef _DEBUG
 					if(assets[id].state != AssetState::ASSET_DELETED)
 					{
-						LOG_FATAL_PUSH(MSG_DEL_ASSETS_SYNC_ISSUE);
+						LOG_FATAL_PUSH(MSG_DEL_ASSETS_SYNC_ISSUE, name);
 						return LOAD_FAIL_VALUE;
 					}
 #endif
@@ -192,12 +192,13 @@ protected:
 #ifdef _DEBUG
 			if(assets[id].state != AssetState::ASSET_LOADED)
 			{
-				LOG_WARNING_PUSH("Trying to unload asset {}, an already unloaded asset", assets[id].path.fileNameNoExtView());
+				// TODO these should use path views and not a copy of the path
+				LOG_WARNING_PUSH("Trying to unload asset {}, an already unloaded asset", assets[id].path.fileNameNoExt().c_str());
 				return;
 			}
 			else if(assets[id].refcount == 0)
 			{
-				LOG_FATAL_PUSH("Asset {} has refcount 0 but is being requested to unload", assets[id].path.fileNameNoExtView());
+				LOG_FATAL_PUSH("Asset {} has refcount 0 but is being requested to unload", assets[id].path.fileNameNoExt().c_str());
 				return;
 			}
 #endif

@@ -78,7 +78,7 @@ enum LogVerbosity : uint8_t
 	LOGVERBOSITY_INVALID_COUNT
 };
 
-bool SafeLog_RegisterFile(const LoggingStreamSettings& settings, FilePath path, bool truncate);
+bool SafeLog_RegisterFile(const LoggingStreamSettings& settings, const FilePath& path, bool truncate);
 bool SafeLog_RegisterFile(LogLevel lvl, LogVerbosity verbosity, const FilePath& path);
 bool SafeLog_RegisterFile(LogLevel lvl, const FilePath& path);
 bool SafeLog_RegisterFile(const FilePath& path);

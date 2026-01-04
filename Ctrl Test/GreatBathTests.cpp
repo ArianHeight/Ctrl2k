@@ -94,7 +94,7 @@ void runAllFilePathViewTests()
     testFilePathFunctionality(rvalPath, "rval/test\\", "god", "dog");
     assert(lvalPath == rvalPath);
     assert(lvalPath == rvalData);
-    assert(rvalData == lvalPath.fullPathView());
+    assert(rvalData == lvalPath.pathView());
 
     gbt::FilePathView revPath = "../..\\bluehills.xif";
     testFilePathFunctionality(revPath, "../..\\", "bluehills", "xif");
@@ -103,15 +103,8 @@ void runAllFilePathViewTests()
     testFilePathFunctionality(revPathNoExt, "../..\\", "bluehills", "");
 }
 
-void initFilePath(const std::string& pathstring, gbt::FilePath& emptyPath)
-{
-    gbt::FilePath newPath = pathstring;
-    emptyPath = std::move(newPath);
-}
-
 void runAllFilePathTests()
 {
-#if 0
     gbt::FilePath emptyPath;
     testFilePathFunctionality(emptyPath, "", "", "", true, true);
 
@@ -141,31 +134,29 @@ void runAllFilePathTests()
     gbt::FilePath noFolderWeird2 = gbt::FilePath("/sav.dat");
     testFilePathFunctionality(noFolderWeird2, "/", "sav", "dat");
 
-    gbt::FilePath rvalPath;
-    initFilePath("rval/test\\god.dog", rvalPath);
+    gbt::file_path_data rvalData = "rval/test\\god.dog";
+    gbt::FilePath rvalPath = rvalData.view();
     testFilePathFunctionality(rvalPath, "rval/test\\", "god", "dog");
 
-    gbt::FilePath newRvalPath(std::move(rvalPath));
-    testFilePathFunctionality(newRvalPath, "rval/test\\", "god", "dog");
-
-    gbt::FilePath lvalPath(newRvalPath);
+    gbt::FilePath lvalPath(rvalPath);
     testFilePathFunctionality(lvalPath, "rval/test\\", "god", "dog");
-    testFilePathFunctionality(newRvalPath, "rval/test\\", "god", "dog");
+    testFilePathFunctionality(rvalPath, "rval/test\\", "god", "dog");
+    assert(lvalPath == rvalPath);
+    assert(lvalPath == rvalData);
+    assert(rvalData == lvalPath.pathView());
 
     std::string strTest = "string/test/yes/str.lng";
 
-    gbt::FilePath strPath(strTest);
-    testFilePathFunctionality(strPath, "string/test/yes/", "str", "lng");
-
-    gbt::FilePath rvalStrPath(std::move(strTest));
-    testFilePathFunctionality(rvalStrPath, "string/test/yes/", "str", "lng");
+    gbt::FilePathView strTestView = strTest.c_str();
+    gbt::FilePath strTestPath = strTestView;
+    testFilePathFunctionality(strTestPath, "string/test/yes/", "str", "lng");
+    testFilePathFunctionality(strTestPath.view(), "string/test/yes/", "str", "lng");
 
     gbt::FilePath revPath = "../..\\bluehills.xif";
     testFilePathFunctionality(revPath, "../..\\", "bluehills", "xif");
 
     gbt::FilePath revPathNoExt = "../..\\bluehills";
     testFilePathFunctionality(revPathNoExt, "../..\\", "bluehills", "");
-#endif
 }
 
 void runFilePathTests()
