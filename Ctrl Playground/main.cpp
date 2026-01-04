@@ -478,6 +478,10 @@ int main(int argc, char *argv[])
 	LOG_MSG_PUSH("Hello");
 	LOG_WARNING_PUSH("Uh Oh");
 	LOG_ERROR_PUSH("REEEEE");
+	obn::small_string16 someString = "Hello World";
+	LOG_MSG_PUSH("Swap in {} for testing.", someString);
+	obn::view_string someView = "Hello View!";
+	LOG_MSG_PUSH("Swap in {} for view", someView);
 	LOG_FATAL_PUSH("Ded");
 	LOG_FLUSH();
 

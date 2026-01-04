@@ -32,7 +32,7 @@ struct AssetMetaDataTemplate
 struct AssetTemplate
 {
 	AssetState state;
-	gbt::FilePath path;
+	gbt::FilePath path; // TODO this is too large, currently 261 bytes! consider using string_registry to make this into a reg id instead
 	unsigned int refcount;
 
 	AssetTemplate() : state(AssetState::ASSET_LOADING_QUEUED), path(""), refcount(1) {}
@@ -192,13 +192,12 @@ protected:
 #ifdef _DEBUG
 			if(assets[id].state != AssetState::ASSET_LOADED)
 			{
-				// TODO these should use path views and not a copy of the path
-				LOG_WARNING_PUSH("Trying to unload asset {}, an already unloaded asset", assets[id].path.fileNameNoExt().c_str());
+				LOG_WARNING_PUSH("Trying to unload asset {}, an already unloaded asset", assets[id].path.fileNameNoExtView());
 				return;
 			}
 			else if(assets[id].refcount == 0)
 			{
-				LOG_FATAL_PUSH("Asset {} has refcount 0 but is being requested to unload", assets[id].path.fileNameNoExt().c_str());
+				LOG_FATAL_PUSH("Asset {} has refcount 0 but is being requested to unload", assets[id].path.fileNameNoExtView());
 				return;
 			}
 #endif
