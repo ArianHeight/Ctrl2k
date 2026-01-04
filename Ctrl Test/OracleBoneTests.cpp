@@ -2,8 +2,7 @@
 
 #include <iostream>
 
-#include "Core/OracleBone/stackstring.h"
-#include "Core/OracleBone/heapstring.h"
+#include "Core/OracleBone/obn.h"
 
 struct ExpectedSize
 {
@@ -61,31 +60,31 @@ void testSmallStringSize()
 void testFixedStringSize()
 {
     std::cout << subtestPretext << "Testing Fixed String 12 Size\n";
-    testStringSize<obn::fixed_string<12>, char>("blue", { sizeof(obn::fixed_string<12>), 12, 11, 4 }); // don't care about struct size
-    testStringSize<obn::fixed_string<12>, char>("bluetooth headset", { sizeof(obn::fixed_string<12>), 12, 11, 11 }); // don't care about struct size
+    testStringSize<obn::stack_string<12>, char>("blue", { sizeof(obn::stack_string<12>), 12, 11, 4 }); // don't care about struct size
+    testStringSize<obn::stack_string<12>, char>("bluetooth headset", { sizeof(obn::stack_string<12>), 12, 11, 11 }); // don't care about struct size
 
     std::cout << subtestPretext << "Testing Wide Fixed String 12 Size\n";
-    testStringSize<obn::wfixed_string<12>, wchar_t>(L"blue", { sizeof(obn::wfixed_string<12>), 12, 11, 4 }); // don't care about struct size
-    testStringSize<obn::wfixed_string<12>, wchar_t>(L"bluetooth headset", { sizeof(obn::wfixed_string<12>), 12, 11, 11 }); // don't care about struct size
+    testStringSize<obn::wstack_string<12>, wchar_t>(L"blue", { sizeof(obn::wstack_string<12>), 12, 11, 4 }); // don't care about struct size
+    testStringSize<obn::wstack_string<12>, wchar_t>(L"bluetooth headset", { sizeof(obn::wstack_string<12>), 12, 11, 11 }); // don't care about struct size
 }
 
 void testDynamicStringSize()
 {
     std::cout << subtestPretext << "Testing Dynamic String 0 Size\n";
-    testStringSize<obn::dynamic_string0, char>("", { 32, 1, SIZE_MAX - 1, 0 });
-    testStringSize<obn::dynamic_string0, char>("blue", { 32, 5, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::heap_string0, char>("", { 32, 1, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::heap_string0, char>("blue", { 32, 5, SIZE_MAX - 1, 4 });
     std::cout << subtestPretext << "Testing Dynamic String Size\n";
-    testStringSize<obn::dynamic_string, char>("", { 32, 32, SIZE_MAX - 1, 0 });
-    testStringSize<obn::dynamic_string, char>("blue", { 32, 32, SIZE_MAX - 1, 4 });
-    testStringSize<obn::dynamic_string, char>("bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
+    testStringSize<obn::dyn::heap_string, char>("", { 32, 32, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::heap_string, char>("blue", { 32, 32, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::heap_string, char>("bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
 
     std::cout << subtestPretext << "Testing Wide Dynamic String 0 Size\n";
-    testStringSize<obn::wdynamic_string0, wchar_t>(L"", { 32, 1, SIZE_MAX - 1, 0 });
-    testStringSize<obn::wdynamic_string0, wchar_t>(L"blue", { 32, 5, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::wheap_string0, wchar_t>(L"", { 32, 1, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::wheap_string0, wchar_t>(L"blue", { 32, 5, SIZE_MAX - 1, 4 });
     std::cout << subtestPretext << "Testing Wide Dynamic String Size\n";
-    testStringSize<obn::wdynamic_string, wchar_t>(L"", { 32, 32, SIZE_MAX - 1, 0 });
-    testStringSize<obn::wdynamic_string, wchar_t>(L"blue", { 32, 32, SIZE_MAX - 1, 4 });
-    testStringSize<obn::wdynamic_string, wchar_t>(L"bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
+    testStringSize<obn::dyn::wheap_string, wchar_t>(L"", { 32, 32, SIZE_MAX - 1, 0 });
+    testStringSize<obn::dyn::wheap_string, wchar_t>(L"blue", { 32, 32, SIZE_MAX - 1, 4 });
+    testStringSize<obn::dyn::wheap_string, wchar_t>(L"bluetooth wireless headset charging", { 32, 36, SIZE_MAX - 1, 35 });
 }
 
 // DO NOT use the same string for any of the inputs
@@ -124,25 +123,166 @@ void testStringGeneral(const chartype* small_in, const chartype* in, const chart
         s1 = std::move(s2);
         assert(s1 == s2);
     }
+
+    constexpr size_t cutPos = 3;
+    stringtype ss1 = in;
+    assert(cutPos < ss1.length());
+    stringtype ss2 = ss1.substring(cutPos);
+    assert(ss1.starts_with(ss2));
+    assert(ss1.starts_with(ss1[0]));
+    stringtype ss3 = ss1.substring(cutPos, ss1.length() - cutPos);
+    assert(ss1.ends_with(ss3));
+    assert(ss1.ends_with(ss3[ss3.length() - 1]));
+    assert(ss2 != ss3);
+}
+
+template<typename stringtype, typename chartype>
+void testViewStringGeneral(const chartype* in)
+{
+    constexpr size_t cutPos = 10;
+    size_t len = obn::string_len(in);
+    assert(len > cutPos);
+
+    stringtype vs1(in, len);
+    assert(vs1.length() == vs1.size());
+    assert(vs1.length() == len);
+    assert(vs1.starts_with(vs1[0]));
+    assert(vs1.ends_with(vs1[len - 1]));
+    
+    stringtype vs2 = vs1.substring(cutPos);
+    assert(vs1.starts_with(vs2));
+    assert(vs1.starts_with(vs2.c_str(), vs2.length()));
+
+    stringtype vs3 = vs1.substring(cutPos, len - cutPos);
+    assert(vs1.ends_with(vs3));
+    assert(vs1.ends_with(vs3.data(), vs3.size()));
+
+    assert(!vs3.empty());
+    vs3.clear();
+    assert(vs3.empty());
+
+    stringtype vs4;
+    assert(vs4.empty());
+    const obn::simple_string<obn::stack_string_data, chartype, 64> incopy = in;
+    vs4 = incopy.view();
+    assert(vs4 == vs1);
+    assert(vs1 == vs1);
+    assert(vs1 != vs2);
+    assert(vs4 != vs3);
+
+    stringtype vs5 = incopy.subview(cutPos);
+    assert(vs5 == vs2);
+    assert(incopy.subview(cutPos, len - cutPos) == vs1.substring(cutPos, len - cutPos));
+
+    obn::simple_string<obn::stack_string_data, chartype, 64> vs5copy = vs5;
+    assert(vs5copy == vs5);
+
+    const obn::simple_string<obn::stack_string_data, chartype, 64> vs4copy(vs4);
+    assert(vs4copy == incopy);
+
+    vs5copy += vs1.substring(cutPos, len - cutPos);
+    assert(vs5copy != vs5);
+    assert(vs5copy == incopy);
+}
+
+template <typename stringtype, typename chartype>
+void testStringFindGeneral(const chartype* haystack, const std::vector<const chartype*>& needles, const std::vector<size_t>& forwardIndex, const std::vector<size_t>& reverseIndex)
+{
+    stringtype str = haystack;
+    obn::borrowed_string<chartype> str_view = str.view();
+    for(size_t i = 0; i < needles.size(); ++i)
+    {
+        //std::cout << str.find(needles[i]) << ' ' << str.rfind(needles[i]) << ' ' << forwardIndex[i] << '\n';
+        assert(str.find(needles[i]) == forwardIndex[i]);
+        assert(str.rfind(needles[i]) == reverseIndex[i]);
+        
+        stringtype substr = needles[i];
+        assert(str.find(substr) == forwardIndex[i]);
+        assert(str.rfind(substr) == reverseIndex[i]);
+
+        obn::borrowed_string<chartype> view = needles[i];
+        assert(str.find(view) == forwardIndex[i]);
+        assert(str.rfind(view) == reverseIndex[i]);
+        
+        assert(str_view.find(needles[i]) == forwardIndex[i]);
+        assert(str_view.rfind(needles[i]) == reverseIndex[i]);
+        assert(str_view.find(view) == forwardIndex[i]);
+        assert(str_view.rfind(view) == reverseIndex[i]);
+
+        if(!view.empty())
+        {
+            if(view.length() > 1)
+            {
+                assert(str.find(view[1], forwardIndex[i]) == forwardIndex[i] + 1);
+                assert(str_view.find(view[1], forwardIndex[i]) == forwardIndex[i] + 1);
+            }
+
+            assert(str.rfind(view[0], reverseIndex[i] + 1) == reverseIndex[i]);
+            assert(str_view.rfind(view[0], reverseIndex[i] + 1) == reverseIndex[i]);
+        }
+    }
+}
+
+template <typename stringtype, typename chartype>
+void testStringFindOfGeneral(const chartype* example, const std::vector<const chartype*>& charsets,
+    const std::vector<size_t>& findOfIndex, const std::vector<size_t>& findNotOfIndex,
+    const std::vector<size_t>& lastOfIndex,  const std::vector<size_t>& lastNotOfIndex)
+{
+    stringtype str = example;
+    obn::borrowed_string<chartype> str_view = str.view();
+    for(size_t i = 0; i < charsets.size(); ++i)
+    {
+        //std::cout << str.find(needles[i]) << ' ' << str.rfind(needles[i]) << ' ' << forwardIndex[i] << '\n';
+        assert(str.find_first_of(charsets[i]) == findOfIndex[i]);
+        assert(str.find_first_not_of(charsets[i]) == findNotOfIndex[i]);
+        assert(str.find_last_of(charsets[i]) == lastOfIndex[i]);
+        assert(str.find_last_not_of(charsets[i]) == lastNotOfIndex[i]);
+
+        stringtype charset = charsets[i];
+        assert(str.find_first_of(charset) == findOfIndex[i]);
+        assert(str.find_first_not_of(charset) == findNotOfIndex[i]);
+        assert(str.find_last_of(charset) == lastOfIndex[i]);
+        assert(str.find_last_not_of(charset) == lastNotOfIndex[i]);
+
+        obn::borrowed_string<chartype> view = charsets[i];
+        assert(str.find_first_of(view) == findOfIndex[i]);
+        assert(str.find_first_not_of(view) == findNotOfIndex[i]);
+        assert(str.find_last_of(view) == lastOfIndex[i]);
+        assert(str.find_last_not_of(view) == lastNotOfIndex[i]);
+
+        assert(str_view.find_first_of(charsets[i]) == findOfIndex[i]);
+        assert(str_view.find_first_not_of(charsets[i]) == findNotOfIndex[i]);
+        assert(str_view.find_last_of(charsets[i]) == lastOfIndex[i]);
+        assert(str_view.find_last_not_of(charsets[i]) == lastNotOfIndex[i]);
+        assert(str_view.find_first_of(view) == findOfIndex[i]);
+        assert(str_view.find_first_not_of(view) == findNotOfIndex[i]);
+        assert(str_view.find_last_of(view) == lastOfIndex[i]);
+        assert(str_view.find_last_not_of(view) == lastNotOfIndex[i]);
+    }
 }
 
 void runStringBasicTests()
 {
     std::cout << subtestPretext << "Testing Basic Dynamic String Functionality\n";
-    testStringGeneral<obn::dynamic_string, char>("", "blue", "bluetooth wireless headset charging", true);
+    testStringGeneral<obn::dyn::heap_string, char>("", "blue", "bluetooth wireless headset charging", true);
     std::cout << subtestPretext << "Testing Basic Wide Dynamic String Functionality\n";
-    testStringGeneral<obn::wdynamic_string, wchar_t>(L"", L"blue", L"bluetooth wireless headset charging", true);
+    testStringGeneral<obn::dyn::wheap_string, wchar_t>(L"", L"blue", L"bluetooth wireless headset charging", true);
     std::cout << subtestPretext << "Testing Basic Fixed String Functionality\n";
-    testStringGeneral<obn::fixed_string<12>, char>("", "blue", "bluetooth wireless headset charging", false);
+    testStringGeneral<obn::stack_string<12>, char>("", "blue", "bluetooth wireless headset charging", false);
     std::cout << subtestPretext << "Testing Basic Wide Small String Functionality\n";
     testStringGeneral<obn::wsmall_string8, wchar_t>(L"", L"blue", L"bluetooth", false);
+
+    std::cout << subtestPretext << "Testing Basic View String Functionality\n";
+    testViewStringGeneral<obn::view_string, char>("bluetooth wireless headset charging");
+    std::cout << subtestPretext << "Testing Basic Wide View String Functionality\n";
+    testViewStringGeneral<obn::view_wstring, wchar_t>(L"bluetooth wireless headset charging");
 }
 
 void runDynamicStringMemTest()
 {
     std::cout << subtestPretext << "Testing Dynamic String Memory\n";
-    obn::wdynamic_string0 wd = L"blue";
-    obn::wdynamic_string wd1 = std::move(wd);
+    obn::dyn::wheap_string0 wd = L"blue";
+    obn::dyn::wheap_string wd1 = std::move(wd);
     assert(wd.c_str() != wd1.c_str());
     assert(wd.length() == 0);
     assert(wd1.length() == 4);
@@ -168,13 +308,13 @@ void runStringAppendTest()
     s.append("ooth");
     assert(s.length() == 6);
     assert(s.has_error());
-    obn::fixed_string<7> f = "blue";
+    obn::stack_string<7> f = "blue";
     f += "to";
     assert(f.length() == 6);
     assert(!f.has_error());
     assert(f == s);
-    obn::dynamic_string d = s;
-    obn::fixed_string<32> f1 = "oth wireless headset charging";
+    obn::dyn::heap_string d = s;
+    obn::stack_string<32> f1 = "oth wireless headset charging";
     d += f1;
     assert(d == "bluetooth wireless headset charging");
     d.shrink_to_fit();
@@ -189,7 +329,7 @@ void runStringFindTest()
     assert(s.starts_with("blue"));
     assert(s.ends_with('h'));
     assert(s.ends_with("tooth"));
-    obn::dynamic_string d = s;
+    obn::dyn::heap_string d = s;
     assert(s.starts_with(d));
     assert(s.ends_with(d));
 
@@ -197,6 +337,30 @@ void runStringFindTest()
     assert(s.substring(4, 5) == "tooth");
     assert(d.substring(4) == "blue");
     assert(d.substring(4, 5) == "tooth");
+
+    const char* charHayStack = "bluetooth wireless headset charging bluetooth";
+    std::vector<const char*> charNeedles = { "blue", "", "headset", "bluetooth", "g", charHayStack };
+    const wchar_t* wcharHayStack = L"bluetooth wireless headset charging bluetooth";
+    std::vector<const wchar_t*> wcharNeedles = { L"blue", L"", L"headset", L"bluetooth", L"g", wcharHayStack };
+    std::vector<size_t> fIndex = { 0, INVALID_SIZE_T, 19, 0, 31, 0 };
+    std::vector<size_t> rIndex = { 36, INVALID_SIZE_T, 19, 36, 34, 0 };
+    std::cout << subtestPretext << "Testing Fixed String Find Functionality\n";
+    testStringFindGeneral<obn::stack_string<64>, char>(charHayStack, charNeedles, fIndex, rIndex);
+    std::cout << subtestPretext << "Testing Wide Dynamic String Find Functionality\n";
+    testStringFindGeneral<obn::dyn::wheap_string, wchar_t>(wcharHayStack, wcharNeedles, fIndex, rIndex);
+
+    const char* example = "Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+    std::vector<const char*> charsets = { "", "\\+", "*/", " " };
+    const wchar_t* wexample = L"Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+    std::vector<const wchar_t*> wcharsets = { L"", L"\\+", L"*/", L" " };
+    std::vector<size_t> fOfIndex = { INVALID_SIZE_T, 49, 51, 3 };
+    std::vector<size_t> lOfIndex = { INVALID_SIZE_T, 55, 53, 106 };
+    std::vector<size_t> fNotOfIndex = { INVALID_SIZE_T, 0, 0, 0 };
+    std::vector<size_t> lNotOfIndex = { INVALID_SIZE_T, 110, 110, 110 };
+    std::cout << subtestPretext << "Testing Fixed String Find Of Functionality\n";
+    testStringFindOfGeneral<obn::small_string128, char>(example, charsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
+    std::cout << subtestPretext << "Testing Wide Dynamic String Find Of Functionality\n";
+    testStringFindOfGeneral<obn::dyn::wheap_string, wchar_t>(wexample, wcharsets, fOfIndex, fNotOfIndex, lOfIndex, lNotOfIndex);
 }
 
 void runStringMiscTest()
@@ -211,14 +375,46 @@ void runStringMiscTest()
     s2.replace('o', 'e');
     assert(s2 == "blueteeth");
 
-    const obn::dynamic_string d = "blue";
+    const obn::dyn::heap_string d = "blue";
     assert(d[0] == 'b' && d[1] == 'l' && d[2] == 'u' && d[3] == 'e');
-    obn::dynamic_string d1 = d;
+    obn::dyn::heap_string d1 = d;
     d1[3] = 'd';
     assert(d1 == "blud");
-    obn::dynamic_string d2 = "bluetooth";
+    obn::dyn::heap_string d2 = "bluetooth";
     d2.replace('o', 'e');
     assert(d2 == "blueteeth");
+}
+
+template<typename T>
+void testStringRegistry(T& test)
+{
+    std::string val = "testing";
+    assert(!test.is_registered(val.c_str(), val.size()));
+    obn::string_registry_id val_ptr = test.register_string(val.c_str(), val.size());
+    assert(val_ptr != obn::INVALID_STRING_REGISTRY_ID);
+    assert(test.is_registered(val.c_str(), val.size()));
+    assert(test.find_registered_string(val.c_str(), val.size()) == val_ptr);
+    std::string val2 = "bluey";
+    obn::string_registry_id val_ptr2 = test.register_string(val2.c_str(), val2.size());
+    std::string val3 = "Hello, this string needs to be longer thatn 32 bytes";
+    obn::string_registry_id val_ptr3 = test.register_string(val3.c_str(), val3.size());
+    assert(test.find_registered_string(val.c_str(), val.size()) == val_ptr);
+    assert(test.find_registered_string(val2.c_str(), val2.size()) == val_ptr2);
+    assert(test.find_registered_string(val3.c_str(), val3.size()) == val_ptr3);
+}
+
+void runStringRegistryTests()
+{
+    {
+        std::cout << subtestPretext << "Testing String Registry Functionality\n";
+        obn::dyn::string_registry testRegistry(16);
+        testStringRegistry(testRegistry);
+    }
+    {
+        std::cout << subtestPretext << "Testing Fixed String Registry Functionality\n";
+        obn::string_registry_default testRegistry;
+        testStringRegistry(testRegistry);
+    }
 }
 
 void runStringTests()
@@ -232,4 +428,5 @@ void runStringTests()
     runStringAppendTest();
     runStringFindTest();
     runStringMiscTest();
+    runStringRegistryTests();
 }

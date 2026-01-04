@@ -171,11 +171,16 @@
   <ItemGroup>
     <ClInclude Include="basicassert.h" />
     <ClInclude Include="basicdefines.h" />
+    <ClInclude Include="basicenums.h" />
+    <ClInclude Include="basicfuncs.h" />
+    <ClInclude Include="basichash.h" />
     <ClInclude Include="basicmemory.h" />
     <ClInclude Include="basictypes.h" />
     <ClInclude Include="Monument.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="basicassert.cpp" />
+    <ClCompile Include="basichash.cpp" />
     <ClCompile Include="Monument.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Monument.h</PrecompiledHeaderFile>

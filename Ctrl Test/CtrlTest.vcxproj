@@ -159,6 +159,7 @@
     <ClCompile Include="AncestralHallTests.cpp" />
     <ClCompile Include="CtrlTest.cpp" />
     <ClCompile Include="GreatBathTests.cpp" />
+    <ClCompile Include="MonumentTests.cpp" />
     <ClCompile Include="OracleBoneTests.cpp" />
     <ClCompile Include="PetraTests.cpp" />
   </ItemGroup>

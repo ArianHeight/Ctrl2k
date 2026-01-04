@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Core/Monument/Monument.h"
-
+#include <sstream>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -8,8 +8,7 @@
 #include <unordered_set>
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
-#include "Core/OracleBone/stackstring.h"
-#include "Core/OracleBone/heapstring.h"
+#include "Core/OracleBone/obn.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -260,6 +259,105 @@ int64_t profileUnorderedMapStringFromInsert(std::unordered_map<std::string, int>
 	return 0;
 }
 
+// string find(std and my own impl)
+
+int64_t profileStdStringFind(const std::string& str, const std::vector<std::string>& substrs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& substr : substrs)
+	{
+		volatile size_t index = str.find(substr);
+		volatile size_t otherindex = str.rfind(substr);
+		//LOG_MSG_QUEUE("std string find {}, {}", (int)index, (int)otherindex);
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilFind(const std::string& str, const std::vector<std::string>& substrs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& substr : substrs)
+	{
+		volatile size_t index = obn::string_nfind(str.c_str(), str.length(), substr.c_str(), substr.length());
+		volatile size_t otherindex = obn::string_nrfind(str.c_str(), str.length(), substr.c_str(), substr.length());
+		//LOG_MSG_QUEUE("string util find {}, {}", (int)index, (int)otherindex);
+	}
+
+	return 0;
+}
+
+int64_t profileStdStringEq(const std::vector<std::string>& strs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& str : strs)
+	{
+		for(const std::string& other : strs)
+		{
+			volatile bool equals = str == other;
+		}
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilCmp(const std::vector<std::string>& strs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& str : strs)
+	{
+		for(const std::string& other : strs)
+		{
+			volatile bool equals = obn::string_ncmp(str.c_str(), other.c_str(), str.length());
+		}
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilEq(const std::vector<std::string>& strs)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& str : strs)
+	{
+		for(const std::string& other : strs)
+		{
+			volatile bool equals = obn::string_neq(str.c_str(), other.c_str(), str.length());
+		}
+	}
+
+	return 0;
+}
+
+int64_t profileStdStringFindOf(const std::string& str, const std::vector<std::string>& charsets)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& charset : charsets)
+	{
+		volatile size_t firstOf = str.find_first_of(charset);
+		volatile size_t lastOf = str.find_last_of(charset);
+		volatile size_t firstNotOf = str.find_first_not_of(charset);
+		volatile size_t lastNotOf = str.find_last_not_of(charset);
+		//LOG_MSG_QUEUE("std string find of {}, {}, {}, {}", (int)firstOf, (int)lastOf, (int)firstNotOf, (int)lastNotOf);
+	}
+
+	return 0;
+}
+
+int64_t profileStringUtilFindOf(const std::string& str, const std::vector<std::string>& charsets)
+{
+	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	for(const std::string& charset : charsets)
+	{
+		volatile size_t firstOf = obn::string_nfind_first_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		volatile size_t lastOf = obn::string_nfind_last_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		volatile size_t firstNotOf = obn::string_nfind_first_not_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		volatile size_t lastNotOf = obn::string_nfind_last_not_of(str.c_str(), str.length(), charset.c_str(), charset.length());
+		//LOG_MSG_QUEUE("string util find of {}, {}, {}, {}", (int)firstOf, (int)lastOf, (int)firstNotOf, (int)lastNotOf);
+	}
+
+	return 0;
+}
 
 void profileAll()
 {
@@ -334,6 +432,21 @@ void profileAll()
 	// ------------- map stuff
 
 	int64_t umapfindus = profileUnorderedMapFind(umap, stringElement, found);
+
+	// ------------- string util stuff
+	
+	std::string haystack = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
+	std::vector<std::string> needles = { "sit", "laborum", "sunt in culpa qui officia deserunt mollit anim id est laborum", "reprehenderit", "", haystack, "Ut enim ad minim veniam" };
+	int64_t stdstrfindus = profileStdStringFind(haystack, needles);
+	int64_t strutilfindus = profileStringUtilFind(haystack, needles);
+	int64_t stdstrequs = profileStdStringEq(needles);
+	int64_t strutilncmpus = profileStringUtilCmp(needles);
+	int64_t strutilnequs = profileStringUtilEq(needles);
+
+	std::string example = "Hey don't think too hard this is just an example + * / \\ yup please this will be a ok. Just look the other way.";
+	std::vector<std::string> charsets = { "", "\\+", "*/", " " };
+	profileStdStringFindOf(example, charsets);
+	profileStringUtilFindOf(example, charsets);
 }
 
 template <typename stringtype>
@@ -341,6 +454,16 @@ void testString(const c_string title, const stringtype& string)
 {
 	LOG_MSG_PUSH("{} max length {}, capacity {}, struct size {}, length {}, data \"{}\"", title, string.max_length(), string.capacity(), sizeof(string), string.length(), string.data());
 }
+
+enum class flags : int
+{
+	F1 = 1 << 0,
+	F2 = 1 << 1,
+	F3 = 1 << 2,
+};
+//*
+ENUM_CLASS_FULL_OP_GEN(flags);
+//*/
 
 int main(int argc, char *argv[])
 {
@@ -355,6 +478,10 @@ int main(int argc, char *argv[])
 	LOG_MSG_PUSH("Hello");
 	LOG_WARNING_PUSH("Uh Oh");
 	LOG_ERROR_PUSH("REEEEE");
+	obn::small_string16 someString = "Hello World";
+	LOG_MSG_PUSH("Swap in {} for testing.", someString);
+	obn::view_string someView = "Hello View!";
+	LOG_MSG_PUSH("Swap in {} for view", someView);
 	LOG_FATAL_PUSH("Ded");
 	LOG_FLUSH();
 

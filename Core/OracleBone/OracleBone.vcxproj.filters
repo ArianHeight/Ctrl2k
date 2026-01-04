@@ -18,21 +18,36 @@
     <ClInclude Include="obn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stackstring.h">
+    <ClInclude Include="stack_string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stringutil.h">
+    <ClInclude Include="string_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="heapstring.h">
+    <ClInclude Include="heap_string.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="simplestring.h">
+    <ClInclude Include="simple_string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="string_registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn_string_registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="borrowed_string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="std_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="obn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn_string_registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

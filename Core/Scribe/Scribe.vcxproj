@@ -157,9 +157,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GreatBath\GreatBath.vcxproj">
+      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\OracleBone\OracleBone.vcxproj">
       <Project>{e71233c6-c1cf-44e7-b5d3-571a5e5aab66}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Lexer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Lexer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

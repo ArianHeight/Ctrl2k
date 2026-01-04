@@ -21,7 +21,7 @@
     <ClInclude Include="ThreadSafeVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fixed_vector.h">
+    <ClInclude Include="stack_vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="threadsafe.h">
@@ -30,12 +30,12 @@
     <ClInclude Include="consistent_vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AncestralHall.h">
+    <ClInclude Include="ahl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AncestralHall.cpp">
+    <ClCompile Include="ahl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

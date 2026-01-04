@@ -67,9 +67,9 @@ template <> constexpr long double RAD_TO_DEGREE<long double> = 180.0 / PI<long d
 template <> constexpr int RAD_TO_DEGREE<int> = 180 / PI<int>;
 
 template <typename T>
-inline T deg2rad(const T& val) { return DEGREE_TO_RAD<T> * val; }
+inline T deg_to_rad(const T& val) { return DEGREE_TO_RAD<T> * val; }
 template <typename T>
-inline T rad2deg(const T& val) { return RAD_TO_DEGREE<T> * val; }
+inline T rad_to_deg(const T& val) { return RAD_TO_DEGREE<T> * val; }
 
 
 }

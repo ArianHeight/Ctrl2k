@@ -1,5 +1,5 @@
 #pragma once
-#include "stringutil.h"
+#include "borrowed_string.h"
 
 namespace obn
 {
@@ -23,6 +23,7 @@ class simple_string
 private:
     using fulltype = datatype<chartype, num>;
     using selftype = simple_string<datatype, chartype, num, dyn>;
+    using viewtype = borrowed_string<chartype>;
 
     fulltype internal_data;
 
@@ -71,6 +72,7 @@ public:
             internal_data.len = internal_data.error ? internal_data.max_len : str_len;
         }
 
+        ptr_assert(str);
         // use the faster mem cpy but without the trailing 0
         internal_data.error = mem_copy(internal_data.buf, str, internal_data.len * sizeof(chartype)) != 0 || internal_data.error;
         internal_data.buf[internal_data.len] = 0; // add trailing 0 back in very important
@@ -130,6 +132,7 @@ public:
                 return;
         }
 
+        ptr_assert(str);
         // use the faster mem cpy but without the trailing 0
         internal_data.error = mem_copy(&internal_data.buf[internal_data.len], str, str_len * sizeof(chartype)) != 0 || internal_data.error;
         internal_data.len = internal_data.len + str_len;
@@ -140,61 +143,181 @@ public:
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline void append(const simple_string<datatype2, chartype, num2, dyn2>& other) { append(other.internal_data.buf, other.internal_data.len); }
 
+    inline bool equals(const chartype* str, size_t str_len) const
+    {
+        return internal_data.len == str_len && (internal_data.buf == str || string_neq(internal_data.buf, str, internal_data.len));
+    }
+    inline bool equals(const chartype* str) const
+    {
+        ptr_assert(str);
+        return equals(str, string_nlen(str, internal_data.len + 1));
+    }
+
     inline selftype substring(size_t idx, size_t count) const
     {
-#ifdef _DEBUG
-        assertIndex(idx, internal_data.len);
-        assertIndex(idx + count, internal_data.len + 1);
-#endif
+        internal_full_range_assert(idx, count, internal_data.len);
         return selftype(&internal_data.buf[idx], count);
     }
 
     inline selftype substring(size_t count) const
     {
-#ifdef _DEBUG
-        assertIndex(count, internal_data.len + 1);
-#endif
+        full_internal_full_range_assert(count, internal_data.len);
         return selftype(internal_data.buf, count);
     }
 
-    inline bool starts_with(chartype c) { return internal_data.len > 0 && internal_data.buf[0] == c; }
-    inline bool starts_with(const chartype* str, size_t str_len)
+    inline viewtype subview(size_t idx, size_t count) const
     {
-        return str_len <= internal_data.len && string_ncmp(internal_data.buf, str, str_len) == 0;
+        internal_full_range_assert(idx, count, internal_data.len);
+        return viewtype(&internal_data.buf[idx], count);
     }
-    inline bool starts_with(const chartype* str) { return starts_with(str, string_len(str)); }
-    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline bool starts_with(const simple_string<datatype2, chartype, num2, dyn2>& other) { return starts_with(other.internal_data.buf, other.internal_data.len); }
 
-    inline bool ends_with(chartype c) { return internal_data.len > 0 && internal_data.buf[internal_data.len - 1] == c; }
-    inline bool ends_with(const chartype* str, size_t str_len)
+    inline viewtype subview(size_t count) const
     {
-        return str_len <= internal_data.len && string_ncmp(&internal_data.buf[internal_data.len - str_len], str, str_len) == 0;
+        full_internal_full_range_assert(count, internal_data.len);
+        return viewtype(internal_data.buf, count);
     }
-    inline bool ends_with(const chartype* str) { return ends_with(str, string_len(str)); }
+
+    inline bool starts_with(chartype c) const { return internal_data.len > 0 && internal_data.buf[0] == c; }
+    inline bool starts_with(const chartype* str, size_t str_len) const
+    {
+        ptr_assert(str);
+        return str_len <= internal_data.len && string_neq(internal_data.buf, str, str_len);
+    }
+    inline bool starts_with(const chartype* str) const { return starts_with(str, string_len(str)); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
-    inline bool ends_with(const simple_string<datatype2, chartype, num2, dyn2>& other) { return ends_with(other.internal_data.buf, other.internal_data.len); }
+    inline bool starts_with(const simple_string<datatype2, chartype, num2, dyn2>& other) const
+    {
+        return starts_with(other.internal_data.buf, other.internal_data.len);
+    }
+
+    inline bool ends_with(chartype c) const { return internal_data.len > 0 && internal_data.buf[internal_data.len - 1] == c; }
+    inline bool ends_with(const chartype* str, size_t str_len) const
+    {
+        ptr_assert(str);
+        return str_len <= internal_data.len && string_neq(&internal_data.buf[internal_data.len - str_len], str, str_len);
+    }
+    inline bool ends_with(const chartype* str) const { return ends_with(str, string_len(str)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline bool ends_with(const simple_string<datatype2, chartype, num2, dyn2>& other) const
+    {
+        return ends_with(other.internal_data.buf, other.internal_data.len);
+    }
+
+    inline size_t find(const chartype* str, size_t str_len, size_t start = 0) const
+    {
+        ptr_assert(str);
+        return string_nfind(internal_data.buf, internal_data.len, str, str_len, start);
+    }
+    inline size_t find(const chartype* str) const { return find(str, string_len(str)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = 0) const
+    {
+        return find(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find(const viewtype& other, size_t start = 0) const { return find(other.c_str(), other.length(), start); }
+    inline size_t find(const chartype chr, size_t start = 0) const
+    {
+        return string_nfind(internal_data.buf, internal_data.len, chr, start);
+    }
+
+    inline size_t rfind(const chartype* str, size_t str_len, size_t start = INVALID_SIZE_T) const
+    {
+        ptr_assert(str);
+        return string_nrfind(internal_data.buf, internal_data.len, str, str_len, start);
+    }
+    inline size_t rfind(const chartype* str) const { return rfind(str, string_len(str)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t rfind(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = INVALID_SIZE_T) const
+    {
+        return rfind(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t rfind(const viewtype& other, size_t start = INVALID_SIZE_T) const { return rfind(other.c_str(), other.length(), start); }
+    inline size_t rfind(const chartype chr, size_t start = INVALID_SIZE_T) const
+    {
+        return string_nrfind(internal_data.buf, internal_data.len, chr, start);
+    }
+
+    inline size_t find_first_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    {
+        ptr_assert(charset);
+        return string_nfind_first_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_first_of(const chartype* charset) const { return find_first_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_first_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = 0) const
+    {
+        return find_first_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_first_of(const viewtype& other, size_t start = 0) const { return find_first_of(other.c_str(), other.length(), start); }
+
+    inline size_t find_first_not_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    {
+        ptr_assert(charset);
+        return string_nfind_first_not_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_first_not_of(const chartype* charset) const { return find_first_not_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_first_not_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = 0) const
+    {
+        return find_first_not_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_first_not_of(const viewtype& other, size_t start = 0) const { return find_first_not_of(other.c_str(), other.length(), start); }
+
+    inline size_t find_last_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    {
+        ptr_assert(charset);
+        return string_nfind_last_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_last_of(const chartype* charset) const { return find_last_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_last_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_last_of(const viewtype& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_of(other.c_str(), other.length(), start);
+    }
+
+    inline size_t find_last_not_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    {
+        ptr_assert(charset);
+        return string_nfind_last_not_of(internal_data.buf, internal_data.len, charset, charset_len, start);
+    }
+    inline size_t find_last_not_of(const chartype* charset) const { return find_last_not_of(charset, string_len(charset)); }
+    template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
+    inline size_t find_last_not_of(const simple_string<datatype2, chartype, num2, dyn2>& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_not_of(other.internal_data.buf, other.internal_data.len, start);
+    }
+    inline size_t find_last_not_of(const viewtype& other, size_t start = INVALID_SIZE_T) const
+    {
+        return find_last_not_of(other.c_str(), other.length(), start);
+    }
 
     // constructors
     simple_string() {}
     simple_string(const chartype* str) { copy(str); }
     simple_string(const chartype* str, size_t str_len) { copy(str, str_len); }
+    simple_string(const viewtype& other) { copy(other.data(), other.length()); }
     simple_string(const selftype& other) { copy(other); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     simple_string(const simple_string<datatype2, chartype, num2, dyn2>& other) { copy(other); }
-    simple_string(selftype&& other) { move(other); }
+    simple_string(selftype&& other) { move(std::move(other)); }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     simple_string(simple_string<datatype2, chartype, num2, dyn2>&& other) { move(std::move(other)); }
 
     // copy c string assignment
     inline selftype& operator=(const chartype* str) { copy(str); return *this; }
+    // copy view assignment
+    inline selftype& operator=(const viewtype& other) { copy(other.data(), other.length()); return *this; }
     // copy assignment self
     inline selftype& operator=(const selftype& other) { copy(other); return *this; }
     // copy assignment general
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline selftype& operator=(const simple_string<datatype2, chartype, num2, dyn2>& other) { copy(other); return *this; }
     // move assignment self
-    inline selftype& operator=(selftype&& other) { move(std::move(other)); return *this; }
+    inline selftype& operator=(selftype&& other) noexcept { move(std::move(other)); return *this; }
     // move assignment general
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline selftype& operator=(simple_string<datatype2, chartype, num2, dyn2>&& other) { move(std::move(other)); return *this; }
@@ -204,31 +327,32 @@ public:
     inline selftype& operator+=(chartype c) { append(c); return *this; }
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline selftype& operator+=(const simple_string<datatype2, chartype, num2, dyn2>& other) { append(other); return *this; }
+    inline selftype& operator+=(const viewtype& other) { append(other.data(), other.length()); return *this; }
 
     // equals c string
-    inline bool operator==(const chartype* str) const { return string_ncmp(internal_data.buf, str, internal_data.capacity) == 0; }
+    inline bool operator==(const chartype* str) const { return equals(str); }
+    // equals view
+    inline bool operator==(const viewtype& other) const { return equals(other.data(), other.length()); }
     // equals other simple_string
     template <template <typename U2, size_t N2> typename datatype2, size_t num2, bool dyn2>
     inline bool operator==(const simple_string<datatype2, chartype, num2, dyn2>& other) const
     {
-        return internal_data.len == other.internal_data.len && string_ncmp(internal_data.buf, other.internal_data.buf, internal_data.len + 1) == 0;
+        return equals(other.internal_data.buf, other.internal_data.len);
     }
 
     inline chartype operator[](size_t idx) const
     {
-#ifdef _DEBUG
-        assertIndex(idx, internal_data.len);
-#endif
+        index_assert(idx, internal_data.len);
         return internal_data.buf[idx];
     }
 
     inline chartype& operator[](size_t idx)
     {
-#ifdef _DEBUG
-        assertIndex(idx, internal_data.len);
-#endif
+        index_assert(idx, internal_data.len);
         return internal_data.buf[idx];
     }
+
+    inline viewtype view() const { return viewtype(internal_data.buf, internal_data.len); }
 };
 
 }

@@ -30,6 +30,9 @@
     <ProjectReference Include="..\Monument\Monument.vcxproj">
       <Project>{f769839c-583c-4bd8-99f4-4a19382e2ddd}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\OracleBone\OracleBone.vcxproj">
+      <Project>{e71233c6-c1cf-44e7-b5d3-571a5e5aab66}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Petra\Petra.vcxproj">
       <Project>{15ad7afd-0ddb-4b7c-823f-3b54cf4d41af}</Project>
     </ProjectReference>

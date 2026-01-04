@@ -30,9 +30,24 @@
     <ClInclude Include="basicdefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="basichash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basicfuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basicenums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Monument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basichash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="basicassert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

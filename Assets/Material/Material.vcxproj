@@ -163,6 +163,11 @@
   <ItemGroup>
     <ClCompile Include="TexturesInternal.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\GreatBath\GreatBath.vcxproj">
+      <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
