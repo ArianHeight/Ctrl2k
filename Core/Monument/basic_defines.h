@@ -16,5 +16,8 @@ constexpr size_t MASK_2_BIT = (1 << 2) - 1;
 constexpr size_t MASK_3_BIT = (1 << 3) - 1;
 constexpr size_t MASK_4_BIT = (1 << 4) - 1;
 constexpr size_t MASK_5_BIT = (1 << 5) - 1;
+constexpr size_t MASK_6_BIT = (1 << 6) - 1;
+constexpr size_t MASK_7_BIT = (1 << 7) - 1;
+constexpr size_t MASK_8_BIT = (1 << 8) - 1;
 
 constexpr size_t INVALID_SIZE_T = SIZE_MAX;

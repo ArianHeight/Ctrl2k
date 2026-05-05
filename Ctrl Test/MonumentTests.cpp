@@ -151,9 +151,9 @@ ENUM_ENTRY(GREEN)
     f >>= 2;
     assert(f == TestFlag::F2);
     f |= TestFlag::F4;
-    assert(FlagAnySet(f, 3));
-    assert(FlagAllSet(f, TestFlag::F4 | 2));
-    assert(FlagAllSet(~f, TestFlag::F1 | TestFlag::F3));
+    assert(flag_any_set(f, 3));
+    assert(flag_all_set(f, TestFlag::F4 | 2));
+    assert(flag_all_set(~f, TestFlag::F1 | TestFlag::F3));
     f ^= TestFlag::F4;
     assert(f == TestFlag::F2);
     f &= TestFlag::F1 | TestFlag::F2;

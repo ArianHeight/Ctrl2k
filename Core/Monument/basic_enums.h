@@ -1,5 +1,5 @@
 #pragma once
-#include "basictypes.h"
+#include "basic_types.h"
 
 #define ENUM_CLASS_GENERIC_DUAL_ARG_OP_GEN(name, op) \
 inline name operator##op(const name& val1, const name& val2)\
@@ -121,13 +121,13 @@ ENUM_MAP_GEN(Colours, uint16_t, ENUM_COLOURS);
 #define ENUM_MAP_INST_STRING(name, inst) name##StrMap[ENUM_CLASS_INST_UNDERLYING(name, inst)]
 
 template<typename T, typename V>
-inline bool FlagAnySet(const T& flag, const V& val)
+inline bool flag_any_set(const T& flag, const V& val)
 {
     return (flag & val) != 0;
 }
 
 template<typename T, typename V>
-inline bool FlagAllSet(const T& flag, const V& val)
+inline bool flag_all_set(const T& flag, const V& val)
 {
     return (flag & val) == val;
 }

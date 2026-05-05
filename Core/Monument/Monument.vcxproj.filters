@@ -15,28 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basicassert.h">
+    <ClInclude Include="basic_assert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Monument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basictypes.h">
+    <ClInclude Include="basic_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basicmemory.h">
+    <ClInclude Include="basic_memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basicdefines.h">
+    <ClInclude Include="basic_defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basichash.h">
+    <ClInclude Include="basic_hash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basicfuncs.h">
+    <ClInclude Include="basic_funcs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basicenums.h">
+    <ClInclude Include="basic_enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
