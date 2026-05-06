@@ -47,9 +47,9 @@ public:
     T& emplace_back()
     {
         assert(m_size < _capacity);
-        T& retVal = m_data[m_size];
+        T& retval = m_data[m_size];
         m_size++;
-        return retVal;
+        return retval;
     }
 
     //TODO maybe use memcpy??
