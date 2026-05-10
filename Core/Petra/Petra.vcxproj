@@ -172,12 +172,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="basicmath.h" />
-    <ClInclude Include="lerpmath.h" />
-    <ClInclude Include="matmath.h" />
+    <ClInclude Include="basic_math.h" />
+    <ClInclude Include="lerp.h" />
+    <ClInclude Include="mat.h" />
     <ClInclude Include="rqm.h" />
-    <ClInclude Include="quatmath.h" />
-    <ClInclude Include="vecmath.h" />
+    <ClInclude Include="quat.h" />
+    <ClInclude Include="vec.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="rqm.cpp">
@@ -190,7 +190,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">rqm.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rqm.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Petra.cpp">
+    <ClCompile Include="petra.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">rqm.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">rqm.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">rqm.h</PrecompiledHeaderFile>

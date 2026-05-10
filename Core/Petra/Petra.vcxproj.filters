@@ -18,24 +18,24 @@
     <ClInclude Include="rqm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vecmath.h">
+    <ClInclude Include="vec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="basicmath.h">
+    <ClInclude Include="basic_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lerpmath.h">
+    <ClInclude Include="lerp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="quatmath.h">
+    <ClInclude Include="quat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="matmath.h">
+    <ClInclude Include="mat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Petra.cpp">
+    <ClCompile Include="petra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rqm.cpp">

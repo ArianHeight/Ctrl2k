@@ -9,7 +9,6 @@
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
 #include "Core/OracleBone/obn.h"
-#include "Core/AncestralHall/ahl.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -483,16 +482,6 @@ int main(int argc, char *argv[])
 	LOG_MSG_PUSH("Swap in {} for testing.", someString);
 	obn::view_string someView = "Hello View!";
 	LOG_MSG_PUSH("Swap in {} for view", someView);
-	ahl::bit_vector<7> bitset;
-	bitset.set_all_false();
-	bitset.push_back(true);
-	bitset.push_back(true);
-	bitset.push_back(false);
-	bitset.push_back(true);
-	bitset.push_back(false);
-	bitset.push_back(false);
-	bitset.push_back(true);
-	LOG_MSG_PUSH("bitset vals [{}, {}, {}, {}, {}, {}, {}]", bitset[0], bitset[1], bitset[2], bitset[3], bitset[4], bitset[5], bitset[6]);
 	LOG_FATAL_PUSH("Ded");
 	LOG_FLUSH();
 
