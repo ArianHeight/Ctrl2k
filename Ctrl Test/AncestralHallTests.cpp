@@ -116,6 +116,9 @@ void runBitVectorTests()
     bitset4.set_bit(24, true);
     assert((bitset3 ^ bitset2) == bitset4);
 
+    bitset4 = bitset4;
+    assert(bitset4 == (bitset3 ^ bitset2));
+
     ahl::bit_vector<4> bitset5;
     bitset5 = bitset3;
     bitset5 |= bitset2;

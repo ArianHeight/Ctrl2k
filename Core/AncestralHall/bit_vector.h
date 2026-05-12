@@ -11,10 +11,10 @@ Shared code for all bit vectors
 
 */
 
-class a_bit_vector
+class abstract_bit_vector
 {
 protected:
-    a_bit_vector() = default;
+    abstract_bit_vector() = default;
 
     // defining all constexprs in terms of the datatype being used to prevent resizing when used with operators.
     using datatype = uint32_t;
@@ -38,7 +38,7 @@ A bit vector/array allocated on the stack with a fixed max capacity.
 */
 
 template<size_t _data_capacity>
-class bit_vector : public a_bit_vector
+class bit_vector : public abstract_bit_vector
 {
 private:
     using selftype = bit_vector<_data_capacity>;
@@ -150,7 +150,8 @@ public:
     template<size_t _other_data_capacity>
     selftype& operator=(const bit_vector<_other_data_capacity>& other)
     {
-        m_size = (other.size() > _capacity) ? _capacity : other.size();
+        assert(other.size() <= _capacity);
+        m_size = other.size();
         mem_copy(m_data, other.data(), sizeof(datatype) * (other.data_capacity() > _data_capacity ? _data_capacity : other.data_capacity()));
         return *this;
     }
@@ -177,6 +178,8 @@ public:
         return retval;
     }
 
+    // TODO how do we want to deal with doing these operations on different sized bit vectors?
+    // Currently it just only applies the operation to the min set of the two.
     template<size_t _other_data_capacity>
     selftype operator&(const bit_vector<_other_data_capacity>& other) const
     {
@@ -299,8 +302,8 @@ public:
 
     inline bool at(size_t i) const { return get_val(i); }
     inline bool operator[](size_t i) const { return get_val(i); }
-    inline const datatype* data() const { return m_data; } // underlying data here is a byte
-    inline datatype* data() { return m_data; } // underlying data here is a byte
+    inline const datatype* data() const { return m_data; } // underlying data here is a uint
+    inline datatype* data() { return m_data; } // underlying data here is a uint
     inline bool front() const { return get_val(0); }
     inline bool back() const { return get_val(m_size - 1); }
 };

@@ -99,6 +99,23 @@ void runDataBucketTests()
     assert(test.data() == nullptr);
 }
 
+void runTypeTests()
+{
+    std::cout << subtestPretext << "Testing types\n";
+    compile_assert(TYPE_CHAR<char> && TYPE_CHAR<wchar_t> && TYPE_CHAR<char8_t> && TYPE_CHAR<char16_t> && TYPE_CHAR<char32_t> &&
+        !TYPE_CHAR<int8_t> && !TYPE_CHAR<uint8_t>);
+    compile_assert(TYPE_INTEGER<int8_t> && TYPE_INTEGER<int16_t> && TYPE_INTEGER<int32_t> && TYPE_INTEGER<int64_t> &&
+        TYPE_INTEGER<uint8_t> && TYPE_INTEGER<uint16_t> && TYPE_INTEGER<uint32_t> && TYPE_INTEGER<uint64_t> &&
+        !TYPE_INTEGER<float> && !TYPE_INTEGER<double> && !TYPE_INTEGER<char>);
+    compile_assert(TYPE_UNSIGNED_INTEGER<uint8_t> && TYPE_UNSIGNED_INTEGER<uint16_t> && TYPE_UNSIGNED_INTEGER<uint32_t> &&
+        TYPE_UNSIGNED_INTEGER<uint64_t> &&
+        !TYPE_UNSIGNED_INTEGER<float> && !TYPE_UNSIGNED_INTEGER<double> && !TYPE_UNSIGNED_INTEGER<char> &&
+        !TYPE_UNSIGNED_INTEGER<int>);
+    compile_assert(TYPE_FLOAT<float> && TYPE_FLOAT<double> && TYPE_FLOAT<long double> &&
+        !TYPE_FLOAT<int> && !TYPE_FLOAT<char>);
+    compile_assert(TYPE_NUMBER<int> && TYPE_NUMBER<float> && !TYPE_NUMBER<char>);
+}
+
 enum class TestFlag : int
 {
     F1 = 1 << 0,
@@ -167,5 +184,6 @@ void runBasicTests()
     runCheckSumTests();
     runSearchTests();
     runDataBucketTests();
+    runTypeTests();
     runEnumClassMacroTests();
 }
