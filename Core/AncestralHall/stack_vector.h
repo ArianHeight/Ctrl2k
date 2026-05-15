@@ -11,7 +11,7 @@ A vector allocated on the stack with a fixed max capacity.
 
 */
 
-template<typename T, size_t _capacity>
+template <typename T, size_t _capacity>
 class stack_vector
 {
 private:

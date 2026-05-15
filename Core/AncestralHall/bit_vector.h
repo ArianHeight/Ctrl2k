@@ -37,7 +37,7 @@ A bit vector/array allocated on the stack with a fixed max capacity.
 
 */
 
-template<size_t _data_capacity>
+template <size_t _data_capacity>
 class bit_vector : public abstract_bit_vector
 {
 private:
