@@ -11,7 +11,7 @@ A vector allocated on the stack with a fixed max capacity.
 
 */
 
-template<typename T, size_t _capacity>
+template <typename T, size_t _capacity>
 class stack_vector
 {
 private:
@@ -21,8 +21,6 @@ private:
     T m_data[_capacity];
     
 public:
-    stack_vector() : m_size(0) {}
-    
     inline size_t size() const { return m_size; }
     inline size_t capacity() const { return _capacity; }
     inline bool empty() const { return m_size == 0; }
@@ -47,9 +45,9 @@ public:
     T& emplace_back()
     {
         assert(m_size < _capacity);
-        T& retVal = m_data[m_size];
+        T& retval = m_data[m_size];
         m_size++;
-        return retVal;
+        return retval;
     }
 
     //TODO maybe use memcpy??
@@ -65,7 +63,24 @@ public:
         }
         return *this;
     }
-    //TODO make this compatible with all other stack_vector types
+
+    template<size_t _other_capacity>
+    selftype& operator=(const stack_vector<T, _other_capacity>& other)
+    {
+        assert(other.size() <= _capacity);
+        for(size_t i = 0; i < other.m_size; i++)
+        {
+            m_data[i] = other.m_data[i];
+        }
+        m_size = other.m_size;
+        return *this;
+    }
+
+    // cstrs
+    stack_vector() : m_size(0) {}
+    stack_vector(const selftype& other) : m_size(0) { *this = other; }
+    template<size_t _other_capacity>
+    stack_vector(const stack_vector<T, _other_capacity>& other) : m_size(0) { *this = other; }
 
     inline const T& at(size_t i) const { return m_data[i]; }
     inline T& at(size_t i) { return m_data[i]; }

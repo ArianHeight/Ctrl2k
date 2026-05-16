@@ -79,3 +79,43 @@ public:
     inline const T& operator[](const size_t i) const { return m_data[i]; }
     inline T& operator[](const size_t i) { return m_data[i]; }
 };
+
+
+template <typename T> constexpr bool TYPE_CHAR = false;
+template <typename T> constexpr bool TYPE_INTEGER = false;
+template <typename T> constexpr bool TYPE_FLOAT = false;
+template <typename T> constexpr bool TYPE_UNSIGNED = false;
+
+// DO NOT USE outside of this file pls
+#define TYPE_TRAIT_DEF(name, character, integer, floating, is_unsigned) \
+template <> constexpr bool TYPE_CHAR<name> = character;\
+template <> constexpr bool TYPE_INTEGER<name> = integer;\
+template <> constexpr bool TYPE_FLOAT<name> = floating;\
+template <> constexpr bool TYPE_UNSIGNED<name> = is_unsigned;\
+
+
+TYPE_TRAIT_DEF(signed char,         false,  true,   false,  false);
+TYPE_TRAIT_DEF(short,               false,  true,   false,  false);
+TYPE_TRAIT_DEF(int,                 false,  true,   false,  false);
+TYPE_TRAIT_DEF(long,                false,  true,   false,  false);
+TYPE_TRAIT_DEF(long long,           false,  true,   false,  false);
+
+TYPE_TRAIT_DEF(unsigned char,       false,  true,   false,  true);
+TYPE_TRAIT_DEF(unsigned short,      false,  true,   false,  true);
+TYPE_TRAIT_DEF(unsigned int,        false,  true,   false,  true);
+TYPE_TRAIT_DEF(unsigned long,       false,  true,   false,  true);
+TYPE_TRAIT_DEF(unsigned long long,  false,  true,   false,  true);
+
+TYPE_TRAIT_DEF(float,               false,  false,  true,   false);
+TYPE_TRAIT_DEF(double,              false,  false,  true,   false);
+TYPE_TRAIT_DEF(long double,         false,  false,  true,   false);
+
+TYPE_TRAIT_DEF(char,                true,   false,  false,  false);
+TYPE_TRAIT_DEF(wchar_t,             true,   false,  false,  false);
+TYPE_TRAIT_DEF(char8_t,             true,   false,  false,  false);
+TYPE_TRAIT_DEF(char16_t,            true,   false,  false,  false);
+TYPE_TRAIT_DEF(char32_t,            true,   false,  false,  false);
+
+template <typename T> constexpr bool TYPE_SIGNED_INTEGER = TYPE_INTEGER<T> && !TYPE_UNSIGNED<T>;
+template <typename T> constexpr bool TYPE_UNSIGNED_INTEGER = TYPE_INTEGER<T> && TYPE_UNSIGNED<T>;
+template <typename T> constexpr bool TYPE_NUMBER = TYPE_INTEGER<T> || TYPE_FLOAT<T>;

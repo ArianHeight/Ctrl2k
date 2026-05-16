@@ -1,6 +1,6 @@
 #pragma once
-#include "vecmath.h"
-#include <vector>
+#include "vec.h"
+#include <vector> // TODO maybe consider removing this?
 
 /*
 

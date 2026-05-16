@@ -9,20 +9,21 @@ namespace obn
 This is essentially std::string_view, a "borrowed" string that does not own the string data it is pointed to.
 
 */
-template <typename chartype>
+template <typename T>
+requires (TYPE_CHAR<T>)
 class borrowed_string : public unmoveable
 {
 private:
-    using selftype = borrowed_string<chartype>;
+    using selftype = borrowed_string<T>;
 
-    inline static chartype zero_val = 0; // please don't touch this
+    inline static T zero_val = 0; // please don't touch this
 
-    const chartype* m_data;
+    const T* m_data;
     size_t m_len;
 
 public:
-    inline const chartype* c_str() const { return m_data; }
-    inline const chartype* data() const { return m_data; }
+    inline const T* c_str() const { return m_data; }
+    inline const T* data() const { return m_data; }
     inline size_t length() const { return m_len; }
     inline size_t size() const { return m_len; }
 
@@ -34,14 +35,14 @@ public:
         m_len = 0;
     }
 
-    inline void set(const chartype* str, size_t str_len)
+    inline void set(const T* str, size_t str_len)
     {
         ptr_assert(str);
         m_data = str;
         m_len = str_len;
     }
 
-    inline void set(const chartype* str)
+    inline void set(const T* str)
     {
         ptr_assert(str);
         m_data = str;
@@ -54,11 +55,11 @@ public:
         m_len = other.m_len;
     }
 
-    inline bool equals(const chartype* str, size_t len) const
+    inline bool equals(const T* str, size_t len) const
     {
         return m_len == len && (m_data == str || string_neq(m_data, str, m_len));
     }
-    inline bool equals(const chartype* str) const
+    inline bool equals(const T* str) const
     {
         ptr_assert(str);
         return equals(str, string_nlen(str, m_len + 1));
@@ -76,81 +77,81 @@ public:
         return selftype(m_data, count);
     }
 
-    inline bool starts_with(chartype c) const { return m_len > 0 && m_data[0] == c; }
-    inline bool starts_with(const chartype* str, size_t str_len) const
+    inline bool starts_with(T c) const { return m_len > 0 && m_data[0] == c; }
+    inline bool starts_with(const T* str, size_t str_len) const
     {
         ptr_assert(str);
         return str_len <= m_len && string_neq(m_data, str, str_len);
     }
-    inline bool starts_with(const chartype* str) const { return starts_with(str, string_len(str)); }
+    inline bool starts_with(const T* str) const { return starts_with(str, string_len(str)); }
     inline bool starts_with(const selftype& other) const { return starts_with(other.m_data, other.m_len); }
 
-    inline bool ends_with(chartype c) const { return m_len > 0 && m_data[m_len - 1] == c; }
-    inline bool ends_with(const chartype* str, size_t str_len) const
+    inline bool ends_with(T c) const { return m_len > 0 && m_data[m_len - 1] == c; }
+    inline bool ends_with(const T* str, size_t str_len) const
     {
         ptr_assert(str);
         return str_len <= m_len && string_neq(&m_data[m_len - str_len], str, str_len);
     }
-    inline bool ends_with(const chartype* str) const { return ends_with(str, string_len(str)); }
+    inline bool ends_with(const T* str) const { return ends_with(str, string_len(str)); }
     inline bool ends_with(const selftype& other) const { return ends_with(other.m_data, other.m_len); }
 
-    inline size_t find(const chartype* str, size_t str_len, size_t start = 0) const
+    inline size_t find(const T* str, size_t str_len, size_t start = 0) const
     {
         ptr_assert(str);
         return string_nfind(m_data, m_len, str, str_len, start);
     }
-    inline size_t find(const chartype* str) const { return find(str, string_len(str)); }
+    inline size_t find(const T* str) const { return find(str, string_len(str)); }
     inline size_t find(const selftype& other, size_t start = 0) const { return find(other.m_data, other.m_len, start); }
-    inline size_t find(const chartype chr, size_t start = 0) const
+    inline size_t find(const T chr, size_t start = 0) const
     {
         return string_nfind(m_data, m_len, chr, start);
     }
 
-    inline size_t rfind(const chartype* str, size_t str_len, size_t start = INVALID_SIZE_T) const
+    inline size_t rfind(const T* str, size_t str_len, size_t start = INVALID_SIZE_T) const
     {
         ptr_assert(str);
         return string_nrfind(m_data, m_len, str, str_len, start);
     }
-    inline size_t rfind(const chartype* str) const { return rfind(str, string_len(str)); }
+    inline size_t rfind(const T* str) const { return rfind(str, string_len(str)); }
     inline size_t rfind(const selftype& other, size_t start = INVALID_SIZE_T) const { return rfind(other.m_data, other.m_len, start); }
-    inline size_t rfind(const chartype chr, size_t start = INVALID_SIZE_T) const
+    inline size_t rfind(const T chr, size_t start = INVALID_SIZE_T) const
     {
         return string_nrfind(m_data, m_len, chr, start);
     }
 
-    inline size_t find_first_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    inline size_t find_first_of(const T* charset, size_t charset_len, size_t start = 0) const
     {
         ptr_assert(charset);
         return string_nfind_first_of(m_data, m_len, charset, charset_len, start);
     }
-    inline size_t find_first_of(const chartype* charset) const { return find_first_of(charset, string_len(charset)); }
+    inline size_t find_first_of(const T* charset) const { return find_first_of(charset, string_len(charset)); }
     inline size_t find_first_of(const selftype& other, size_t start = 0) const { return find_first_of(other.m_data, other.m_len, start); }
 
-    inline size_t find_first_not_of(const chartype* charset, size_t charset_len, size_t start = 0) const
+    inline size_t find_first_not_of(const T* charset, size_t charset_len, size_t start = 0) const
     {
         ptr_assert(charset);
         return string_nfind_first_not_of(m_data, m_len, charset, charset_len, start);
     }
-    inline size_t find_first_not_of(const chartype* charset) const { return find_first_not_of(charset, string_len(charset)); }
+    inline size_t find_first_not_of(const T* charset) const { return find_first_not_of(charset, string_len(charset)); }
     inline size_t find_first_not_of(const selftype& other, size_t start = 0) const { return find_first_not_of(other.m_data, other.m_len, start); }
 
-    inline size_t find_last_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    inline size_t find_last_of(const T* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
     {
         ptr_assert(charset);
         return string_nfind_last_of(m_data, m_len, charset, charset_len, start);
     }
-    inline size_t find_last_of(const chartype* charset) const { return find_last_of(charset, string_len(charset)); }
+    inline size_t find_last_of(const T* charset) const { return find_last_of(charset, string_len(charset)); }
     inline size_t find_last_of(const selftype& other, size_t start = INVALID_SIZE_T) const
     {
         return find_last_of(other.m_data, other.m_len, start);
     }
 
-    inline size_t find_last_not_of(const chartype* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
+    inline size_t find_last_not_of(const T* charset, size_t charset_len, size_t start = INVALID_SIZE_T) const
     {
         ptr_assert(charset);
         return string_nfind_last_not_of(m_data, m_len, charset, charset_len, start);
     }
-    inline size_t find_last_not_of(const chartype* charset) const { return find_last_not_of(charset, string_len(charset)); }
+    inline size_t find_last_not_of(const T* charset) const { return find_last_not_of(charset, string_len(charset)); }
     inline size_t find_last_not_of(const selftype& other, size_t start = INVALID_SIZE_T) const
     {
         return find_last_not_of(other.m_data, other.m_len, start);
@@ -158,21 +159,21 @@ public:
     
     // constructors
     borrowed_string() : m_data(&zero_val), m_len(0) {}
-    borrowed_string(const chartype* str) { set(str); } // this seems dangerous
-    borrowed_string(const chartype* str, size_t str_len) { set(str, str_len); }
+    borrowed_string(const T* str) { set(str); } // this seems dangerous
+    borrowed_string(const T* str, size_t str_len) { set(str, str_len); }
     borrowed_string(const selftype& other) : m_data(other.m_data), m_len(other.m_len) {}
 
     // copy c string assignment
-    inline selftype& operator=(const chartype* str) { set(str); return *this; }
+    inline selftype& operator=(const T* str) { set(str); return *this; }
     // copy assignment self
     inline selftype& operator=(const selftype& other) { set(other); return *this; }
 
     // equals c string
-    inline bool operator==(const chartype* str) const { return equals(str); }
+    inline bool operator==(const T* str) const { return equals(str); }
     // equals other borrowed_string
     inline bool operator==(const selftype& other) const { return equals(other.m_data, other.m_len); }
 
-    inline chartype operator[](size_t idx) const
+    inline T operator[](size_t idx) const
     {
         index_assert(idx, m_len);
         return m_data[idx];

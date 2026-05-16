@@ -169,13 +169,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="basicassert.h" />
-    <ClInclude Include="basicdefines.h" />
-    <ClInclude Include="basicenums.h" />
-    <ClInclude Include="basicfuncs.h" />
-    <ClInclude Include="basichash.h" />
-    <ClInclude Include="basicmemory.h" />
-    <ClInclude Include="basictypes.h" />
+    <ClInclude Include="basic_assert.h" />
+    <ClInclude Include="basic_defines.h" />
+    <ClInclude Include="basic_enums.h" />
+    <ClInclude Include="basic_funcs.h" />
+    <ClInclude Include="basic_hash.h" />
+    <ClInclude Include="basic_memory.h" />
+    <ClInclude Include="basic_types.h" />
     <ClInclude Include="Monument.h" />
   </ItemGroup>
   <ItemGroup>

@@ -14,7 +14,7 @@ A dynamically sized vector with guarunteed pointer/address consistency
 constexpr size_t CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS = 5ULL;
 constexpr size_t CONSISTENT_VECTOR_INITIAL_CAPACITY = 1ULL << CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
 
-template<typename T>
+template <typename T>
 class consistent_vector : public unmoveable
 {
 private:

@@ -14,28 +14,29 @@ Otherwise, this string always dynamically allocates memory from the heap to stor
 This has ownership over its own data.
 
 */
-template <typename chartype, size_t initial_size>
+template <typename T, size_t _initial_size>
+requires (TYPE_CHAR<T>)
 struct heap_string_data
 {
     static constexpr size_t max_len = SIZE_MAX - 1;
-    inline static chartype zero_val = 0; // please do not touch this
+    inline static T zero_val = 0; // please do not touch this
 
     size_t capacity;
     size_t len;
     bool error;
-    chartype* buf;
+    T* buf;
 
-    inline bool owns_memory() { return buf && buf != &zero_val; }
+    inline bool owns_memory() const { return buf && buf != &zero_val; }
 
     // This is dangerous, as buf and len are left as invalid values
     // only designed to be called from simple_string and itself
     inline void delete_memory() { if(owns_memory()) delete[] buf; }
 
-    heap_string_data() : capacity(initial_size), len(0), error(false), buf(&zero_val)
+    heap_string_data() : capacity(_initial_size), len(0), error(false), buf(&zero_val)
     {
-        if constexpr(initial_size != 0)
+        if constexpr(_initial_size != 0)
         {
-            buf = new chartype[initial_size];
+            buf = new T[_initial_size];
             buf[0] = 0;
         }
     }
@@ -59,7 +60,7 @@ private:
         delete_memory();
         if(target_capacity > 1)
         {
-            buf = new chartype[target_capacity];
+            buf = new T[target_capacity];
             buf[0] = 0;
             capacity = target_capacity;
         }
@@ -77,7 +78,7 @@ public:
             return;
         if(target_capacity > 1)
         {
-            chartype* new_buf = new chartype[target_capacity];
+            T* new_buf = new T[target_capacity];
             error = string_ncopy(new_buf, buf, target_capacity) != 0;
             delete_memory();
             buf = new_buf;

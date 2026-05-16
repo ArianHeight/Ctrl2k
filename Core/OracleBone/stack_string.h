@@ -12,16 +12,16 @@ This is a form of compressed string where we use a total of 2^2, 2^3, ..., 2^7 c
 Allocated on the stack.
 
 */
-template <typename chartype, size_t exp>
-requires (exp < 8 && exp > 1)
+template <typename T, size_t _exp>
+requires (TYPE_CHAR<T> && _exp < 8 && _exp > 1)
 struct small_string_data
 {
-    static constexpr size_t capacity = (1 << exp) - 1;
+    static constexpr size_t capacity = (1 << _exp) - 1;
     static constexpr size_t max_len = capacity - 1;
 
     bool error : 1;
-    uint8_t len : exp;
-    chartype buf[capacity];
+    uint8_t len : _exp;
+    T buf[capacity];
 
     small_string_data() : error(false), len(0) { buf[0] = 0; }
 };
@@ -33,15 +33,15 @@ DO NOT USE DIRECTLY, use the related typedefs with a simple_string interface
 This is a standard fixed-size string allocated on the stack.
 
 */
-template <typename chartype, size_t buf_size>
+template <typename T, size_t _buf_size>
 struct stack_string_data
 {
-    static constexpr size_t capacity = buf_size;
+    static constexpr size_t capacity = _buf_size;
     static constexpr size_t max_len = capacity - 1;
 
     size_t len;
     bool error;
-    chartype buf[capacity];
+    T buf[capacity];
 
     stack_string_data() : len(0), error(false) { buf[0] = 0; }
 };
@@ -56,11 +56,11 @@ typedef simple_string<small_string_data, wchar_t, 3> wsmall_string8;
 typedef simple_string<small_string_data, wchar_t, 6> wsmall_string64;
 typedef simple_string<small_string_data, wchar_t, 7> wsmall_string128;
 
-template <typename chartype, size_t buf_size>
-using generic_stack_string = simple_string<stack_string_data, chartype, buf_size>;
-template <size_t buf_size>
-using stack_string = generic_stack_string<char, buf_size>;
-template <size_t buf_size>
-using wstack_string = generic_stack_string<wchar_t, buf_size>;
+template <typename T, size_t _buf_size>
+using generic_stack_string = simple_string<stack_string_data, T, _buf_size>;
+template <size_t _buf_size>
+using stack_string = generic_stack_string<char, _buf_size>;
+template <size_t _buf_size>
+using wstack_string = generic_stack_string<wchar_t, _buf_size>;
 
 }

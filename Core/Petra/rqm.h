@@ -6,8 +6,8 @@
 #pragma once
 
 // add headers that you want to pre-compile here
-#include "basicmath.h"
-#include "vecmath.h"
-#include "lerpmath.h"
-#include "quatmath.h"
-#include "matmath.h"
+#include "basic_math.h"
+#include "vec.h"
+#include "lerp.h"
+#include "quat.h"
+#include "mat.h"
