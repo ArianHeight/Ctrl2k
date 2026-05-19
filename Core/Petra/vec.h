@@ -21,6 +21,7 @@ namespace rqm
 
 
 template <typename T>
+requires (TYPE_NUMBER<T>)
 union vec2_base
 {
 	struct { T x; T y; };
@@ -84,6 +85,7 @@ template <typename T>
 inline vec2_base<T> operator/(const T& val, const vec2_base<T>& vec) { return { val / vec.x, val / vec.y }; }
 
 template <typename T>
+requires (TYPE_NUMBER<T>)
 union vec3_base
 {
 	struct { T x; T y; T z; };
@@ -152,6 +154,7 @@ inline vec3_base<T> operator/(const T& val, const vec3_base<T>& vec) { return { 
 
 
 template <typename T>
+requires (TYPE_NUMBER<T>)
 union vec4_base
 {
 	struct { T x; T y; T z; T w; };

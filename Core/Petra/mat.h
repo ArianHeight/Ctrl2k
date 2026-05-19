@@ -22,6 +22,7 @@ namespace rqm
 
 
 template <typename T>
+requires (TYPE_NUMBER<T>)
 union mat22_base
 {
     struct { vec2_base<T> x; vec2_base<T> y; };
@@ -206,6 +207,7 @@ std::vector<vec2_base<T>> mat22_mul(const mat22_base<T>& mat, const std::vector<
 
 
 template <typename T>
+requires (TYPE_NUMBER<T>)
 union mat33_base
 {
     struct { vec3_base<T> x; vec3_base<T> y; vec3_base<T> z; };
@@ -457,6 +459,7 @@ std::vector<vec2_base<T>> mat33_mul(const mat33_base<T>& mat, const std::vector<
 
 
 template <typename T>
+requires (TYPE_NUMBER<T>)
 union mat44_base
 {
     struct { vec4_base<T> x; vec4_base<T> y; vec4_base<T> z; vec4_base<T> w; };
