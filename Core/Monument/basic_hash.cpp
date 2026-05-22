@@ -119,7 +119,7 @@ static hash64_t simple_hash_string(const T* str, size_t len, hash64_t seed)
         uint64_t value = 0;
         for(size_t j = 0; j < CHARS_PER_HASH && i + j < len; j++)
         {
-            value += ((uint64_t)str[i + j]) << (BITS_PER_CHAR * j);
+            value |= ((uint64_t)str[i + j]) << (BITS_PER_CHAR * j);
         }
         seed.val += value * hash_primes[hash_index % NUM_HASH_PRIMES]; // could use bitshifting rather than modulus
         ++hash_index;
