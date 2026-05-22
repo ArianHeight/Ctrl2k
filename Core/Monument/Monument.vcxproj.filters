@@ -44,10 +44,10 @@
     <ClCompile Include="Monument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="basichash.cpp">
+    <ClCompile Include="basic_hash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="basicassert.cpp">
+    <ClCompile Include="basic_assert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

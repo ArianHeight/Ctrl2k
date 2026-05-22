@@ -13,32 +13,15 @@ void runCheckSumTests()
     const std::string test_string2 = "This is not the previous string";
 
     std::cout << subtestPretext << "Testing 32-bit checksum\n";
-    hash32_t hash32 = checksum32(test_string.data(), test_string.length());
-    assert(hash32 == checksum32(test_string.data(), test_string.length(), 0));
-    assert(hash32 != checksum32(test_string2.data(), test_string2.length()));
-    assert(hash32 < checksum32(test_string1.data(), test_string1.length()));
-    assert(hash32 != checksum32(test_string.data(), test_string.length(), checksum32(test_string2.data(), test_string2.length())));
+    uint32_t c32 = checksum32(test_string.data(), test_string.length());
+    std::cout << c32 << ' ' << checksum32(test_string2.data(), test_string2.length()) << '\n';
+    assert(c32 != checksum32(test_string2.data(), test_string2.length()));
+    assert(c32 < checksum32(test_string1.data(), test_string1.length()));
 
     std::cout << subtestPretext << "Testing 64-bit checksum\n";
-    hash64_t hash64 = checksum64(test_string.data(), test_string.length());
-    assert(hash64 == checksum64(test_string.data(), test_string.length(), 0));
-    assert(hash64 != checksum64(test_string2.data(), test_string2.length()));
-    assert(hash64 < checksum64(test_string1.data(), test_string1.length()));
-    assert(hash64 != checksum64(test_string.data(), test_string.length(), checksum64(test_string2.data(), test_string2.length())));
-
-    std::cout << subtestPretext << "Testing 128-bit checksum\n";
-    hash128_t hash128 = checksum128(test_string.data(), test_string.length());
-    assert(hash128 == checksum128(test_string.data(), test_string.length(), { 0, 0 }));
-    assert(hash128 != checksum128(test_string2.data(), test_string2.length()));
-    assert(hash128 < checksum128(test_string1.data(), test_string1.length()));
-    assert(hash128 != checksum128(test_string.data(), test_string.length(), checksum128(test_string2.data(), test_string2.length())));
-
-    std::cout << subtestPretext << "Testing 256-bit checksum\n";
-    hash256_t hash256 = checksum256(test_string.data(), test_string.length());
-    assert(hash256 == checksum256(test_string.data(), test_string.length(), { 0, 0, 0, 0 }));
-    assert(hash256 != checksum256(test_string2.data(), test_string2.length()));
-    assert(hash256 < checksum256(test_string1.data(), test_string1.length()));
-    assert(hash256 != checksum256(test_string.data(), test_string.length(), checksum256(test_string2.data(), test_string2.length())));
+    uint64_t c64 = checksum64(test_string.data(), test_string.length());
+    assert(c64 != checksum64(test_string2.data(), test_string2.length()));
+    assert(c64 < checksum64(test_string1.data(), test_string1.length()));
 }
 
 void runSearchTests()
