@@ -28,6 +28,9 @@
     <ProjectReference Include="..\..\Core\GreatBath\GreatBath.vcxproj">
       <Project>{55bb3977-e4aa-4c08-b457-b1214977396c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\OracleBone\OracleBone.vcxproj">
+      <Project>{e71233c6-c1cf-44e7-b5d3-571a5e5aab66}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

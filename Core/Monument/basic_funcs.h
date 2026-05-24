@@ -87,3 +87,28 @@ inline size_t linear_search(const T& arr, const V& val)
 {
     return linear_search(arr, arr.size(), val);
 }
+
+template<typename T>
+void selection_sort(T* arr, size_t len)
+{
+    if(len == 0 || !arr)
+        return;
+
+    for(size_t i = 0; i < len; i++)
+    {
+        size_t smallest_index = i;
+        for(size_t j = i; j < len; j++)
+        {
+            if(arr[j] < arr[smallest_index])
+            {
+                smallest_index = j;
+            }
+        }
+
+        T temp = arr[i];
+        arr[i] = arr[smallest_index];
+        arr[smallest_index] = temp;
+    }
+}
+
+
