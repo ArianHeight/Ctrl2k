@@ -30,7 +30,7 @@ public:
 
     void push_back(const T& elem)
     {
-        assert(m_size < capacity);
+        assert(m_size < _capacity);
         m_data[m_size] = elem;
         m_size++;
     }

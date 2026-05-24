@@ -1,4 +1,5 @@
 #include <format>
+#include <vector>
 
 #include "Core/GreatBath/Logger.h"
 #include "Profiler.h"
@@ -39,7 +40,7 @@ static inline long long GetTimeElapsed(const std::chrono::steady_clock::time_poi
 }
 
 ProfilerScoped::ProfilerScoped(TimePrecision highPrecision, c_string file, const gbt::LineNumber line, c_string funcname, obn::view_string msg)
-	: m_precision(highPrecision), file(file), m_line(line), funcname(funcname), m_msg(msg),
+	: m_precision(highPrecision), m_file(file), m_line(line), m_funcname(funcname), m_msg(msg),
 	m_start(std::chrono::steady_clock::now())
 {}
 
@@ -48,7 +49,8 @@ ProfilerScoped::~ProfilerScoped()
 	const long long timeElapsed = GetTimeElapsed(m_start, std::chrono::steady_clock::now(), m_precision);
 
 	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
-	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, file, m_line, std::chrono::system_clock::now(), std::format("{}() took {}{}{}{}", funcname, timeElapsed, timeSuffixes[(size_t)m_precision], msgPrefix[m_msg.empty() ? 1 : 0], m_msg));
+	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::chrono::system_clock::now(),
+		std::format("{}() took {}{}{}{}", m_funcname, timeElapsed, timeSuffixes[(size_t)m_precision], msgPrefix[m_msg.empty() ? 1 : 0], m_msg));
 }
 
 void Profiler::TimerEnd(c_string file, gbt::LineNumber line)
@@ -56,5 +58,92 @@ void Profiler::TimerEnd(c_string file, gbt::LineNumber line)
 	const long long timeElapsed = GetTimeElapsed(m_start, std::chrono::steady_clock::now(), m_precision);
 
 	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
-	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, file, line, std::chrono::system_clock::now(), std::format("Section {} took {}{}", m_section_name, timeElapsed, timeSuffixes[(size_t)m_precision]));
+	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, file, line, std::chrono::system_clock::now(),
+		std::format("Section {} took {}{}", m_section_name, timeElapsed, timeSuffixes[(size_t)m_precision]));
+}
+
+BenchMarker::ScopedTimer::ScopedTimer(BenchMarker& parent) : m_parent(parent), m_start(std::chrono::steady_clock::now())
+{
+}
+
+BenchMarker::ScopedTimer::~ScopedTimer()
+{
+	m_parent.AddTime(GetTimeElapsed(m_start, std::chrono::steady_clock::now(), m_parent.m_precision));
+}
+
+void BenchMarker::AddTime(const long long time)
+{
+	if(m_runTimes.size() == m_runTimes.capacity())
+	{
+		m_overflowed = true;
+		m_runTimes[m_roundRobinIndex] = time;
+		++m_roundRobinIndex;
+	}
+	else
+	{
+		m_runTimes.push_back(time);
+	}
+}
+
+BenchMarker::ScopedTimer BenchMarker::GenerateTimer()
+{
+	return BenchMarker::ScopedTimer(*this);
+}
+
+void BenchMarker::LogResults()
+{
+	if(m_runTimes.empty())
+		return;
+
+	long long total = 0;
+	long long mean, median;
+	long long best = m_runTimes[0];
+	long long worst = m_runTimes[0];
+	for(size_t i = 0; i < m_runTimes.size(); i++)
+	{
+		total += m_runTimes[i];
+		if(m_runTimes[i] > worst)
+		{
+			worst = m_runTimes[i];
+		}
+		if(m_runTimes[i] < best)
+		{
+			best = m_runTimes[i];
+		}
+	}
+	mean = total / m_runTimes.size();
+
+	// TODO do not use this sort, use a faster one
+	selection_sort(m_runTimes.data(), m_runTimes.size());
+	median = m_runTimes[m_runTimes.size() / 2];
+
+	const char* timeSuffix = timeSuffixes[(size_t)m_precision];
+
+	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
+	gbt::SafeLog_QueueMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::chrono::system_clock::now(),
+		std::format("{}() BenchMark({}{} runs) | Total: {}{}, Best: {}{}, Worst: {}{}, Mean: {}{}, Median: {}{}",
+			m_funcname, m_overflowed ? "overflowed " : "", m_runTimes.size(),
+			total, timeSuffix, best, timeSuffix, worst, timeSuffix, mean, timeSuffix, median, timeSuffix));
+
+	m_runTimes.clear();
+	m_overflowed = false;
+	m_roundRobinIndex = 0;
+}
+
+// TODO use a fixed sized vector or custom vector
+// TODO make thread-safe
+static std::vector<BenchMarker*> s_benchMarkers;
+
+BenchMarker::BenchMarker(TimePrecision precision, c_string file, const gbt::LineNumber line, c_string funcname)
+	: m_precision(precision), m_file(file), m_line(line), m_funcname(funcname)
+{
+	s_benchMarkers.push_back(this);
+}
+
+void rvl::LogAllBenchMarkResults()
+{
+	for(size_t i = 0; i < s_benchMarkers.size(); i++)
+	{
+		s_benchMarkers[i]->LogResults();
+	}
 }
