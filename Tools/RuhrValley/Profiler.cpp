@@ -77,7 +77,12 @@ void BenchMarker::AddTime(const long long time)
 	{
 		m_overflowed = true;
 		m_runTimes[m_roundRobinIndex] = time;
+
 		++m_roundRobinIndex;
+		if(m_roundRobinIndex >= m_runTimes.size())
+		{
+			m_roundRobinIndex = 0;
+		}
 	}
 	else
 	{
