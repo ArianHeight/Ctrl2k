@@ -76,7 +76,7 @@ string_registry_id dyn::string_registry::register_string(const string_pool_chart
         return INVALID_STRING_REGISTRY_ID;
     }
 
-    const hash64_t hash = checksum64_string(str, len);
+    const hash64_t hash = simple_hash(str, len);
     size_t idx = binary_search_nearest(m_views, hash);
 
     for(; idx < m_views.size() && m_views[idx].hash == hash; ++idx)
@@ -112,7 +112,7 @@ string_registry_id dyn::string_registry::find_registered_string(const string_poo
         return INVALID_STRING_REGISTRY_ID;
     }
 
-    const hash64_t hash = checksum64_string(str, len);
+    const hash64_t hash = simple_hash(str, len);
     size_t idx = binary_search_nearest(m_views.data(), m_views.size(), hash);
 
     for(; idx < m_views.size() && m_views[idx].hash == hash; ++idx)

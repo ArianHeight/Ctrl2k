@@ -119,7 +119,7 @@ public:
             return INVALID_STRING_REGISTRY_ID;
         }
 
-        const hash64_t hash = checksum64_string(str, len);
+        const hash64_t hash = simple_hash(str, len);
         size_t idx = binary_search_nearest(m_views, m_num_views, hash);
 
         for(; idx < m_num_views && m_views[idx].hash == hash; ++idx)
@@ -163,7 +163,7 @@ public:
             return INVALID_STRING_REGISTRY_ID;
         }
 
-        const hash64_t hash = checksum64_string(str, len);
+        const hash64_t hash = simple_hash(str, len);
         size_t idx = binary_search_nearest(m_views, m_num_views, hash);
 
         for(; idx < m_num_views && m_views[idx].hash == hash; ++idx)

@@ -17,6 +17,7 @@ namespace rqm
 
 
 template <typename T>
+requires (TYPE_NUMBER<T>)
 struct quat_base
 {
 	vec4_base<T> data;

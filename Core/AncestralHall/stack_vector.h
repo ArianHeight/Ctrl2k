@@ -30,7 +30,7 @@ public:
 
     void push_back(const T& elem)
     {
-        assert(m_size < capacity);
+        assert(m_size < _capacity);
         m_data[m_size] = elem;
         m_size++;
     }
@@ -64,6 +64,20 @@ public:
         return *this;
     }
 
+    selftype& operator=(selftype&& other)
+    {
+        if(this != &other)
+        {
+            for(size_t i = 0; i < other.m_size; i++)
+            {
+                m_data[i] = std::move(other.m_data[i]);
+            }
+            m_size = other.m_size;
+            other.clear();
+        }
+        return *this;
+    }
+
     template<size_t _other_capacity>
     selftype& operator=(const stack_vector<T, _other_capacity>& other)
     {
@@ -76,11 +90,27 @@ public:
         return *this;
     }
 
+    template<size_t _other_capacity>
+    selftype& operator=(stack_vector<T, _other_capacity>&& other)
+    {
+        assert(other.size() <= _capacity);
+        for(size_t i = 0; i < other.m_size; i++)
+        {
+            m_data[i] = std::move(other.m_data[i]);
+        }
+        m_size = other.m_size;
+        other.clear();
+        return *this;
+    }
+
     // cstrs
     stack_vector() : m_size(0) {}
     stack_vector(const selftype& other) : m_size(0) { *this = other; }
     template<size_t _other_capacity>
     stack_vector(const stack_vector<T, _other_capacity>& other) : m_size(0) { *this = other; }
+    stack_vector(selftype&& other) : m_size(0) { *this = std::move(other); }
+    template<size_t _other_capacity>
+    stack_vector(stack_vector<T, _other_capacity>&& other) : m_size(0) { *this = std::move(other); }
 
     inline const T& at(size_t i) const { return m_data[i]; }
     inline T& at(size_t i) { return m_data[i]; }

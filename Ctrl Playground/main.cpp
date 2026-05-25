@@ -6,9 +6,11 @@
 #include <unordered_map>
 #include <set>
 #include <unordered_set>
+#include <random>
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
 #include "Core/OracleBone/obn.h"
+#include "Core/AncestralHall/ahl.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -263,7 +265,7 @@ int64_t profileUnorderedMapStringFromInsert(std::unordered_map<std::string, int>
 
 int64_t profileStdStringFind(const std::string& str, const std::vector<std::string>& substrs)
 {
-	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	PROFILE_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 	for(const std::string& substr : substrs)
 	{
 		volatile size_t index = str.find(substr);
@@ -276,7 +278,7 @@ int64_t profileStdStringFind(const std::string& str, const std::vector<std::stri
 
 int64_t profileStringUtilFind(const std::string& str, const std::vector<std::string>& substrs)
 {
-	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	PROFILE_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 	for(const std::string& substr : substrs)
 	{
 		volatile size_t index = obn::string_nfind(str.c_str(), str.length(), substr.c_str(), substr.length());
@@ -289,7 +291,7 @@ int64_t profileStringUtilFind(const std::string& str, const std::vector<std::str
 
 int64_t profileStdStringEq(const std::vector<std::string>& strs)
 {
-	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	PROFILE_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 	for(const std::string& str : strs)
 	{
 		for(const std::string& other : strs)
@@ -303,7 +305,7 @@ int64_t profileStdStringEq(const std::vector<std::string>& strs)
 
 int64_t profileStringUtilCmp(const std::vector<std::string>& strs)
 {
-	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	PROFILE_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 	for(const std::string& str : strs)
 	{
 		for(const std::string& other : strs)
@@ -317,7 +319,7 @@ int64_t profileStringUtilCmp(const std::vector<std::string>& strs)
 
 int64_t profileStringUtilEq(const std::vector<std::string>& strs)
 {
-	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	PROFILE_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 	for(const std::string& str : strs)
 	{
 		for(const std::string& other : strs)
@@ -331,7 +333,7 @@ int64_t profileStringUtilEq(const std::vector<std::string>& strs)
 
 int64_t profileStdStringFindOf(const std::string& str, const std::vector<std::string>& charsets)
 {
-	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	PROFILE_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 	for(const std::string& charset : charsets)
 	{
 		volatile size_t firstOf = str.find_first_of(charset);
@@ -346,7 +348,7 @@ int64_t profileStdStringFindOf(const std::string& str, const std::vector<std::st
 
 int64_t profileStringUtilFindOf(const std::string& str, const std::vector<std::string>& charsets)
 {
-	PROFILE_SCOPED_PRECISION(rvl::SunDialPrecision::SUNDIALPRECISION_MICROSECONDS);
+	PROFILE_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 	for(const std::string& charset : charsets)
 	{
 		volatile size_t firstOf = obn::string_nfind_first_of(str.c_str(), str.length(), charset.c_str(), charset.length());
@@ -449,6 +451,30 @@ void profileAll()
 	profileStringUtilFindOf(example, charsets);
 }
 
+void benchMarkSort1()
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distr(1, 100);
+
+	std::vector<int> arr;
+	arr.reserve(32);
+	for(int i = 0; i < 32; i++)
+	{
+		arr.push_back(distr(gen));
+	}
+
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		selection_sort(arr.data(), arr.size());
+	}
+
+	for(int i = 0; i < 31; i++)
+	{
+		assert(arr[i] <= arr[i + 1]);
+	}
+}
+
 template <typename stringtype>
 void testString(const c_string title, const stringtype& string)
 {
@@ -473,6 +499,12 @@ int main(int argc, char *argv[])
 	PROFILE_SECTION_START(allTests);
 	profileAll();
 	PROFILE_SECTION_END(allTests);
+
+	for(int i = 0; i < 20; i++)
+	{
+		benchMarkSort1();
+	}
+	BENCHMARK_LOG_RESULTS();
 
 	LOG_TRACE_PUSH("{:}", std::chrono::current_zone()->to_local(std::chrono::system_clock::now()));
 	LOG_MSG_PUSH("Hello");

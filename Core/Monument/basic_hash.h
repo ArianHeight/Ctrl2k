@@ -123,19 +123,10 @@ union hash256_t
     static inline hash256_t get_zero() { return hash256_t{ 0, 0, 0, 0 }; }
 };
 
-hash32_t checksum32(const void* data, size_t len, hash32_t seed = hash32_t::get_zero());
-hash64_t checksum64(const void* data, size_t len, hash64_t seed = hash64_t::get_zero());
-hash128_t checksum128(const void* data, size_t len, hash128_t seed = hash128_t::get_zero());
-hash256_t checksum256(const void* data, size_t len, hash256_t seed = hash256_t::get_zero());
+hash64_t simple_hash(c_string str, size_t len, hash64_t seed = hash64_t::get_zero());
+hash64_t simple_hash(wc_string str, size_t len, hash64_t seed = hash64_t::get_zero());
 
-template <typename T>
-inline hash32_t checksum32(const T& obj) { return checksum32(&obj, sizeof(obj)); }
-template <typename T>
-inline hash64_t checksum64(const T& obj) { return checksum64(&obj, sizeof(obj)); }
-template <typename T>
-inline hash128_t checksum128(const T& obj) { return checksum128(&obj, sizeof(obj)); }
-template <typename T>
-inline hash256_t checksum256(const T& obj) { return checksum256(&obj, sizeof(obj)); }
-
-inline hash64_t checksum64_string(const char* str, size_t len) { return checksum64(str, len); }
-//TODO do wchar_t while forcing big-endianness
+uint32_t checksum32(c_string str, size_t len);
+uint32_t checksum32(wc_string str, size_t len);
+uint64_t checksum64(c_string str, size_t len);
+uint64_t checksum64(wc_string str, size_t len);

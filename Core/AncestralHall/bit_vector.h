@@ -13,14 +13,17 @@ Shared code for all bit vectors
 
 class abstract_bit_vector
 {
+public:
+    // defining all constexprs in terms of the datatype being used to prevent resizing when used with operators.
+    using datatype = uint32_t;
+    static constexpr datatype BITS_PER_DATA_TYPE = NUM_BITS_PER_BYTE * sizeof(datatype);
+
 protected:
     abstract_bit_vector() = default;
 
     // defining all constexprs in terms of the datatype being used to prevent resizing when used with operators.
-    using datatype = uint32_t;
     static constexpr datatype DATA_TYPE_MAX = UINT32_MAX;
     static constexpr datatype DATA_INDEX_MASK = MASK_5_BIT;
-    static constexpr datatype BITS_PER_DATA_TYPE = NUM_BITS_PER_BYTE * sizeof(datatype);
 
     static inline size_t get_data_index(size_t i) { return i / BITS_PER_DATA_TYPE; }
     // example i == 3, returns 00001000
