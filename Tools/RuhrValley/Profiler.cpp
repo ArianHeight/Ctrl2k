@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Core/GreatBath/Logger.h"
+#include "Core/Petra/rqm.h"
 #include "Profiler.h"
 
 using namespace rvl;
@@ -101,7 +102,6 @@ void BenchMarker::LogResults()
 		return;
 
 	long long total = 0;
-	long long mean, median;
 	long long best = m_runTimes[0];
 	long long worst = m_runTimes[0];
 	for(size_t i = 0; i < m_runTimes.size(); i++)
@@ -116,19 +116,27 @@ void BenchMarker::LogResults()
 			best = m_runTimes[i];
 		}
 	}
-	mean = total / m_runTimes.size();
+
+	long double mean = total / m_runTimes.size();
+
+	long double deviation = 0;
+	for(size_t i = 0; i < m_runTimes.size(); i++)
+	{
+		deviation += (m_runTimes[i] - mean) * (m_runTimes[i] - mean);
+	}
+	long double standard_deviation = rqm::sqrt(deviation / m_runTimes.size());
 
 	// TODO do not use this sort, use a faster one
 	selection_sort(m_runTimes.data(), m_runTimes.size());
-	median = m_runTimes[m_runTimes.size() / 2];
+	long long median = m_runTimes[m_runTimes.size() / 2];
 
 	const char* timeSuffix = timeSuffixes[(size_t)m_precision];
 
 	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
 	gbt::SafeLog_QueueMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::chrono::system_clock::now(),
-		std::format("{}() BenchMark({}{} runs) | Total: {}{}, Best: {}{}, Worst: {}{}, Mean: {}{}, Median: {}{}",
+		std::format("{}() BenchMark({}{} runs) | Total: {}{}, Best: {}{}, Worst: {}{}, Mean: {:.3g}{}, Median: {}{}, StDev: {:.3g}",
 			m_funcname, m_overflowed ? "overflowed " : "", m_runTimes.size(),
-			total, timeSuffix, best, timeSuffix, worst, timeSuffix, mean, timeSuffix, median, timeSuffix));
+			total, timeSuffix, best, timeSuffix, worst, timeSuffix, mean, timeSuffix, median, timeSuffix, standard_deviation));
 
 	m_runTimes.clear();
 	m_overflowed = false;
