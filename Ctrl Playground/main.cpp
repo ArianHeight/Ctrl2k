@@ -451,28 +451,82 @@ void profileAll()
 	profileStringUtilFindOf(example, charsets);
 }
 
-void benchMarkSort1()
+void generateRandomInts(size_t numInts, int lower, int upper, std::vector<int>& out)
 {
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> distr(1, 100);
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
 
-	std::vector<int> arr;
-	arr.reserve(32);
-	for(int i = 0; i < 32; i++)
+	std::uniform_int_distribution<> distr(lower, upper);
+
+	out.clear();
+	out.reserve(numInts);
+	for(size_t i = 0; i < numInts; i++)
 	{
-		arr.push_back(distr(gen));
+		out.push_back(distr(gen));
 	}
+}
 
+template <typename T>
+void checkIfVectorSorted(const std::vector<T>& arr)
+{
+	for(int i = 0; i < 31; i++)
+	{
+		assert(arr[i] <= arr[i + 1]);
+	}
+}
+
+void benchMarkSelectionSort(std::vector<int> arr)
+{
 	{
 		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
 		selection_sort(arr.data(), arr.size());
 	}
 
-	for(int i = 0; i < 31; i++)
+	checkIfVectorSorted(arr);
+}
+
+void benchMarkInsertionSortLinear(std::vector<int> arr)
+{
 	{
-		assert(arr[i] <= arr[i + 1]);
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		insertion_sort_linear(arr.data(), arr.size());
 	}
+
+	checkIfVectorSorted(arr);
+}
+
+void benchMarkQuickSort(std::vector<int> arr)
+{
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		quick_sort(arr.data(), arr.size());
+	}
+
+	checkIfVectorSorted(arr);
+}
+
+void benchMarkMergeSort(std::vector<int> arr)
+{
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		merge_sort(arr.data(), arr.size());
+	}
+
+	checkIfVectorSorted(arr);
+}
+
+void benchMarkAll()
+{
+	std::vector<int> randomData;
+	for(int i = 0; i < 32; i++)
+	{
+		generateRandomInts(128, 0, 100, randomData);
+		benchMarkSelectionSort(randomData);
+		benchMarkInsertionSortLinear(randomData);
+		benchMarkQuickSort(randomData);
+		benchMarkMergeSort(randomData);
+	}
+	BENCHMARK_LOG_RESULTS();
 }
 
 template <typename stringtype>
@@ -500,11 +554,7 @@ int main(int argc, char *argv[])
 	profileAll();
 	PROFILE_SECTION_END(allTests);
 
-	for(int i = 0; i < 20; i++)
-	{
-		benchMarkSort1();
-	}
-	BENCHMARK_LOG_RESULTS();
+	benchMarkAll();
 
 	LOG_TRACE_PUSH("{:}", std::chrono::current_zone()->to_local(std::chrono::system_clock::now()));
 	LOG_MSG_PUSH("Hello");
