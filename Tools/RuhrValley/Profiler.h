@@ -69,7 +69,7 @@ public:
 
 #define PROFILE_SECTION_END(name) _profiler_section_##name.TimerEnd(__FILE__, __LINE__)
 
-constexpr size_t BENCHMARKER_MAX_STORAGE = 32;
+constexpr size_t BENCHMARKER_MAX_STORAGE = 64;
 
 // DONOT USE THIS CLASS DIRECTLY!
 // use the macros instead

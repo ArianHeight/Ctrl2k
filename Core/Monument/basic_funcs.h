@@ -1,6 +1,13 @@
 #pragma once
 #include <utility>
 
+consteval inline size_t most_significant_bit(size_t val)
+{
+    size_t bit = 0;
+    while(val >>= 1) { ++bit; }
+    return bit;
+}
+
 template <typename T, typename V>
 size_t binary_search(const T* arr, size_t len, const V& val)
 {
@@ -209,6 +216,29 @@ inline size_t _quick_sort_select_pivot_index(T* arr, size_t len)
     return len >> 1; // median index
 }
 
+// DONOT CALL THIS
+// returns the new pivot index
+template <typename T>
+FORCE_INLINE size_t _quick_sort_partition(T* arr, size_t len)
+{
+    T pivot_val = arr[_quick_sort_select_pivot_index(arr, len)]; // this can't be std::move
+    size_t left = -1;
+    size_t right = len;
+
+    while(true)
+    {
+        for(++left; arr[left] < pivot_val; ++left);
+        for(--right; arr[right] > pivot_val; --right);
+
+        if(left > right)
+            break;
+
+        _sort_swap(arr[left], arr[right]);
+    }
+
+    return left;
+}
+
 // Hoare's partition with dynamic pivot selection method depending on partition size
 template <typename T>
 void quick_sort(T* arr, size_t len)
@@ -224,23 +254,10 @@ void quick_sort(T* arr, size_t len)
         return;
     }
 
-    T pivot_val = arr[_quick_sort_select_pivot_index(arr, len)]; // this can't be std::move
-    size_t left = -1;
-    size_t right = len;
-    while(true)
-    {
-        for(++left; arr[left] < pivot_val; ++left);
-        for(--right; arr[right] > pivot_val; --right);
+    const size_t pivot_index = _quick_sort_partition(arr, len);
 
-        if(left > right)
-            break;
-
-        _sort_swap(arr[left], arr[right]);
-    }
-
-    // left is where we split
-    quick_sort(arr, left);
-    quick_sort(&arr[left], len - left);
+    quick_sort(arr, pivot_index);
+    quick_sort(&arr[pivot_index], len - pivot_index);
 }
 
 /*
@@ -282,27 +299,17 @@ void _merge_sort_merge(const T* arr1, size_t len1, const T* arr2, size_t len2, T
     }
 }
 
+// DONOT CALL THIS
 template <typename T>
-void merge_sort(T* arr, size_t len)
+FORCE_INLINE void _merge_sort_impl(T* arr, T* buf, size_t start_sort_len, size_t len)
 {
-    if(len <= 1 || !arr)
-        return;
-    else if(len == 2)
-    {
-        if(arr[0] > arr[1])
-        {
-            _sort_swap(arr[0], arr[1]);
-        }
-        return;
-    }
-
-    T* buf = new T[len];
+    assert(start_sort_len > 0);
 
     // double buffering
     T* from = arr;
     T* to = buf;
 
-    for(size_t sort_len = 1; sort_len < len; sort_len = sort_len << 1)
+    for(size_t sort_len = start_sort_len; sort_len < len; sort_len = sort_len << 1)
     {
         size_t i;
         for(i = 0; i + (sort_len << 1) < len; i += sort_len << 1)
@@ -339,6 +346,64 @@ void merge_sort(T* arr, size_t len)
             arr[i] = std::move(buf[i]);
         }
     }
+}
 
+template <typename T>
+void merge_sort(T* arr, size_t len)
+{
+    if(len <= 1 || !arr)
+        return;
+    else if(len == 2)
+    {
+        if(arr[0] > arr[1])
+        {
+            _sort_swap(arr[0], arr[1]);
+        }
+        return;
+    }
+
+    T* buf = new T[len];
+    _merge_sort_impl(arr, buf, 1, len);
     delete[] buf;
+}
+
+/*
+
+Ctrlsort
+
+*/
+
+constexpr size_t SORT_INSERTION_BYTES_THRESHOLD = 128; // in bytes
+constexpr size_t SORT_AUX_BUFFER_BYTES = 1024; // in bytes
+
+// a composite sort that combines insertion sort, merge sort, and quicksort
+template <typename T>
+void sort(T* arr, size_t len)
+{
+    constexpr size_t SORT_INSERTION_SIZE_THRESHOLD = SORT_INSERTION_BYTES_THRESHOLD / sizeof(T);
+    constexpr size_t SORT_INSERTION_SIZE = 1 << most_significant_bit(SORT_INSERTION_SIZE_THRESHOLD);
+    constexpr size_t SORT_AUX_BUFFER_LEN = SORT_AUX_BUFFER_BYTES / sizeof(T);
+
+    if(len <= SORT_INSERTION_SIZE_THRESHOLD)
+    {
+        insertion_sort_linear(arr, len);
+    }
+    else if(len <= SORT_AUX_BUFFER_LEN)
+    {
+        size_t i;
+        for(i = 0; i + SORT_INSERTION_SIZE < len; i += SORT_INSERTION_SIZE)
+        {
+            insertion_sort_linear(&arr[i], SORT_INSERTION_SIZE);
+        }
+        insertion_sort_linear(&arr[i], len - i);
+
+        T buf[SORT_AUX_BUFFER_LEN];
+        _merge_sort_impl(arr, buf, SORT_INSERTION_SIZE, len);
+    }
+    else
+    {
+        const size_t pivot_index = _quick_sort_partition(arr, len);
+        sort(arr, pivot_index);
+        sort(&arr[pivot_index], len - pivot_index);
+    }
 }

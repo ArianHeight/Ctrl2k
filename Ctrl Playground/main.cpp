@@ -515,16 +515,27 @@ void benchMarkMergeSort(std::vector<int> arr)
 	checkIfVectorSorted(arr);
 }
 
+void benchMarkCtrlSort(std::vector<int> arr)
+{
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		sort(arr.data(), arr.size());
+	}
+
+	checkIfVectorSorted(arr);
+}
+
 void benchMarkAll()
 {
 	std::vector<int> randomData;
-	for(int i = 0; i < 32; i++)
+	for(int i = 0; i < 64; i++)
 	{
-		generateRandomInts(64, 0, 100, randomData);
-		benchMarkSelectionSort(randomData);
-		benchMarkInsertionSortLinear(randomData);
+		generateRandomInts(15551, 0, 4096, randomData);
+		//benchMarkSelectionSort(randomData);
+		//benchMarkInsertionSortLinear(randomData);
 		benchMarkQuickSort(randomData);
 		benchMarkMergeSort(randomData);
+		benchMarkCtrlSort(randomData);
 	}
 	BENCHMARK_LOG_RESULTS();
 }
@@ -553,6 +564,8 @@ int main(int argc, char *argv[])
 	PROFILE_SECTION_START(allTests);
 	profileAll();
 	PROFILE_SECTION_END(allTests);
+
+	LOG_MSG_PUSH("bit: {}, val: {}", most_significant_bit(31), 1 << most_significant_bit(31));
 
 	benchMarkAll();
 
