@@ -249,6 +249,7 @@ Mergesort
 
 */
 
+// DONOT CALL THIS
 template <typename T>
 void _merge_sort_merge(const T* arr1, size_t len1, const T* arr2, size_t len2, T* out)
 {
@@ -295,14 +296,49 @@ void merge_sort(T* arr, size_t len)
         return;
     }
 
-    merge_sort(arr, len / 2);
-    merge_sort(&arr[len / 2], len - (len / 2));
+    T* buf = new T[len];
 
-    T* buf = new T[len]; // TODO this dyn mem allocation is so bad for performance, do this differently please
-    _merge_sort_merge(arr, len / 2, &arr[len / 2], len - (len / 2), &buf[0]);
-    for(size_t i = 0; i < len; i++)
+    // double buffering
+    T* from = arr;
+    T* to = buf;
+
+    for(size_t sort_len = 1; sort_len < len; sort_len = sort_len << 1)
     {
-        arr[i] = std::move(buf[i]);
+        size_t i;
+        for(i = 0; i + (sort_len << 1) < len; i += sort_len << 1)
+        {
+            _merge_sort_merge(&from[i], sort_len, &from[i + sort_len], sort_len, &to[i]);
+        }
+
+        if(i < len)
+        {
+            if(i + sort_len < len) // we have 1 and a half sub buffers
+            {
+                _merge_sort_merge(&from[i], sort_len, &from[i + sort_len], len - (i + sort_len), &to[i]);
+            }
+            else // we have a half sub buffer
+            {
+                for(; i < len; i++)
+                {
+                    to[i] = std::move(from[i]);
+                }
+            }
+        }
+
+        // swap buffers
+        T* temp = to;
+        to = from;
+        from = temp;
     }
+
+    // from is where the data is because of the buffer swap
+    if(from == buf)
+    {
+        for(size_t i = 0; i < len; i++)
+        {
+            arr[i] = std::move(buf[i]);
+        }
+    }
+
     delete[] buf;
 }

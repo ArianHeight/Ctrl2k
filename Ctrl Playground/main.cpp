@@ -520,7 +520,7 @@ void benchMarkAll()
 	std::vector<int> randomData;
 	for(int i = 0; i < 32; i++)
 	{
-		generateRandomInts(128, 0, 100, randomData);
+		generateRandomInts(64, 0, 100, randomData);
 		benchMarkSelectionSort(randomData);
 		benchMarkInsertionSortLinear(randomData);
 		benchMarkQuickSort(randomData);
