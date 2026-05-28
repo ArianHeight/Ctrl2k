@@ -106,7 +106,7 @@ inline void _sort_swap(T& v1, T& v2)
     v2 = std::move(temp);
 }
 
-// TODO change these to use array accesses instead of ptrs
+constexpr size_t SORT_AUX_BUFFER_BYTES = 1024; // in bytes
 
 /*
 
@@ -140,6 +140,18 @@ void selection_sort(T* arr, size_t len)
 Insertion sort
 
 */
+
+constexpr size_t SORT_INSERTION_BYTES_THRESHOLD = 128; // in bytes
+
+// we should always use insertion sort under this length(for contiguous data ofc)
+// it's actually faster under 12 elements always, but we can do 8 for a nice power of 2
+constexpr size_t SORT_INSERTION_MIN_SIZE = 8;
+
+consteval size_t _sort_calc_sort_insertion_size(size_t data_size)
+{
+    size_t insert_size = (size_t)1 << most_significant_bit(SORT_INSERTION_BYTES_THRESHOLD / data_size);
+    return insert_size < SORT_INSERTION_MIN_SIZE ? SORT_INSERTION_MIN_SIZE : insert_size;
+}
 
 // using reverse linear search to find the insert location
 template <typename T>
@@ -202,7 +214,7 @@ inline size_t _quick_sort_median_of_3(T* arr, size_t i1, size_t i2, size_t i3)
 template <typename T>
 inline size_t _quick_sort_select_pivot_index(T* arr, size_t len)
 {
-    if(len >= 64) // pseudo median of 9
+    if(len >= 128) // pseudo median of 9
     {
         const size_t m1 = _quick_sort_median_of_3(arr, 0, len / 8, len / 4);
         const size_t m2 = _quick_sort_median_of_3(arr, 3 * len / 8, len / 2, 5 * len / 8);
@@ -241,7 +253,7 @@ FORCE_INLINE size_t _quick_sort_partition(T* arr, size_t len)
 
 // Hoare's partition with dynamic pivot selection method depending on partition size
 template <typename T>
-void quick_sort(T* arr, size_t len)
+void quick_sort_vanilla(T* arr, size_t len)
 {
     if(len <= 1 || !arr)
         return;
@@ -251,6 +263,34 @@ void quick_sort(T* arr, size_t len)
         {
             _sort_swap(arr[0], arr[1]);
         }
+        return;
+    }
+
+    const size_t pivot_index = _quick_sort_partition(arr, len);
+
+    quick_sort(arr, pivot_index);
+    quick_sort(&arr[pivot_index], len - pivot_index);
+}
+
+// Hoare's quick sort and adaptive pivot with insertion sort base case
+template <typename T>
+void quick_sort(T* arr, size_t len)
+{
+    constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
+
+    if(len <= 1 || !arr)
+        return;
+    else if(len == 2)
+    {
+        if(arr[0] > arr[1])
+        {
+            _sort_swap(arr[0], arr[1]);
+        }
+        return;
+    }
+    else if(len <= SORT_INSERTION_SIZE)
+    {
+        insertion_sort_linear(arr, len);
         return;
     }
 
@@ -348,8 +388,9 @@ FORCE_INLINE void _merge_sort_impl(T* arr, T* buf, size_t start_sort_len, size_t
     }
 }
 
+// a double-buffered iterative merge sort
 template <typename T>
-void merge_sort(T* arr, size_t len)
+void merge_sort_vanilla(T* arr, size_t len)
 {
     if(len <= 1 || !arr)
         return;
@@ -367,24 +408,54 @@ void merge_sort(T* arr, size_t len)
     delete[] buf;
 }
 
+// double buffered iterative merge sort and insertion sort together
+template <typename T>
+void merge_sort(T* arr, size_t len)
+{
+    constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
+
+    if(len <= 1 || !arr)
+        return;
+    else if(len == 2)
+    {
+        if(arr[0] > arr[1])
+        {
+            _sort_swap(arr[0], arr[1]);
+        }
+        return;
+    }
+    else if(len <= SORT_INSERTION_SIZE)
+    {
+        insertion_sort_linear(arr, len);
+        return;
+    }
+
+    size_t i;
+    for(i = 0; i + SORT_INSERTION_SIZE < len; i += SORT_INSERTION_SIZE)
+    {
+        insertion_sort_linear(&arr[i], SORT_INSERTION_SIZE);
+    }
+    insertion_sort_linear(&arr[i], len - i);
+
+    T* buf = new T[len];
+    _merge_sort_impl(arr, buf, SORT_INSERTION_SIZE, len);
+    delete[] buf;
+}
+
 /*
 
 Ctrlsort
 
 */
 
-constexpr size_t SORT_INSERTION_BYTES_THRESHOLD = 128; // in bytes
-constexpr size_t SORT_AUX_BUFFER_BYTES = 1024; // in bytes
-
 // a composite sort that combines insertion sort, merge sort, and quicksort
 template <typename T>
 void sort(T* arr, size_t len)
 {
-    constexpr size_t SORT_INSERTION_SIZE_THRESHOLD = SORT_INSERTION_BYTES_THRESHOLD / sizeof(T);
-    constexpr size_t SORT_INSERTION_SIZE = 1 << most_significant_bit(SORT_INSERTION_SIZE_THRESHOLD);
+    constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
     constexpr size_t SORT_AUX_BUFFER_LEN = SORT_AUX_BUFFER_BYTES / sizeof(T);
 
-    if(len <= SORT_INSERTION_SIZE_THRESHOLD)
+    if(len <= SORT_INSERTION_SIZE)
     {
         insertion_sort_linear(arr, len);
     }

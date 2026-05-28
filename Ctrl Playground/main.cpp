@@ -7,10 +7,12 @@
 #include <set>
 #include <unordered_set>
 #include <random>
+#include <algorithm>
 #include "Core/GreatBath/Logger.h"
 #include "Tools/RuhrValley/Profiler.h"
 #include "Core/OracleBone/obn.h"
 #include "Core/AncestralHall/ahl.h"
+#include "Core/Petra/rqm.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -495,6 +497,16 @@ void benchMarkInsertionSortLinear(std::vector<int> arr)
 	checkIfVectorSorted(arr);
 }
 
+void benchMarkStdSort(std::vector<int> arr)
+{
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		std::sort(arr.begin(), arr.end());
+	}
+
+	checkIfVectorSorted(arr);
+}
+
 void benchMarkQuickSort(std::vector<int> arr)
 {
 	{
@@ -530,9 +542,10 @@ void benchMarkAll()
 	std::vector<int> randomData;
 	for(int i = 0; i < 64; i++)
 	{
-		generateRandomInts(15551, 0, 4096, randomData);
+		generateRandomInts(5551, 0, 4096, randomData);
 		//benchMarkSelectionSort(randomData);
 		//benchMarkInsertionSortLinear(randomData);
+		benchMarkStdSort(randomData);
 		benchMarkQuickSort(randomData);
 		benchMarkMergeSort(randomData);
 		benchMarkCtrlSort(randomData);

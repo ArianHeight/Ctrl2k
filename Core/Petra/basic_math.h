@@ -15,21 +15,21 @@ template <> constexpr int EPSILON<int> = 0;
 // return -1 for negative numbers, 0 for 0, 1 for positive numbers
 template <typename T>
 requires TYPE_NUMBER<T>
-T signum(const T& val) { return (T)((val > 0 ? 1 : 0) - (val < 0 ? 1 : 0)); }
+inline T signum(const T& val) { return (T)((val > 0 ? 1 : 0) - (val < 0 ? 1 : 0)); } // branchless
 
 // return -1 for negative numbers, 1 otherwise
 template <typename T>
 requires TYPE_NUMBER<T>
-T signum_no_zero(const T& val) { return (T)(val >= 0 ? 1 : -1); }
+inline T signum_no_zero(const T& val) { return (T)(val >= 0 ? 1 : -1); } // branchless
 
 template <typename T>
 requires TYPE_NUMBER<T>
-inline T abs(const T& val) { return std::abs(val); }
+inline T abs(const T& val) { return val < 0 ? -val : val; } // branchless
 
 template <typename T> requires TYPE_NUMBER<T>
-inline T min(const T& val0, const T& val1) { return std::min(val0, val1); }
+inline T min(const T& val0, const T& val1) { return val0 < val1 ? val0 : val1; } // branchless
 template <typename T> requires TYPE_NUMBER<T>
-inline T max(const T& val0, const T& val1) { return std::max(val0, val1); }
+inline T max(const T& val0, const T& val1) { return val0 > val1 ? val0 : val1; } // branchless
 
 template <typename T>
 requires TYPE_NUMBER<T>
