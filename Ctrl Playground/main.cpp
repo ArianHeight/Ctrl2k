@@ -468,6 +468,34 @@ void generateRandomInts(size_t numInts, int lower, int upper, std::vector<int>& 
 	}
 }
 
+void generateSortedInts(size_t numInts, int lower, int upper, std::vector<int>& out)
+{
+	generateRandomInts(numInts, lower, upper, out);
+	std::sort(out.begin(), out.end());
+}
+
+void generateReverseSortedInts(size_t numInts, int lower, int upper, std::vector<int>& out)
+{
+	generateRandomInts(numInts, lower, upper, out);
+	std::sort(out.rbegin(), out.rend());
+}
+
+void generateAlmostSortedInts(size_t numInts, size_t num_outliers, int lower, int upper, std::vector<int>& out)
+{
+	generateSortedInts(numInts, lower, upper, out);
+
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+
+	std::uniform_int_distribution<> indexDistr(0, numInts - 1);
+	std::uniform_int_distribution<> distr(lower, upper);
+
+	for(size_t i = 0; i < num_outliers; i++)
+	{
+		out[indexDistr(gen)] = distr(gen);
+	}
+}
+
 template <typename T>
 void checkIfVectorSorted(const std::vector<T>& arr)
 {
@@ -537,18 +565,58 @@ void benchMarkCtrlSort(std::vector<int> arr)
 	checkIfVectorSorted(arr);
 }
 
+void benchMarkRound(const std::vector<int>& sortingData)
+{
+	//benchMarkSelectionSort(sortingData);
+	//benchMarkInsertionSortLinear(sortingData);
+	benchMarkStdSort(sortingData);
+	benchMarkQuickSort(sortingData);
+	benchMarkMergeSort(sortingData);
+	benchMarkCtrlSort(sortingData);
+}
+
 void benchMarkAll()
 {
-	std::vector<int> randomData;
+	std::vector<int> sortingData;
+	size_t inputLength = 5551;
+
+	LOG_MSG_QUEUE("Random Inputs---------------");
 	for(int i = 0; i < 64; i++)
 	{
-		generateRandomInts(5551, 0, 4096, randomData);
-		//benchMarkSelectionSort(randomData);
-		//benchMarkInsertionSortLinear(randomData);
-		benchMarkStdSort(randomData);
-		benchMarkQuickSort(randomData);
-		benchMarkMergeSort(randomData);
-		benchMarkCtrlSort(randomData);
+		generateRandomInts(inputLength, 0, 4096 << 1, sortingData);
+		benchMarkRound(sortingData);
+	}
+	BENCHMARK_LOG_RESULTS();
+
+	LOG_MSG_QUEUE("Low Cardinality---------------");
+	for(int i = 0; i < 64; i++)
+	{
+		generateRandomInts(inputLength, 0, 128, sortingData);
+		benchMarkRound(sortingData);
+	}
+	BENCHMARK_LOG_RESULTS();
+
+	LOG_MSG_QUEUE("Sorted---------------");
+	for(int i = 0; i < 64; i++)
+	{
+		generateSortedInts(inputLength, 0, 4096 << 1, sortingData);
+		benchMarkRound(sortingData);
+	}
+	BENCHMARK_LOG_RESULTS();
+
+	LOG_MSG_QUEUE("Reverse Sorted---------------");
+	for(int i = 0; i < 64; i++)
+	{
+		generateReverseSortedInts(inputLength, 0, 4096 << 1, sortingData);
+		benchMarkRound(sortingData);
+	}
+	BENCHMARK_LOG_RESULTS();
+
+	LOG_MSG_QUEUE("Almost Sorted---------------");
+	for(int i = 0; i < 64; i++)
+	{
+		generateAlmostSortedInts(inputLength, 200, 0, 4096 << 1, sortingData);
+		benchMarkRound(sortingData);
 	}
 	BENCHMARK_LOG_RESULTS();
 }

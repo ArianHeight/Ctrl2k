@@ -179,6 +179,8 @@ Quicksort
 
 */
 
+constexpr size_t SORT_QUICK_BRANCHLESS_BUF_SIZE = 32;
+
 // DONOT CALL THIS
 template <typename T>
 inline size_t _quick_sort_median_of_3(T* arr, size_t i1, size_t i2, size_t i3)
@@ -251,6 +253,73 @@ FORCE_INLINE size_t _quick_sort_partition(T* arr, size_t len)
     return left;
 }
 
+// DONOT CALL THIS
+// returns the new pivot index
+template <typename T>
+FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len)
+{
+    T pivot_val = arr[_quick_sort_select_pivot_index(arr, len)]; // this can't be std::move
+    size_t left = 0;
+    size_t right = len - 1;
+
+    size_t swap1[SORT_QUICK_BRANCHLESS_BUF_SIZE];
+    size_t swap2[SORT_QUICK_BRANCHLESS_BUF_SIZE];
+    size_t num_swap1 = 0;
+    size_t num_swap2 = 0;
+    size_t start1 = 0;
+    size_t start2 = 0;
+
+    while(right - left + 1 > (SORT_QUICK_BRANCHLESS_BUF_SIZE << 1))
+    {
+        if(num_swap1 == 0)
+        {
+            start1 = 0;
+            for(size_t i = 0; i < SORT_QUICK_BRANCHLESS_BUF_SIZE; i++)
+            {
+                swap1[num_swap1] = left + i;
+                num_swap1 += !(arr[left + i] < pivot_val);
+            }
+            left += SORT_QUICK_BRANCHLESS_BUF_SIZE;
+        }
+        if(num_swap2 == 0)
+        {
+            start2 = 0;
+            for(size_t i = 0; i < SORT_QUICK_BRANCHLESS_BUF_SIZE; i++)
+            {
+                swap2[num_swap2] = right - i;
+                num_swap2 += !(arr[right - i] > pivot_val);
+            }
+            right -= SORT_QUICK_BRANCHLESS_BUF_SIZE;
+        }
+
+        const size_t num_swap = num_swap1 < num_swap2 ? num_swap1 : num_swap2;
+        for(size_t i = 0; i < num_swap; i++)
+        {
+            _sort_swap(arr[swap1[start1 + i]], arr[swap2[start2 + i]]);
+        }
+        num_swap1 -= num_swap;
+        num_swap2 -= num_swap;
+        start1 += num_swap;
+        start2 += num_swap;
+    }
+
+    left = (num_swap1 != 0 ? swap1[start1] : left) - 1;
+    right = (num_swap2 != 0 ? swap2[start2] : right) + 1;
+
+    while(true)
+    {
+        for(++left; arr[left] < pivot_val; ++left);
+        for(--right; arr[right] > pivot_val; --right);
+
+        if(left > right)
+            break;
+
+        _sort_swap(arr[left], arr[right]);
+    }
+
+    return left;
+}
+
 // Hoare's partition with dynamic pivot selection method depending on partition size
 template <typename T>
 void quick_sort_vanilla(T* arr, size_t len)
@@ -268,13 +337,13 @@ void quick_sort_vanilla(T* arr, size_t len)
 
     const size_t pivot_index = _quick_sort_partition(arr, len);
 
-    quick_sort(arr, pivot_index);
-    quick_sort(&arr[pivot_index], len - pivot_index);
+    quick_sort_vanilla(arr, pivot_index);
+    quick_sort_vanilla(&arr[pivot_index], len - pivot_index);
 }
 
 // Hoare's quick sort and adaptive pivot with insertion sort base case
 template <typename T>
-void quick_sort(T* arr, size_t len)
+void quick_sort_branched(T* arr, size_t len)
 {
     constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
 
@@ -296,8 +365,43 @@ void quick_sort(T* arr, size_t len)
 
     const size_t pivot_index = _quick_sort_partition(arr, len);
 
-    quick_sort(arr, pivot_index);
-    quick_sort(&arr[pivot_index], len - pivot_index);
+    quick_sort_branched(arr, pivot_index);
+    quick_sort_branched(&arr[pivot_index], len - pivot_index);
+}
+
+// this is block quick sort with Hoare's partition and adaptive pivot with insertion sort base case
+template <typename T>
+void quick_sort_branchless(T* arr, size_t len)
+{
+    constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
+
+    if(len <= 1 || !arr)
+        return;
+    else if(len == 2)
+    {
+        if(arr[0] > arr[1])
+        {
+            _sort_swap(arr[0], arr[1]);
+        }
+        return;
+    }
+    else if(len <= SORT_INSERTION_SIZE)
+    {
+        insertion_sort_linear(arr, len);
+        return;
+    }
+
+    const size_t pivot_index = _quick_sort_partition_branchless(arr, len);
+
+    quick_sort_branchless(arr, pivot_index);
+    quick_sort_branchless(&arr[pivot_index], len - pivot_index);
+}
+
+// defaults to quick_sort_branchless
+template <typename T>
+inline void quick_sort(T* arr, size_t len)
+{
+    quick_sort_branchless(arr, len);
 }
 
 /*
@@ -473,7 +577,7 @@ void sort(T* arr, size_t len)
     }
     else
     {
-        const size_t pivot_index = _quick_sort_partition(arr, len);
+        const size_t pivot_index = _quick_sort_partition_branchless(arr, len);
         sort(arr, pivot_index);
         sort(&arr[pivot_index], len - pivot_index);
     }
