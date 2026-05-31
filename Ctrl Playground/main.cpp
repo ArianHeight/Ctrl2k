@@ -505,6 +505,15 @@ void checkIfVectorSorted(const std::vector<T>& arr)
 	}
 }
 
+template <typename T>
+void checkIfVectorSortedReverse(const std::vector<T>& arr)
+{
+	for(int i = 0; i < 31; i++)
+	{
+		assert(arr[i] >= arr[i + 1]);
+	}
+}
+
 void benchMarkSelectionSort(std::vector<int> arr)
 {
 	{
@@ -523,6 +532,35 @@ void benchMarkInsertionSortLinear(std::vector<int> arr)
 	}
 
 	checkIfVectorSorted(arr);
+}
+
+void benchMarkInsertionSort(std::vector<int> arr)
+{
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		insertion_sort(arr.data(), arr.size());
+	}
+
+	checkIfVectorSorted(arr);
+}
+
+void benchMarkInsertionSortReverse(std::vector<int> arr)
+{
+	struct ReverseCompare
+	{
+		ReverseCompare() = default;
+
+		inline bool operator()(int a, int b)
+		{
+			return b < a;
+		}
+	};
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		insertion_sort(arr.data(), arr.size(), ReverseCompare());
+	}
+
+	checkIfVectorSortedReverse(arr);
 }
 
 void benchMarkStdSort(std::vector<int> arr)
@@ -565,20 +603,51 @@ void benchMarkCtrlSort(std::vector<int> arr)
 	checkIfVectorSorted(arr);
 }
 
+void benchMarkCtrlSortReverse(std::vector<int> arr)
+{
+	struct ReverseCompare
+	{
+		ReverseCompare() = default;
+
+		inline bool operator()(int a, int b)
+		{
+			return b < a;
+		}
+	};
+	{
+		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
+		sort(arr.data(), arr.size(), ReverseCompare());
+	}
+
+	checkIfVectorSortedReverse(arr);
+}
+
 void benchMarkRound(const std::vector<int>& sortingData)
 {
 	//benchMarkSelectionSort(sortingData);
-	//benchMarkInsertionSortLinear(sortingData);
+	//benchMarkInsertionSort(sortingData);
 	benchMarkStdSort(sortingData);
 	benchMarkQuickSort(sortingData);
 	benchMarkMergeSort(sortingData);
 	benchMarkCtrlSort(sortingData);
+	benchMarkCtrlSortReverse(sortingData);
 }
 
 void benchMarkAll()
 {
 	std::vector<int> sortingData;
 	size_t inputLength = 5551;
+
+	LOG_MSG_QUEUE("Random Small Inputs---------------");
+	for(int i = 0; i < 64; i++)
+	{
+		generateRandomInts(128, 0, 256, sortingData);
+		benchMarkInsertionSortLinear(sortingData);
+		benchMarkInsertionSort(sortingData);
+		benchMarkInsertionSortReverse(sortingData);
+		benchMarkSelectionSort(sortingData);
+	}
+	BENCHMARK_LOG_RESULTS();
 
 	LOG_MSG_QUEUE("Random Inputs---------------");
 	for(int i = 0; i < 64; i++)

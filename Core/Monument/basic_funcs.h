@@ -99,12 +99,24 @@ inline size_t linear_search(const T& arr, const V& val)
 // DONOT CALL THIS
 // using std::move degrades performance in debug mode but in release it's just a 0 overhead cast
 template <typename T>
-inline void _sort_swap(T& v1, T& v2)
+FORCE_INLINE void _sort_swap(T& v1, T& v2)
 {
     T temp = std::move(v1);
     v1 = std::move(v2);
     v2 = std::move(temp);
 }
+
+// DONOT CREATE THIS
+template <typename T>
+struct _sort_compare_functor
+{
+    _sort_compare_functor() = default;
+
+    FORCE_INLINE bool operator()(const T& v1, const T& v2) const
+    {
+        return v1 < v2;
+    }
+};
 
 constexpr size_t SORT_AUX_BUFFER_BYTES = 1024; // in bytes
 
@@ -114,8 +126,8 @@ Selection sort
 
 */
 
-template <typename T>
-void selection_sort(T* arr, size_t len)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+void selection_sort(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
     if(!arr)
         return;
@@ -125,7 +137,7 @@ void selection_sort(T* arr, size_t len)
         size_t smallest_index = i;
         for(size_t j = i; j < len; j++)
         {
-            if(arr[j] < arr[smallest_index])
+            if(compare(arr[j], arr[smallest_index]))
             {
                 smallest_index = j;
             }
@@ -173,6 +185,26 @@ void insertion_sort_linear(T* arr, size_t len)
     }
 }
 
+// using reverse linear search to find the insert location
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+void insertion_sort(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
+{
+    if(!arr)
+        return;
+
+    for(size_t i = 1; i < len; i++)
+    {
+        T val = std::move(arr[i]);
+
+        size_t j;
+        for(j = 0; j < i && compare(val, arr[i - j - 1]); j++)
+        {
+            arr[i - j] = std::move(arr[i - j - 1]);
+        }
+        arr[i - j] = std::move(val);
+    }
+}
+
 /*
 
 Quicksort
@@ -182,67 +214,68 @@ Quicksort
 constexpr size_t SORT_QUICK_BRANCHLESS_BUF_SIZE = 32;
 
 // DONOT CALL THIS
-template <typename T>
-inline size_t _quick_sort_median_of_3(T* arr, size_t i1, size_t i2, size_t i3)
+template <typename T, class _compare_functor>
+inline size_t _quick_sort_median_of_3(const T& v1, const T& v2, const T& v3, _compare_functor compare)
 {
-    if(arr[i1] < arr[i2])
+    if(compare(v1, v2))
     {
-        if(arr[i2] < arr[i3])
+        if(compare(v2, v3))
         {
-            return i2;
+            return v2;
         }
-        else if(arr[i1] < arr[i3])
+        else if(compare(v1, v3))
         {
-            return i3;
+            return v3;
         }
         else
         {
-            return i1;
+            return v1;
         }
     }
-    else if(arr[i1] < arr[i3])
+    else if(compare(v1, v3))
     {
-        return i1;
+        return v1;
     }
-    else if(arr[i2] < arr[i3])
+    else if(compare(v2, v3))
     {
-        return i3;
+        return v3;
     }
-    return i2;
+    return v2;
 }
 
 // DONOT CALL THIS
 // maybe we want to add randomness to this?
-template <typename T>
-inline size_t _quick_sort_select_pivot_index(T* arr, size_t len)
+template <typename T, class _compare_functor>
+inline T _quick_sort_select_pivot(const T* arr, size_t len, _compare_functor compare)
 {
     if(len >= 128) // pseudo median of 9
     {
-        const size_t m1 = _quick_sort_median_of_3(arr, 0, len / 8, len / 4);
-        const size_t m2 = _quick_sort_median_of_3(arr, 3 * len / 8, len / 2, 5 * len / 8);
-        const size_t m3 = _quick_sort_median_of_3(arr, 6 * len / 8, 7 * len / 8, len - 1);
-        return _quick_sort_median_of_3(arr, m1, m2, m3);
+        return _quick_sort_median_of_3(
+            _quick_sort_median_of_3(arr[0], arr[len / 8], arr[len / 4], compare),
+            _quick_sort_median_of_3(arr[3 * len / 8], arr[len / 2], arr[5 * len / 8], compare),
+            _quick_sort_median_of_3(arr[3 * len / 4], arr[7 * len / 8], arr[len - 1], compare),
+            compare);
     }
     else if(len >= 16) // median of 3
     {
-        return _quick_sort_median_of_3(arr, 0, len >> 1, len - 1);
+        return _quick_sort_median_of_3(arr[0], arr[len >> 1], arr[len - 1], compare);
     }
-    return len >> 1; // median index
+    return arr[len >> 1]; // median index
 }
 
 // DONOT CALL THIS
 // returns the new pivot index
-template <typename T>
-FORCE_INLINE size_t _quick_sort_partition(T* arr, size_t len)
+template <typename T, class _compare_functor>
+FORCE_INLINE size_t _quick_sort_partition(T* arr, size_t len, _compare_functor compare)
 {
-    T pivot_val = arr[_quick_sort_select_pivot_index(arr, len)]; // this can't be std::move
+    const T pivot_val = _quick_sort_select_pivot(arr, len, compare); // this can't be std::move
     size_t left = -1;
     size_t right = len;
 
     while(true)
     {
-        for(++left; arr[left] < pivot_val; ++left);
-        for(--right; arr[right] > pivot_val; --right);
+        for(++left; compare(arr[left], pivot_val); ++left);
+        for(--right; compare(pivot_val, arr[right]); --right);
 
         if(left > right)
             break;
@@ -255,10 +288,10 @@ FORCE_INLINE size_t _quick_sort_partition(T* arr, size_t len)
 
 // DONOT CALL THIS
 // returns the new pivot index
-template <typename T>
-FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len)
+template <typename T, class _compare_functor>
+FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len, _compare_functor compare)
 {
-    T pivot_val = arr[_quick_sort_select_pivot_index(arr, len)]; // this can't be std::move
+    const T pivot_val = _quick_sort_select_pivot(arr, len, compare); // this can't be std::move
     size_t left = 0;
     size_t right = len - 1;
 
@@ -277,7 +310,7 @@ FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len)
             for(size_t i = 0; i < SORT_QUICK_BRANCHLESS_BUF_SIZE; i++)
             {
                 swap1[num_swap1] = left + i;
-                num_swap1 += !(arr[left + i] < pivot_val);
+                num_swap1 += !compare(arr[left + i], pivot_val);
             }
             left += SORT_QUICK_BRANCHLESS_BUF_SIZE;
         }
@@ -287,7 +320,7 @@ FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len)
             for(size_t i = 0; i < SORT_QUICK_BRANCHLESS_BUF_SIZE; i++)
             {
                 swap2[num_swap2] = right - i;
-                num_swap2 += !(arr[right - i] > pivot_val);
+                num_swap2 += !compare(pivot_val, arr[right - i]);
             }
             right -= SORT_QUICK_BRANCHLESS_BUF_SIZE;
         }
@@ -308,8 +341,8 @@ FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len)
 
     while(true)
     {
-        for(++left; arr[left] < pivot_val; ++left);
-        for(--right; arr[right] > pivot_val; --right);
+        for(++left; compare(arr[left], pivot_val); ++left);
+        for(--right; compare(pivot_val, arr[right]); --right);
 
         if(left > right)
             break;
@@ -321,29 +354,29 @@ FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len)
 }
 
 // Hoare's partition with dynamic pivot selection method depending on partition size
-template <typename T>
-void quick_sort_vanilla(T* arr, size_t len)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+void quick_sort_vanilla(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
     if(len <= 1 || !arr)
         return;
     else if(len == 2)
     {
-        if(arr[0] > arr[1])
+        if(compare(arr[1], arr[0]))
         {
             _sort_swap(arr[0], arr[1]);
         }
         return;
     }
 
-    const size_t pivot_index = _quick_sort_partition(arr, len);
+    const size_t pivot_index = _quick_sort_partition(arr, len, compare);
 
-    quick_sort_vanilla(arr, pivot_index);
-    quick_sort_vanilla(&arr[pivot_index], len - pivot_index);
+    quick_sort_vanilla(arr, pivot_index, compare);
+    quick_sort_vanilla(&arr[pivot_index], len - pivot_index, compare);
 }
 
 // Hoare's quick sort and adaptive pivot with insertion sort base case
-template <typename T>
-void quick_sort_branched(T* arr, size_t len)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+void quick_sort_branched(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
     constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
 
@@ -351,7 +384,7 @@ void quick_sort_branched(T* arr, size_t len)
         return;
     else if(len == 2)
     {
-        if(arr[0] > arr[1])
+        if(compare(arr[1], arr[0]))
         {
             _sort_swap(arr[0], arr[1]);
         }
@@ -359,19 +392,19 @@ void quick_sort_branched(T* arr, size_t len)
     }
     else if(len <= SORT_INSERTION_SIZE)
     {
-        insertion_sort_linear(arr, len);
+        insertion_sort(arr, len, compare);
         return;
     }
 
-    const size_t pivot_index = _quick_sort_partition(arr, len);
+    const size_t pivot_index = _quick_sort_partition(arr, len, compare);
 
-    quick_sort_branched(arr, pivot_index);
-    quick_sort_branched(&arr[pivot_index], len - pivot_index);
+    quick_sort_branched(arr, pivot_index, compare);
+    quick_sort_branched(&arr[pivot_index], len - pivot_index, compare);
 }
 
 // this is block quick sort with Hoare's partition and adaptive pivot with insertion sort base case
-template <typename T>
-void quick_sort_branchless(T* arr, size_t len)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+void quick_sort_branchless(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
     constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
 
@@ -379,7 +412,7 @@ void quick_sort_branchless(T* arr, size_t len)
         return;
     else if(len == 2)
     {
-        if(arr[0] > arr[1])
+        if(compare(arr[1], arr[0]))
         {
             _sort_swap(arr[0], arr[1]);
         }
@@ -387,21 +420,21 @@ void quick_sort_branchless(T* arr, size_t len)
     }
     else if(len <= SORT_INSERTION_SIZE)
     {
-        insertion_sort_linear(arr, len);
+        insertion_sort(arr, len, compare);
         return;
     }
 
-    const size_t pivot_index = _quick_sort_partition_branchless(arr, len);
+    const size_t pivot_index = _quick_sort_partition_branchless(arr, len, compare);
 
-    quick_sort_branchless(arr, pivot_index);
-    quick_sort_branchless(&arr[pivot_index], len - pivot_index);
+    quick_sort_branchless(arr, pivot_index, compare);
+    quick_sort_branchless(&arr[pivot_index], len - pivot_index, compare);
 }
 
 // defaults to quick_sort_branchless
-template <typename T>
-inline void quick_sort(T* arr, size_t len)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+inline void quick_sort(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
-    quick_sort_branchless(arr, len);
+    quick_sort_branchless(arr, len, compare);
 }
 
 /*
@@ -411,8 +444,8 @@ Mergesort
 */
 
 // DONOT CALL THIS
-template <typename T>
-void _merge_sort_merge(const T* arr1, size_t len1, const T* arr2, size_t len2, T* out)
+template <typename T, class _compare_functor>
+void _merge_sort_merge(const T* arr1, size_t len1, const T* arr2, size_t len2, T* out, _compare_functor compare)
 {
     size_t left = 0;
     size_t right = 0;
@@ -420,7 +453,7 @@ void _merge_sort_merge(const T* arr1, size_t len1, const T* arr2, size_t len2, T
     size_t index;
     for(index = 0; left < len1 && right < len2; index++)
     {
-        if(arr1[left] < arr2[right])
+        if(compare(arr1[left], arr2[right]))
         {
             out[index] = std::move(arr1[left]);
             ++left;
@@ -444,8 +477,8 @@ void _merge_sort_merge(const T* arr1, size_t len1, const T* arr2, size_t len2, T
 }
 
 // DONOT CALL THIS
-template <typename T>
-FORCE_INLINE void _merge_sort_impl(T* arr, T* buf, size_t start_sort_len, size_t len)
+template <typename T, class _compare_functor>
+FORCE_INLINE void _merge_sort_impl(T* arr, T* buf, size_t start_sort_len, size_t len, _compare_functor compare)
 {
     assert(start_sort_len > 0);
 
@@ -458,14 +491,14 @@ FORCE_INLINE void _merge_sort_impl(T* arr, T* buf, size_t start_sort_len, size_t
         size_t i;
         for(i = 0; i + (sort_len << 1) < len; i += sort_len << 1)
         {
-            _merge_sort_merge(&from[i], sort_len, &from[i + sort_len], sort_len, &to[i]);
+            _merge_sort_merge(&from[i], sort_len, &from[i + sort_len], sort_len, &to[i], compare);
         }
 
         if(i < len)
         {
             if(i + sort_len < len) // we have 1 and a half sub buffers
             {
-                _merge_sort_merge(&from[i], sort_len, &from[i + sort_len], len - (i + sort_len), &to[i]);
+                _merge_sort_merge(&from[i], sort_len, &from[i + sort_len], len - (i + sort_len), &to[i], compare);
             }
             else // we have a half sub buffer
             {
@@ -493,14 +526,14 @@ FORCE_INLINE void _merge_sort_impl(T* arr, T* buf, size_t start_sort_len, size_t
 }
 
 // a double-buffered iterative merge sort
-template <typename T>
-void merge_sort_vanilla(T* arr, size_t len)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+void merge_sort_vanilla(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
     if(len <= 1 || !arr)
         return;
     else if(len == 2)
     {
-        if(arr[0] > arr[1])
+        if(compare(arr[1], arr[0]))
         {
             _sort_swap(arr[0], arr[1]);
         }
@@ -508,13 +541,13 @@ void merge_sort_vanilla(T* arr, size_t len)
     }
 
     T* buf = new T[len];
-    _merge_sort_impl(arr, buf, 1, len);
+    _merge_sort_impl(arr, buf, 1, len, compare);
     delete[] buf;
 }
 
 // double buffered iterative merge sort and insertion sort together
-template <typename T>
-void merge_sort(T* arr, size_t len)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+void merge_sort(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
     constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
 
@@ -522,7 +555,7 @@ void merge_sort(T* arr, size_t len)
         return;
     else if(len == 2)
     {
-        if(arr[0] > arr[1])
+        if(compare(arr[1], arr[0]))
         {
             _sort_swap(arr[0], arr[1]);
         }
@@ -530,19 +563,19 @@ void merge_sort(T* arr, size_t len)
     }
     else if(len <= SORT_INSERTION_SIZE)
     {
-        insertion_sort_linear(arr, len);
+        insertion_sort(arr, len, compare);
         return;
     }
 
     size_t i;
     for(i = 0; i + SORT_INSERTION_SIZE < len; i += SORT_INSERTION_SIZE)
     {
-        insertion_sort_linear(&arr[i], SORT_INSERTION_SIZE);
+        insertion_sort(&arr[i], SORT_INSERTION_SIZE, compare);
     }
-    insertion_sort_linear(&arr[i], len - i);
+    insertion_sort(&arr[i], len - i, compare);
 
     T* buf = new T[len];
-    _merge_sort_impl(arr, buf, SORT_INSERTION_SIZE, len);
+    _merge_sort_impl(arr, buf, SORT_INSERTION_SIZE, len, compare);
     delete[] buf;
 }
 
@@ -552,33 +585,40 @@ Ctrlsort
 
 */
 
-// a composite sort that combines insertion sort, merge sort, and quicksort
-template <typename T>
-void sort(T* arr, size_t len)
+// DONOT CALL THIS
+template <typename T, class _compare_functor>
+void _sort_impl(T* arr, size_t len, _compare_functor compare)
 {
     constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
     constexpr size_t SORT_AUX_BUFFER_LEN = SORT_AUX_BUFFER_BYTES / sizeof(T);
 
     if(len <= SORT_INSERTION_SIZE)
     {
-        insertion_sort_linear(arr, len);
+        insertion_sort(arr, len, compare);
     }
     else if(len <= SORT_AUX_BUFFER_LEN)
     {
         size_t i;
         for(i = 0; i + SORT_INSERTION_SIZE < len; i += SORT_INSERTION_SIZE)
         {
-            insertion_sort_linear(&arr[i], SORT_INSERTION_SIZE);
+            insertion_sort(&arr[i], SORT_INSERTION_SIZE, compare);
         }
-        insertion_sort_linear(&arr[i], len - i);
+        insertion_sort(&arr[i], len - i, compare);
 
         T buf[SORT_AUX_BUFFER_LEN];
-        _merge_sort_impl(arr, buf, SORT_INSERTION_SIZE, len);
+        _merge_sort_impl(arr, buf, SORT_INSERTION_SIZE, len, compare);
     }
     else
     {
-        const size_t pivot_index = _quick_sort_partition_branchless(arr, len);
-        sort(arr, pivot_index);
-        sort(&arr[pivot_index], len - pivot_index);
+        const size_t pivot_index = _quick_sort_partition_branchless(arr, len, compare);
+        _sort_impl(arr, pivot_index, compare);
+        _sort_impl(&arr[pivot_index], len - pivot_index, compare);
     }
+}
+
+// a composite sort that combines insertion sort, merge sort, and quicksort
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+inline void sort(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
+{
+    _sort_impl(arr, len, compare);
 }
