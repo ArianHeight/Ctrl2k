@@ -34,7 +34,9 @@ enum LogLevelFlag : uint8_t
 	LOGLEVELFLAG_WARNING = 1 << LOGLEVEL_WARNING,
 	LOGLEVELFLAG_ERROR = 1 << LOGLEVEL_ERROR,
 	LOGLEVELFLAG_FATAL = 1 << LOGLEVEL_FATAL,
-	LOGLEVELFLAG_NONE_FLUSH = 1 << LOGLEVEL_NONE_FLUSH // this flag should do nothing
+	LOGLEVELFLAG_NONE_FLUSH = 1 << LOGLEVEL_NONE_FLUSH, // this flag should do nothing
+
+	LOGLEVELFLAG_ALL = UINT8_MAX
 };
 
 enum LogPrefix : uint8_t
@@ -56,17 +58,17 @@ enum LogTime : uint8_t
 
 struct LoggingStreamSettings
 {
-	LogLevelFlag levelFlags; // flags for setting which type of msgs get logged
-	LogPrefix usePrefix; // which prefix to add to msgs
-	LogTime useLogTime; // how should time be logged
-	bool showTextColour : 1; // use ANSI escape characters to do coloured text in consoles
-	bool showThreadId : 1; // print the thread id that logged the msg
-	bool showFile : 1; // print the file name that logged the msg
-	bool logFullPath : 1; // only takes effect if showing File, shows the full absolute file path
-	bool showLineNumber : 1; // only takes effect if showing File, shows the line number of the log call
+	LogLevelFlag levelFlags = LOGLEVELFLAG_ALL; // flags for setting which type of msgs get logged
+	LogPrefix usePrefix = LOGPREFIX_LONG; // which prefix to add to msgs
+	LogTime useLogTime = LOGTIME_FULL; // how should time be logged
+	bool showTextColour : 1 = true; // use ANSI escape characters to do coloured text in consoles
+	bool showThreadId : 1 = true; // print the thread id that logged the msg
+	bool showFile : 1 = true; // print the file name that logged the msg
+	bool logFullPath : 1 = true; // only takes effect if showing File, shows the full absolute file path
+	bool showLineNumber : 1 = true; // only takes effect if showing File, shows the line number of the log call
 
 	//Everything is on by default
-	LoggingStreamSettings() { mem_set_one(this, sizeof(LoggingStreamSettings)); usePrefix = LOGPREFIX_LONG; useLogTime = LOGTIME_FULL; }
+	LoggingStreamSettings() = default;
 };
 
 enum LogVerbosity : uint8_t
