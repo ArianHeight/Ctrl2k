@@ -166,23 +166,32 @@ consteval size_t _sort_calc_sort_insertion_size(size_t data_size)
 }
 
 // using reverse linear search to find the insert location
-template <typename T>
-void insertion_sort_linear(T* arr, size_t len)
+template <typename T, class _compare_functor>
+bool _insertion_sort_attempt(T* arr, size_t len, size_t max_insertions, _compare_functor compare)
 {
     if(!arr)
-        return;
+        return false;
 
+    size_t insertions = 0;
     for(size_t i = 1; i < len; i++)
     {
         T val = std::move(arr[i]);
 
         size_t j;
-        for(j = 0; j < i && arr[i - j - 1] > val; j++)
+        for(j = 0; j < i && compare(val, arr[i - j - 1]); j++)
         {
             arr[i - j] = std::move(arr[i - j - 1]);
         }
         arr[i - j] = std::move(val);
+        insertions += !(j == 0);
+
+        if(insertions > max_insertions)
+        {
+            return false;
+        }
     }
+
+    return true;
 }
 
 // using reverse linear search to find the insert location
@@ -215,7 +224,7 @@ constexpr size_t SORT_QUICK_BRANCHLESS_BUF_SIZE = 32;
 
 // DONOT CALL THIS
 template <typename T, class _compare_functor>
-inline size_t _quick_sort_median_of_3(const T& v1, const T& v2, const T& v3, _compare_functor compare)
+inline T _quick_sort_median_of_3(const T& v1, const T& v2, const T& v3, _compare_functor compare)
 {
     if(compare(v1, v2))
     {
@@ -289,7 +298,7 @@ FORCE_INLINE size_t _quick_sort_partition(T* arr, size_t len, _compare_functor c
 // DONOT CALL THIS
 // returns the new pivot index
 template <typename T, class _compare_functor>
-FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len, _compare_functor compare)
+FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len, size_t& total_swaps, _compare_functor compare)
 {
     const T pivot_val = _quick_sort_select_pivot(arr, len, compare); // this can't be std::move
     size_t left = 0;
@@ -334,6 +343,7 @@ FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len, _compar
         num_swap2 -= num_swap;
         start1 += num_swap;
         start2 += num_swap;
+        total_swaps += num_swap;
     }
 
     left = (num_swap1 != 0 ? swap1[start1] : left) - 1;
@@ -348,6 +358,7 @@ FORCE_INLINE size_t _quick_sort_partition_branchless(T* arr, size_t len, _compar
             break;
 
         _sort_swap(arr[left], arr[right]);
+        ++total_swaps;
     }
 
     return left;
@@ -424,7 +435,8 @@ void quick_sort_branchless(T* arr, size_t len, _compare_functor compare = _sort_
         return;
     }
 
-    const size_t pivot_index = _quick_sort_partition_branchless(arr, len, compare);
+    size_t num_swaps = 0;
+    const size_t pivot_index = _quick_sort_partition_branchless(arr, len, num_swaps, compare);
 
     quick_sort_branchless(arr, pivot_index, compare);
     quick_sort_branchless(&arr[pivot_index], len - pivot_index, compare);
@@ -585,9 +597,12 @@ Ctrlsort
 
 */
 
+constexpr float SORT_ATTEMPT_INSERTION_PERCENTAGE = 0.1f;
+compile_assert(SORT_ATTEMPT_INSERTION_PERCENTAGE >= 0.f && SORT_ATTEMPT_INSERTION_PERCENTAGE < 0.5f);
+
 // DONOT CALL THIS
 template <typename T, class _compare_functor>
-void _sort_impl(T* arr, size_t len, _compare_functor compare)
+void _sort_impl(T* arr, size_t len, size_t num_prev_swaps, _compare_functor compare)
 {
     constexpr size_t SORT_INSERTION_SIZE = _sort_calc_sort_insertion_size(sizeof(T));
     constexpr size_t SORT_AUX_BUFFER_LEN = SORT_AUX_BUFFER_BYTES / sizeof(T);
@@ -610,15 +625,30 @@ void _sort_impl(T* arr, size_t len, _compare_functor compare)
     }
     else
     {
-        const size_t pivot_index = _quick_sort_partition_branchless(arr, len, compare);
-        _sort_impl(arr, pivot_index, compare);
-        _sort_impl(&arr[pivot_index], len - pivot_index, compare);
+        if(num_prev_swaps < len)
+        {
+            const size_t try_insertions = num_prev_swaps < (len >> 1) ? num_prev_swaps : len - num_prev_swaps;
+            if(try_insertions < (size_t)(SORT_ATTEMPT_INSERTION_PERCENTAGE * len))
+            {
+                if(_insertion_sort_attempt(arr, len, try_insertions, compare))
+                {
+                    return;
+                }
+            }
+        }
+
+        size_t num_swaps = 0;
+        const size_t pivot_index = _quick_sort_partition_branchless(arr, len, num_swaps, compare);
+
+        _sort_impl(arr, pivot_index, num_swaps, compare);
+        _sort_impl(&arr[pivot_index], len - pivot_index, num_swaps, compare);
     }
 }
 
-// a composite sort that combines insertion sort, merge sort, and quicksort
+// a composite sort that combines insertion sort, merge sort, and quicksort(with optimistic insertion sort if there was not alot of swapping)
+// currently this is somewhat similar to pdqsort, instead without the partitionLeft and partitionRight functionality for equal values
 template <typename T, class _compare_functor = _sort_compare_functor<T>>
 inline void sort(T* arr, size_t len, _compare_functor compare = _sort_compare_functor<T>())
 {
-    _sort_impl(arr, len, compare);
+    _sort_impl(arr, len, INVALID_SIZE_T, compare);
 }

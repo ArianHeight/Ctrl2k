@@ -524,16 +524,6 @@ void benchMarkSelectionSort(std::vector<int> arr)
 	checkIfVectorSorted(arr);
 }
 
-void benchMarkInsertionSortLinear(std::vector<int> arr)
-{
-	{
-		BENCHMARK_SCOPED_PRECISION(rvl::TimePrecision::MICROSECONDS);
-		insertion_sort_linear(arr.data(), arr.size());
-	}
-
-	checkIfVectorSorted(arr);
-}
-
 void benchMarkInsertionSort(std::vector<int> arr)
 {
 	{
@@ -642,7 +632,6 @@ void benchMarkAll()
 	for(int i = 0; i < 64; i++)
 	{
 		generateRandomInts(128, 0, 256, sortingData);
-		benchMarkInsertionSortLinear(sortingData);
 		benchMarkInsertionSort(sortingData);
 		benchMarkInsertionSortReverse(sortingData);
 		benchMarkSelectionSort(sortingData);
