@@ -117,7 +117,7 @@ void BenchMarker::LogResults()
 		}
 	}
 
-	long double mean = total / m_runTimes.size();
+	long double mean = (long double)total / (long double)m_runTimes.size();
 
 	long double deviation = 0;
 	for(size_t i = 0; i < m_runTimes.size(); i++)
