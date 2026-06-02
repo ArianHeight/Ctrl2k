@@ -175,6 +175,9 @@
     <ProjectReference Include="..\Core\Petra\Petra.vcxproj">
       <Project>{15ad7afd-0ddb-4b7c-823f-3b54cf4d41af}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Core\Scribe\Scribe.vcxproj">
+      <Project>{f61936bb-a46c-4b4f-937e-4df534819b5b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Core\SunDial\SunDial.vcxproj">
       <Project>{eb11a967-dab8-4de2-894c-f5014e62137e}</Project>
     </ProjectReference>
