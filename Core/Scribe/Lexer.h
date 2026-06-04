@@ -1,9 +1,11 @@
 #pragma once
+#include <string>
 #include <vector>
 
 namespace scb
 {
 	enum class ControlsTokenType {
+		TEST,
 		MOVE_FORWARD,
 		MOVE_BACKWARD,
 		MOVE_LEFT,
@@ -14,7 +16,7 @@ namespace scb
 	public:
 		TokenPair(ControlsTokenType, const char*);
 		const ControlsTokenType getTokenType();
-		const const char* getTokenValue(); // is "const const char*" funny?
+		const char* getTokenValue();
 
 	protected:
 		ControlsTokenType tokenType;
@@ -24,8 +26,10 @@ namespace scb
 	class Lexer {
 	public:
 		Lexer();
+		void loadFile(const char*);
 		void appendToken(TokenPair);
-		const char* summary();
+		const std::string summary(); // brief information about the lexer instance
+		std::vector<std::string> raw; // unprocessed strings from a file
 
 	protected:
 		std::vector<int> tokenList;

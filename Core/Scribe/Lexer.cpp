@@ -1,8 +1,11 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <vector>
 #include "Lexer.h"
 
 using namespace scb;
+using namespace std;
 
 // --------- TokenPair ------------
 
@@ -13,7 +16,7 @@ const ControlsTokenType TokenPair::getTokenType() {
 	return tokenType;
 }
 
-const const char* TokenPair::getTokenValue() {
+const char* TokenPair::getTokenValue() {
 	return tokenValue;
 }
 
@@ -25,6 +28,22 @@ void Lexer::appendToken(TokenPair tp) {
 	return;
 }
 
-const char* Lexer::summary() {
-	return "useless lexer";
+const string Lexer::summary() {
+	return to_string(raw.size());
+}
+
+void Lexer::loadFile(const char* path) {
+	fstream myFile;
+
+	myFile.open(path);
+	string line;
+
+	// If file didn't load then raw vector doesn't get updated
+	if (myFile.is_open()) {
+		while (getline(myFile, line)) {
+			raw.push_back(line);
+		}
+		myFile.close();
+	}
+
 }
