@@ -50,7 +50,7 @@ ProfilerScoped::~ProfilerScoped()
 	const long long timeElapsed = GetTimeElapsed(m_start, std::chrono::steady_clock::now(), m_precision);
 
 	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
-	gbt::SafeLog_ImmediatePushMessage(gbt::LogLevel::PROFILE, m_file, m_line, std::chrono::system_clock::now(),
+	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::chrono::system_clock::now(),
 		std::format("{}() took {}{}{}{}", m_funcname, timeElapsed, timeSuffixes[(size_t)m_precision], msgPrefix[m_msg.empty() ? 1 : 0], m_msg));
 }
 
@@ -59,7 +59,7 @@ void Profiler::TimerEnd(c_string file, gbt::LineNumber line)
 	const long long timeElapsed = GetTimeElapsed(m_start, std::chrono::steady_clock::now(), m_precision);
 
 	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
-	gbt::SafeLog_ImmediatePushMessage(gbt::LogLevel::PROFILE, file, line, std::chrono::system_clock::now(),
+	gbt::SafeLog_ImmediatePushMessage(gbt::LOGLEVEL_PROFILE, file, line, std::chrono::system_clock::now(),
 		std::format("Section {} took {}{}", m_section_name, timeElapsed, timeSuffixes[(size_t)m_precision]));
 }
 
@@ -133,7 +133,7 @@ void BenchMarker::LogResults()
 	const char* timeSuffix = timeSuffixes[(size_t)m_precision];
 
 	// profiler is allowed to call safelog functions directly, it needs a deeper interface with the logger
-	gbt::SafeLog_QueueMessage(gbt::LogLevel::PROFILE, m_file, m_line, std::chrono::system_clock::now(),
+	gbt::SafeLog_QueueMessage(gbt::LOGLEVEL_PROFILE, m_file, m_line, std::chrono::system_clock::now(),
 		std::format("{}() BenchMark({}{} runs) | Total: {}{}, Best: {}{}, Worst: {}{}, Mean: {:.3g}{}, Median: {}{}, StDev: {:.3g}",
 			m_funcname, m_overflowed ? "overflowed " : "", m_runTimes.size(),
 			total, timeSuffix, best, timeSuffix, worst, timeSuffix, mean, timeSuffix, median, timeSuffix, standard_deviation));

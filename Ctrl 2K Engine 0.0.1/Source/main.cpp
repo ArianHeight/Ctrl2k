@@ -6,9 +6,9 @@ Ctrl 2K 2D Game Engine
 
 //#include "stdafx.h"
 //#include <Ctrl 2kPCH.h>
+#include "../Include/Ctrl 2kPCH.h"
 #include "Ctrl Core/setup.h"
 #include "Tools/RuhrValley/profiler.h"
-#include "../Include/Ctrl 2kPCH.h"
 
 /*
 

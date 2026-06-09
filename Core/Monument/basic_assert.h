@@ -15,4 +15,3 @@ assert( internal_start >= start && internal_start + internal_len <= start + len 
 #define ptr_assert(ptr) assert(ptr)
 
 #define compile_assert(cond) static_assert(cond)
-#define compile_assert_msg(cond, msg) static_assert(cond, msg)

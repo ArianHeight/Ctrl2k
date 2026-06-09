@@ -268,12 +268,12 @@ void benchMarkSorting()
 
 int main(int argc, char* argv[])
 {
-    REGISTER_LOGGING_STREAM_VERBOSITY(gbt::LogLevel::PROFILE, gbt::LogVerbosity::LOW, std::cout);
+    REGISTER_LOGGING_STREAM_VERBOSITY(gbt::LOGLEVEL_PROFILE, gbt::LOGVERBOSITY_LOW, std::cout);
     REGISTER_FILE_FOR_LOGGING("logs/benchmark_text.log");
     gbt::LoggingStreamSettings benchmarkSettings;
-    benchmarkSettings.levelFlags = (gbt::LogLevelFlag)(gbt::LogLevelFlag::PROFILE | gbt::LogLevelFlag::MSG);
-    benchmarkSettings.useLogTime = gbt::LogTime::NONE;
-    benchmarkSettings.usePrefix = gbt::LogPrefix::NONE;
+    benchmarkSettings.levelFlags = (gbt::LogLevelFlag)(gbt::LogLevelFlag::LOGLEVELFLAG_PROFILE | gbt::LogLevelFlag::LOGLEVELFLAG_MSG);
+    benchmarkSettings.useLogTime = gbt::LogTime::LOGTIME_NONE;
+    benchmarkSettings.usePrefix = gbt::LogPrefix::LOGPREFIX_NONE;
     benchmarkSettings.logFullPath = false;
     benchmarkSettings.showFile = false;
     benchmarkSettings.showLineNumber = false;
