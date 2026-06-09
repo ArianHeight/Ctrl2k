@@ -9,58 +9,65 @@
 //comment to use the thread requesting the log to actually log
 #define LOG_USE_LOGGING_THREAD
 
+#ifdef ERROR
+compile_assert_msg(false, "This file has \"ERROR\" in a few enum declarations that is being overriden by the ERROR macro"
+	"(probably from wingdi.h), please include this file before the ERROR macro is defined or undef the ERROR macro.");
+#endif
+
 namespace gbt
 {
 
 //Every added level must have a corresponding LogMsgPrefix written in Logger.cpp
-enum LogLevel : uint8_t
+ENUM_SCOPED_TYPED(LogLevel, uint8_t,
+	PROFILE,
+	TRACE,
+	MSG,
+	WARNING,
+	ERROR,
+	FATAL,
+	NONE_FLUSH,
+	NONE_SIZE //keep as the last element!
+);
+compile_assert((1 << LogLevel::NONE_SIZE) <= UINT8_MAX);
+
+enum class LogLevelFlag : uint8_t
 {
-	LOGLEVEL_PROFILE,
-	LOGLEVEL_TRACE,
-	LOGLEVEL_MSG,
-	LOGLEVEL_WARNING,
-	LOGLEVEL_ERROR,
-	LOGLEVEL_FATAL,
-	LOGLEVEL_NONE_FLUSH,
-	LOGLEVEL_NONE_SIZE			//Keep this as the last element!
+	NONE = 0,
+	PROFILE = 1 << LogLevel::PROFILE,
+	TRACE = 1 << LogLevel::TRACE,
+	MSG = 1 << LogLevel::MSG,
+	WARNING = 1 << LogLevel::WARNING,
+	ERROR = 1 << LogLevel::ERROR,
+	FATAL = 1 << LogLevel::FATAL,
+	FLUSH = 1 << LogLevel::NONE_FLUSH, // this flag should do nothing
+
+	ALL = UINT8_MAX
 };
-compile_assert(1 << LOGLEVEL_NONE_SIZE <= UINT8_MAX);
+ENUM_CLASS_OP_GEN(LogLevelFlag);
+compile_assert(sizeof(LogLevelFlag) == sizeof(uint8_t));
 
-enum LogLevelFlag : uint8_t
+enum class LogPrefix : uint8_t
 {
-	LOGLEVELFLAG_PROFILE = 1 << LOGLEVEL_PROFILE,
-	LOGLEVELFLAG_TRACE = 1 << LOGLEVEL_TRACE,
-	LOGLEVELFLAG_MSG = 1 << LOGLEVEL_MSG,
-	LOGLEVELFLAG_WARNING = 1 << LOGLEVEL_WARNING,
-	LOGLEVELFLAG_ERROR = 1 << LOGLEVEL_ERROR,
-	LOGLEVELFLAG_FATAL = 1 << LOGLEVEL_FATAL,
-	LOGLEVELFLAG_NONE_FLUSH = 1 << LOGLEVEL_NONE_FLUSH, // this flag should do nothing
-
-	LOGLEVELFLAG_ALL = UINT8_MAX
+	SHORT,
+	LONG,
+	NONE,
+	INVALID_SIZE //Keep this as the last element!
 };
 
-enum LogPrefix : uint8_t
+enum class LogTime : uint8_t
 {
-	LOGPREFIX_SHORT,
-	LOGPREFIX_LONG,
-	LOGPREFIX_NONE,
-	LOGPREFIX_INVALID_SIZE //Keep this as the last element!
-};
-
-enum LogTime : uint8_t
-{
-	LOGTIME_NONE, // don't log time
-	LOGTIME_HMS, // HH:mm:ss
-	LOGTIME_HMS_S, // HH:mm:ss.ssss
-	LOGTIME_FULL, // YYYY-MM-DD HH:mm:ss.ssss
-	LOGTIME_INVALID_SIZE //Keep this as the last element!
+	NONE, // don't log time
+	HMS, // HH:mm:ss
+	HMS_S, // HH:mm:ss.ssss
+	FULL, // YYYY-MM-DD HH:mm:ss.ssss
+	INVALID_SIZE //Keep this as the last element!
 };
 
 struct LoggingStreamSettings
 {
-	LogLevelFlag levelFlags = LOGLEVELFLAG_ALL; // flags for setting which type of msgs get logged
-	LogPrefix usePrefix = LOGPREFIX_LONG; // which prefix to add to msgs
-	LogTime useLogTime = LOGTIME_FULL; // how should time be logged
+	LogLevelFlag levelFlags = LogLevelFlag::ALL; // flags for setting which type of msgs get logged
+	LogPrefix usePrefix = LogPrefix::LONG; // which prefix to add to msgs
+	LogTime useLogTime = LogTime::FULL; // how should time be logged
 	bool showTextColour : 1 = true; // use ANSI escape characters to do coloured text in consoles
 	bool showThreadId : 1 = true; // print the thread id that logged the msg
 	bool showFile : 1 = true; // print the file name that logged the msg
@@ -71,13 +78,13 @@ struct LoggingStreamSettings
 	LoggingStreamSettings() = default;
 };
 
-enum LogVerbosity : uint8_t
+enum class LogVerbosity : uint8_t
 {
-	LOGVERBOSITY_LOW,
-	LOGVERBOSITY_MEDIUM,
-	LOGVERBOSITY_HIGH,
-	LOGVERBOSITY_FULL,
-	LOGVERBOSITY_INVALID_COUNT
+	LOW,
+	MEDIUM,
+	HIGH,
+	FULL,
+	INVALID_COUNT
 };
 
 bool SafeLog_RegisterFile(const LoggingStreamSettings& settings, const FilePath& path, bool truncate);
@@ -117,19 +124,19 @@ void SafeLog_PushAllPendingMessages();
 
 //only queue the msgs, need to call SafeLog_PushAllPendingMessages for it to push
 #define LOG_QUEUE(lvl, log, ...) gbt::SafeLog_QueueMessage(lvl, __FILE__, __LINE__, std::chrono::system_clock::now(), std::vformat(log, std::make_format_args(__VA_ARGS__)))
-#define LOG_TRACE_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_TRACE, log, __VA_ARGS__)
-#define LOG_MSG_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_MSG, log, __VA_ARGS__)
-#define LOG_WARNING_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_WARNING, log, __VA_ARGS__)
-#define LOG_ERROR_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_ERROR, log, __VA_ARGS__)
-#define LOG_FATAL_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::LOGLEVEL_FATAL, log, __VA_ARGS__)
-#define LOG_FLUSH_QUEUE() gbt::SafeLog_QueueMessage(gbt::LogLevel::LOGLEVEL_NONE_FLUSH, "", 0, std::chrono::system_clock::now(), "")
+#define LOG_TRACE_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::TRACE, log, __VA_ARGS__)
+#define LOG_MSG_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::MSG, log, __VA_ARGS__)
+#define LOG_WARNING_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::WARNING, log, __VA_ARGS__)
+#define LOG_ERROR_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::ERROR, log, __VA_ARGS__)
+#define LOG_FATAL_QUEUE(log, ...) LOG_QUEUE(gbt::LogLevel::FATAL, log, __VA_ARGS__)
+#define LOG_FLUSH_QUEUE() gbt::SafeLog_QueueMessage(gbt::LogLevel::NONE_FLUSH, "", 0, std::chrono::system_clock::now(), "")
 
 #define LOG_PUSH(lvl, log, ...) gbt::SafeLog_ImmediatePushMessage(lvl, __FILE__, __LINE__, std::chrono::system_clock::now(), std::vformat(log, std::make_format_args(__VA_ARGS__)))
-#define LOG_TRACE_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_TRACE, log, __VA_ARGS__)
-#define LOG_MSG_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_MSG, log, __VA_ARGS__)
-#define LOG_WARNING_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_WARNING, log, __VA_ARGS__)
-#define LOG_ERROR_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_ERROR, log, __VA_ARGS__)
-#define LOG_FATAL_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::LOGLEVEL_FATAL, log, __VA_ARGS__)
-#define LOG_FLUSH() gbt::SafeLog_ImmediatePushMessage(gbt::LogLevel::LOGLEVEL_NONE_FLUSH, "", 0, std::chrono::system_clock::now(), "")
+#define LOG_TRACE_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::TRACE, log, __VA_ARGS__)
+#define LOG_MSG_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::MSG, log, __VA_ARGS__)
+#define LOG_WARNING_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::WARNING, log, __VA_ARGS__)
+#define LOG_ERROR_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::ERROR, log, __VA_ARGS__)
+#define LOG_FATAL_PUSH(log, ...) LOG_PUSH(gbt::LogLevel::FATAL, log, __VA_ARGS__)
+#define LOG_FLUSH() gbt::SafeLog_ImmediatePushMessage(gbt::LogLevel::NONE_FLUSH, "", 0, std::chrono::system_clock::now(), "")
 
 }

@@ -9,7 +9,7 @@ inline name operator##op(const name& val1, const name& val2)\
 #define ENUM_CLASS_GENERIC_DUAL_ARG_UNDERLYING_OP_GEN(name, op) \
 inline name operator##op(const name& val1, const std::underlying_type_t<name>& val2)\
 {\
-    return static_cast<name>(static_cast<std::underlying_type_t<name>>(val1) op val2); \
+    return static_cast<name>(static_cast<std::underlying_type_t<name>>(val1) op val2);\
 }
 #define ENUM_CLASS_GENERIC_DUAL_ARG_OP_EQ_GEN(name, op) \
 inline name& operator##op##=(name& val, const name& val1)\
@@ -31,7 +31,7 @@ inline name operator##op(const name& val)\
 #define ENUM_CLASS_GENERIC_COMPARE_UNDERLYING_OP_GEN(name, op) \
 inline bool operator##op(const name& val1, const std::underlying_type_t<name>& val2)\
 {\
-    return static_cast<std::underlying_type_t<name>>(val1) op val2; \
+    return static_cast<std::underlying_type_t<name>>(val1) op val2;\
 }
 
 // generates enum class operator overrides for bitwise operations
@@ -92,6 +92,20 @@ ENUM_CLASS_COMPARE_UNDERLYING_OP_GEN(name)
 #define ENUM_CLASS_FULL_OP_GEN(name) \
 ENUM_CLASS_OP_GEN(name)\
 ENUM_CLASS_UNDERLYING_OP_GEN(name)
+
+#define ENUM_SCOPED_TYPED(name, type, ...) \
+struct name\
+{\
+    enum : type\
+    {\
+	    __VA_ARGS__\
+    };\
+    type _value;\
+    inline operator type& () { return _value; }\
+    inline operator const type& () const { return _value; }\
+    name() = default;\
+    name(const type& val) : _value(val) {}\
+}
 
 #define ENUM_ENTRY_RAW(x) x,
 #define ENUM_ENTRY_STR(x) #x,

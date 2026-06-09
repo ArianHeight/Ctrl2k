@@ -470,7 +470,7 @@ ENUM_CLASS_FULL_OP_GEN(flags);
 
 int main(int argc, char *argv[])
 {
-    REGISTER_LOGGING_STREAM(gbt::LOGLEVEL_PROFILE, std::cout);
+    REGISTER_LOGGING_STREAM(gbt::LogLevel::PROFILE, std::cout);
     REGISTER_FILE_FOR_LOGGING("logs/playground.log");
 
 	PROFILE_SECTION_START(allTests);

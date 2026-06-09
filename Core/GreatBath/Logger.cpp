@@ -10,9 +10,9 @@
 
 using namespace gbt;
 
-#define GBT_INTERNAL_STREAM_SETTING_GUARD(settings) if ( settings.usePrefix >= LOGPREFIX_INVALID_SIZE || settings.useLogTime >= LOGTIME_INVALID_SIZE ) { return false; }
+#define GBT_INTERNAL_STREAM_SETTING_GUARD(settings) if ( settings.usePrefix >= LogPrefix::INVALID_SIZE || settings.useLogTime >= LogTime::INVALID_SIZE ) { return false; }
 
-static const char* LogMsgPrefix[LogPrefix::LOGPREFIX_INVALID_SIZE][LogLevel::LOGLEVEL_NONE_SIZE] =
+static const char* LogMsgPrefix[(size_t)LogPrefix::INVALID_SIZE][(size_t)LogLevel::NONE_SIZE] =
 {
 {
 	"[PRF]",
@@ -50,7 +50,7 @@ enum LogTextColourUsage : uint8_t
 	LOGTEXTCOLOUR_INVALID_SIZE //Keep this as the last element!
 };
 
-static const char* LogTextColourPrefix[LogTextColourUsage::LOGTEXTCOLOUR_INVALID_SIZE][LogLevel::LOGLEVEL_NONE_SIZE] =
+static const char* LogTextColourPrefix[LogTextColourUsage::LOGTEXTCOLOUR_INVALID_SIZE][(size_t)LogLevel::NONE_SIZE] =
 {
 {
 	"",
@@ -75,7 +75,7 @@ static const char* LogTextColourSuffix[LogTextColourUsage::LOGTEXTCOLOUR_INVALID
 
 static const char* LogTextColonSeparator[NUM_BOOLEAN_STATES] = { "", ": " };
 
-static const char* LogTextTimeFormat[LogTime::LOGTIME_INVALID_SIZE] =
+static const char* LogTextTimeFormat[(size_t)LogTime::INVALID_SIZE] =
 {
 	"",
 	"[{:%X}]", // HH:mm:ss
@@ -119,26 +119,26 @@ static inline void ApplyVerbosityToSettings(LogVerbosity verbosity, LoggingStrea
 {
 	switch(verbosity)
 	{
-	case LOGVERBOSITY_LOW:
+	case LogVerbosity::LOW:
 		settings.showFile = false;
 		settings.showThreadId = false;
-	case LOGVERBOSITY_MEDIUM:
+	case LogVerbosity::MEDIUM:
 		settings.showLineNumber = false;
-	case LOGVERBOSITY_HIGH:
+	case LogVerbosity::HIGH:
 		settings.logFullPath = false;
 	default:
 		break;
 	}
 	switch(verbosity)
 	{
-	case LOGVERBOSITY_LOW:
-		settings.useLogTime = LOGTIME_NONE;
+	case LogVerbosity::LOW:
+		settings.useLogTime = LogTime::NONE;
 		break;
-	case LOGVERBOSITY_MEDIUM:
-		settings.useLogTime = LOGTIME_HMS;
+	case LogVerbosity::MEDIUM:
+		settings.useLogTime = LogTime::HMS;
 		break;
-	case LOGVERBOSITY_HIGH:
-		settings.useLogTime = LOGTIME_HMS_S;
+	case LogVerbosity::HIGH:
+		settings.useLogTime = LogTime::HMS_S;
 		break;
 	default:
 		break;
@@ -152,7 +152,7 @@ bool gbt::SafeLog_RegisterFile(const LoggingStreamSettings& settings, const File
 	std::lock_guard<std::mutex> lock(logGuard);
 	if(!file.is_open())
 	{
-		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
+		pendingLogs.push(LogBlock{ LogLevel::ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
 			std::chrono::system_clock::now(), std::format("{} could not be opened, could not register to logging system", path.path().c_str()) });
 		return false;
 	}
@@ -172,19 +172,19 @@ bool gbt::SafeLog_RegisterFile(LogLevel lvl, LogVerbosity verbosity, const FileP
 	ApplyVerbosityToSettings(verbosity, settings);
 	settings.showTextColour = false;
 	settings.logFullPath = false;
-	settings.usePrefix = LOGPREFIX_SHORT;
+	settings.usePrefix = LogPrefix::SHORT;
 
 	return SafeLog_RegisterFile(settings, path, true);
 }
 
 bool gbt::SafeLog_RegisterFile(LogLevel lvl, const FilePath& path)
 {
-	return SafeLog_RegisterFile(lvl, LOGVERBOSITY_FULL, path);
+	return SafeLog_RegisterFile(lvl, LogVerbosity::FULL, path);
 }
 
 bool gbt::SafeLog_RegisterFile(const FilePath& path)
 {
-	return SafeLog_RegisterFile(LOGLEVEL_TRACE, LOGVERBOSITY_FULL, path);
+	return SafeLog_RegisterFile(LogLevel::TRACE, LogVerbosity::FULL, path);
 }
 
 bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, LogVerbosity verbosity, std::ostream& os)
@@ -201,7 +201,7 @@ bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, LogVerbosity verbosity, std
 
 bool gbt::SafeLog_RegisterOutputStream(LogLevel lvl, std::ostream& os)
 {
-	return SafeLog_RegisterOutputStream(lvl, LOGVERBOSITY_HIGH, os);
+	return SafeLog_RegisterOutputStream(lvl, LogVerbosity::HIGH, os);
 }
 
 bool gbt::SafeLog_RegisterOutputStream(const LoggingStreamSettings& settings, std::ostream& os)
@@ -222,7 +222,7 @@ static bool UnsafeLog_DeregisterOutputStream(const std::ostream& os)
 	auto it = std::find_if(begin, end, [&osptr](const LoggingStream& ls) { return ls.os == osptr; });
 	if(it == end)
 	{
-		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
+		pendingLogs.push(LogBlock{ LogLevel::ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
 			std::chrono::system_clock::now(), "Output stream not found, could not deregister from logging system" });
 		return false;
 	}
@@ -239,7 +239,7 @@ bool gbt::SafeLog_DeregisterFile(const FilePath& path)
 	auto it = std::find_if(begin, end, [&path](const LogFile& lf) { return lf.path == path; });
 	if(it == end)
 	{
-		pendingLogs.push(LogBlock{ LOGLEVEL_ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
+		pendingLogs.push(LogBlock{ LogLevel::ERROR, std::this_thread::get_id(), __FILE__, (size_t)__LINE__,
 			std::chrono::system_clock::now(), std::format("{} could not be opened, could not register to logging system", path.path().c_str()) });
 		return false;
 	}
@@ -258,7 +258,7 @@ bool gbt::SafeLog_DeregisterOutputStream(const std::ostream& os)
 //YOU MUST USE THE LOG GUARD to use this function
 static void Log_PushMessage(const LogBlock& data)
 {
-	index_assert(data.level, LogLevel::LOGLEVEL_NONE_SIZE);
+	index_assert(data.level, LogLevel::NONE_SIZE);
 
 	LogLevelFlag levelFlag = (LogLevelFlag)(1 << data.level);
 	const auto localTime = std::chrono::current_zone()->to_local(data.time);
@@ -267,19 +267,19 @@ static void Log_PushMessage(const LogBlock& data)
 		std::ostream& os = *(lstream.os);
 		LoggingStreamSettings& settings = lstream.settings;
 
-		if(data.level == LogLevel::LOGLEVEL_NONE_FLUSH)
+		if(data.level == LogLevel::NONE_FLUSH)
 		{
 			os.flush();
 			continue;
 		}
-		else if(!(lstream.settings.levelFlags & levelFlag))
+		else if((lstream.settings.levelFlags & levelFlag) == LogLevelFlag::NONE)
 		{
 			continue;
 		}
 
-		bool hasPrefix = LogMsgPrefix[settings.usePrefix][data.level][0] != '\0' || LogTextTimeFormat[settings.useLogTime][0] != '\0';
-		os << LogTextColourPrefix[settings.showTextColour][data.level] << LogMsgPrefix[settings.usePrefix][data.level]
-			<< std::vformat(LogTextTimeFormat[settings.useLogTime], std::make_format_args(localTime));
+		bool hasPrefix = LogMsgPrefix[(size_t)settings.usePrefix][(size_t)data.level][0] != '\0' || LogTextTimeFormat[(size_t)settings.useLogTime][0] != '\0';
+		os << LogTextColourPrefix[settings.showTextColour][(size_t)data.level] << LogMsgPrefix[(size_t)settings.usePrefix][(size_t)data.level]
+			<< std::vformat(LogTextTimeFormat[(size_t)settings.useLogTime], std::make_format_args(localTime));
 		if(settings.showFile)
 		{
 			hasPrefix = true;

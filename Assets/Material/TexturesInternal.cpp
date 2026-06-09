@@ -1,7 +1,11 @@
+#include "TexturesInternal.h"
+
 #include <queue>
 #include <vector>
 #include <unordered_map>
 #include <mutex>
+
+#include "../AssetsCore/AssetsManager.h"
 
 // TODO Make this use dependencies outside ofthe main project folder(ie put deps in sln folder instead?)
 
@@ -12,10 +16,6 @@
 #endif
 
 #include "../../Ctrl 2K Engine 0.0.1/Dependencies/SOIL for opengl 3.0 context and above/src/SOIL.h"
-
-#include "../../Core/GreatBath/Logger.h"
-#include "TexturesInternal.h"
-#include "../AssetsCore/AssetsManager.h"
 
 static_assert(std::is_same<AssetId, TexId>::value, "TexId is not the same type as AssetId");
 
