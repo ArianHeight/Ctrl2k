@@ -80,7 +80,7 @@ void runBitVectorTests()
 {
     std::cout << subtestPretext << "Testing bit vector\n";
 
-    ahl::bit_vector<1> bitset1;
+    ahl::bit_vector<32> bitset1;
     assert(bitset1.size() == 0);
     assert(bitset1.capacity() == 32);
     assert(bitset1.data_capacity() == 1);
@@ -90,7 +90,7 @@ void runBitVectorTests()
     assert(bitset1.capacity() == 32);
     assert(bitset1.data_capacity() == 1);
 
-    ahl::bit_vector<4> bitset2;
+    ahl::bit_vector<128> bitset2;
     assert(bitset2.capacity() == 128);
     for(int i = 0; i < 6; i++)
     {
@@ -104,13 +104,13 @@ void runBitVectorTests()
     bitset2.resize(120);
     bitset2.set_bit(0, true);
     bitset2.set_bit(100, true);
-    ahl::bit_vector<5> bitset3 = bitset2;
+    ahl::bit_vector<5 * 33> bitset3 = bitset2;
     assert(bitset3 == bitset2);
     bitset3.set_bit(110, true);
     bitset3.set_bit(24, true);
     assert((bitset3 & bitset2) == bitset2);
     assert((bitset2 | bitset3) == bitset3);
-    ahl::bit_vector<5> bitset4;
+    ahl::bit_vector<5 * 32 + 7> bitset4;
     bitset4.resize(bitset3.size());
     bitset4.set_bit(110, true);
     bitset4.set_bit(24, true);
@@ -119,7 +119,7 @@ void runBitVectorTests()
     bitset4 = bitset4;
     assert(bitset4 == (bitset3 ^ bitset2));
 
-    ahl::bit_vector<4> bitset5;
+    ahl::bit_vector<4 * 32 + 3> bitset5;
     bitset5 = bitset3;
     bitset5 |= bitset2;
     assert(bitset5 == bitset3);

@@ -14,6 +14,9 @@ A vector allocated on the stack with a fixed max capacity.
 template <typename T, size_t _capacity>
 class stack_vector
 {
+    template <typename T2, size_t _capacity2>
+    friend class stack_vector;
+
 private:
     using selftype = stack_vector<T, _capacity>;
 
