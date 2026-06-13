@@ -39,6 +39,62 @@ void runFixedVectorTests()
     assert(sizeof(v1) == sizeof(size_t) + sizeof(int) * 8);
 }
 
+void runDynVectorTests()
+{
+    std::cout << subtestPretext << "Testing dyn vector\n";
+    ahl::dyn::vector<int> v;
+    assert(v.empty());
+    assert(v.capacity() == 0);
+    assert(v.size() == 0);
+    v.reserve(25);
+    assert(v.capacity() == 25);
+    assert(v.empty());
+    for(size_t i = 0; i < 25; ++i)
+    {
+        v.emplace_back() = i;
+    }
+    assert(v.size() == 25);
+    v.push_back(25);
+    for(size_t i = 0; i < 25; ++i)
+    {
+        assert(v[i] + 1 == v[i + 1]);
+    }
+    assert(v.capacity() == 32);
+    v.pop_back();
+    assert(v.back() == 24);
+    assert(v.front() == 0);
+    assert(v.at(5) == 5);
+    v.resize(25);
+    assert(v.back() == 24);
+    v.resize(30, 5);
+    assert(v.back() == 5);
+    for(size_t i = 25; i < 30; ++i)
+    {
+        assert(v[i] == 5);
+    }
+    v.resize(24);
+    assert(v.back() == 23);
+    v.clear();
+    assert(v.empty());
+    assert(v.capacity() == 32);
+    v.push_back(4);
+    v.push_back(2);
+    ahl::dyn::vector<int> v2;
+    v2.push_back(1);
+    assert(v2.capacity() == 8);
+    assert(v2 != v);
+    assert(v2 == v2);
+    assert(v == v);
+    v2 = v;
+    assert(v2 == v);
+    assert(v2.data() != v.data());
+    ahl::dyn::vector<int> v3;
+    v3 = std::move(v);
+    assert(v3 == v2);
+    assert(v.empty());
+    assert(v.data() == nullptr);
+}
+
 void runConsistentVectorTests()
 {
     std::cout << subtestPretext << "Testing consistent vector\n";
@@ -158,6 +214,7 @@ void runSTLTests()
 {
     std::cout << "\n***********************************\nRunning Tests For AncestralHall...\n";
     runFixedVectorTests();
+    runDynVectorTests();
     runConsistentVectorTests();
     runBitVectorTests();
 }

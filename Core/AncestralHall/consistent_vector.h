@@ -24,7 +24,7 @@ private:
     size_t m_size;
     size_t m_capacity;
 
-    size_t getBucketIndex(size_t& i) const
+    size_t get_bucket_index(size_t& i) const
     {
         size_t digit = CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
         for(; i >> digit != 0; digit++);
@@ -32,19 +32,19 @@ private:
         return digit - CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
     }
 
-    inline const T* getBucket(size_t& i) const
+    inline const T* get_bucket(size_t& i) const
     {
-        return m_buckets[getBucketIndex(i)];
+        return m_buckets[get_bucket_index(i)];
     }
 
-    inline T* getBucket(size_t& i)
+    inline T* get_bucket(size_t& i)
     {
-        return m_buckets[getBucketIndex(i)];
+        return m_buckets[get_bucket_index(i)];
     }
 
-    T* allocateAndGetBucket(size_t& i)
+    T* allocate_and_get_bucket(size_t& i)
     {
-        const size_t bucketIndex = getBucketIndex(i);
+        const size_t bucketIndex = get_bucket_index(i);
         for(size_t j = m_buckets.size(); j <= bucketIndex; j++)
         {
             const size_t newSize = 1ULL << (CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS + j);
@@ -55,6 +55,8 @@ private:
     }
 
 public:
+    // TODO copy assignment
+
     consistent_vector() : m_size(0), m_capacity(CONSISTENT_VECTOR_INITIAL_CAPACITY), m_buckets{ new T[CONSISTENT_VECTOR_INITIAL_CAPACITY] } {}
     ~consistent_vector()
     {
@@ -65,6 +67,7 @@ public:
         m_buckets.clear();
     }
 
+    // TODO resize and reserve
     inline size_t size() const { return m_size; }
     inline size_t capacity() const { return m_capacity; }
     inline bool empty() const { return m_size == 0; }
@@ -80,7 +83,7 @@ public:
     void push_back(const T& elem)
     {
         size_t i = m_size;
-        T* data = allocateAndGetBucket(i);
+        T* data = allocate_and_get_bucket(i);
         data[i] = elem;
         m_size++;
     }
@@ -88,7 +91,7 @@ public:
     void push_back(T&& elem)
     {
         size_t i = m_size;
-        T* data = allocateAndGetBucket(i);
+        T* data = allocate_and_get_bucket(i);
         data[i] = std::move(elem);
         m_size++;
     }
@@ -96,13 +99,13 @@ public:
     T& emplace_back()
     {
         size_t i = m_size;
-        T* data = allocateAndGetBucket(i);
+        T* data = allocate_and_get_bucket(i);
         T& retVal = data[i];
         m_size++;
         return retVal;
     }
 
-    //TODO maybe use memcpy?
+    // maybe use memcpy?
     selftype& operator=(const selftype& other)
     {
         if(this != &other)
@@ -110,7 +113,7 @@ public:
             if(other.m_size > 0)
             {
                 size_t i = other.m_size - 1ULL;
-                allocateAndGetBucket(i);
+                allocate_and_get_bucket(i);
                 size_t bucketIdx = 0;
                 size_t bucketSize = 1ULL << CONSISTENT_VECTOR_INITIAL_CAPACITY_NUM_BITS;
                 size_t localIdx = 0;
@@ -130,10 +133,10 @@ public:
         return *this;
     }
 
-    inline const T& at(size_t i) const { const T* bucket = getBucket(i); return bucket[i]; }
-    inline T& at(size_t i) { T* bucket = getBucket(i); return bucket[i]; }
-    inline const T& operator[](size_t i) const { const T* bucket = getBucket(i); return bucket[i]; }
-    inline T& operator[](size_t i) { T* bucket = getBucket(i); return bucket[i]; }
+    inline const T& at(size_t i) const { const T* bucket = get_bucket(i); return bucket[i]; }
+    inline T& at(size_t i) { T* bucket = get_bucket(i); return bucket[i]; }
+    inline const T& operator[](size_t i) const { const T* bucket = get_bucket(i); return bucket[i]; }
+    inline T& operator[](size_t i) { T* bucket = get_bucket(i); return bucket[i]; }
     inline const T& front() const { return m_buckets[0][0]; }
     inline T& front() { return m_buckets[0][0]; }
     inline const T& back() const { return at(m_size - 1); }
