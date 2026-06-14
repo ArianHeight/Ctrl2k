@@ -100,7 +100,7 @@ void runConsistentVectorTests()
     std::cout << subtestPretext << "Testing consistent vector\n";
     ahl::dyn::consistent_vector<int> v;
     std::vector<int*> addresses;
-    assert(v.capacity() == ahl::dyn::CONSISTENT_VECTOR_INITIAL_CAPACITY);
+    assert(v.capacity() == 0);
     assert(v.size() == 0);
     assert(v.empty());
 
@@ -119,16 +119,31 @@ void runConsistentVectorTests()
         }
     }
 
-    assert(v.capacity() == 2016);
+    assert(v.capacity() == 1024);
     assert(v.size() == 1024);
     assert(!v.empty());
+
+    ahl::dyn::consistent_vector<int> v2 = v;
 
     for(int i = 0; i < 1024; i++)
     {
         assert(v[i] == i);
+        assert(v2[i] == v[i]);
         assert(&v[i] == addresses[i]);
+        assert(&v2[i] != addresses[i]);
     }
 
+    ahl::dyn::consistent_vector<int> v3 = std::move(v);
+    assert(v.empty());
+    assert(v3 == v2);
+    for(int i = 0; i < 1024; i++)
+    {
+        assert(&v3[i] == addresses[i]);
+    }
+
+    v2.clear();
+    assert(v2.empty());
+    assert(v2.capacity() != 0);
     // TODO maybe should test mem leaks??
 }
 
