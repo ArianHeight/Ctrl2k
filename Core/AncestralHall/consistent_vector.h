@@ -64,14 +64,14 @@ private:
 
     T* allocate_and_get_bucket(size_t& i)
     {
-        const size_t bucketIndex = get_bucket_index(i);
-        for(size_t j = m_buckets.size(); j <= bucketIndex; j++)
+        const size_t bucket_idx = get_bucket_index(i);
+        for(size_t j = m_buckets.size(); j <= bucket_idx; j++)
         {
-            const size_t newSize = get_bucket_capacity(j);
-            m_buckets.push_back(new T[newSize]);
-            m_capacity += newSize;
+            const size_t new_size = get_bucket_capacity(j);
+            m_buckets.push_back(new T[new_size]);
+            m_capacity += new_size;
         }
-        return m_buckets[bucketIndex];
+        return m_buckets[bucket_idx];
     }
 
 public:
@@ -85,18 +85,18 @@ public:
                 size_t i = other.m_size - 1ULL;
                 allocate_and_get_bucket(i);
                 
-                size_t bucketIdx = 0;
-                size_t bucketSize = get_bucket_capacity(bucketIdx);
-                size_t localIdx = 0;
+                size_t bucket_idx = 0;
+                size_t bucket_size = get_bucket_capacity(bucket_idx);
+                size_t local_idx = 0;
                 for(i = 0; i < other.m_size; i++)
                 {
-                    m_buckets[bucketIdx][localIdx] = other.m_buckets[bucketIdx][localIdx];
-                    localIdx++;
-                    if(localIdx >= bucketSize)
+                    m_buckets[bucket_idx][local_idx] = other.m_buckets[bucket_idx][local_idx];
+                    local_idx++;
+                    if(local_idx >= bucket_size)
                     {
-                        localIdx = 0;
-                        ++bucketIdx;
-                        bucketSize = get_bucket_capacity(bucketIdx);
+                        local_idx = 0;
+                        ++bucket_idx;
+                        bucket_size = get_bucket_capacity(bucket_idx);
                     }
                 }
             }
@@ -183,22 +183,22 @@ public:
         if(m_size != other.m_size)
             return false;
 
-        size_t bucketIdx = 0;
-        size_t bucketSize = get_bucket_capacity(bucketIdx);
-        size_t localIdx = 0;
+        size_t bucket_idx = 0;
+        size_t bucket_size = get_bucket_capacity(bucket_idx);
+        size_t local_idx = 0;
         for(size_t i = 0; i < m_size; i++)
         {
-            if(m_buckets[bucketIdx][localIdx] != other.m_buckets[bucketIdx][localIdx])
+            if(m_buckets[bucket_idx][local_idx] != other.m_buckets[bucket_idx][local_idx])
             {
                 return false;
             }
 
-            localIdx++;
-            if(localIdx >= bucketSize)
+            local_idx++;
+            if(local_idx >= bucket_size)
             {
-                localIdx = 0;
-                ++bucketIdx;
-                bucketSize = get_bucket_capacity(bucketIdx);
+                local_idx = 0;
+                ++bucket_idx;
+                bucket_size = get_bucket_capacity(bucket_idx);
             }
         }
 
