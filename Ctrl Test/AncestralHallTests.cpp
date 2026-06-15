@@ -6,22 +6,28 @@
 
 void runFixedVectorTests()
 {
-    std::cout << subtestPretext << "Testing fixed vector of size 8\n";
+    std::cout << subtestPretext << "Testing fixed vector\n";
+
     ahl::stack_vector<int, 8> v1;
     assert(v1.size() == 0);
     assert(v1.capacity() == 8);
     assert(v1.empty());
+
     v1.push_back(1);
     assert(v1.size() == 1);
     assert(v1[0] == 1);
     assert(!v1.empty());
     assert(v1.capacity() == 8);
+
     v1[0]++;
     assert(v1.at(0) == 2);
+
     v1.front()++;
     assert(v1.back() == 3);
+
     v1.back()++;
     assert(v1.front() == 4);
+
     for(int i = 0; i < 7; i++)
     {
         int& val = v1.emplace_back();
@@ -30,13 +36,34 @@ void runFixedVectorTests()
     assert(v1.back() == 6);
     assert(v1.front() == 4);
     assert(v1.size() == 8);
+
     v1.pop_back();
     assert(v1.size() == 7);
     assert(v1.capacity() == 8);
+
     v1.push_back(20);
     assert(v1[7] == 20);
     assert(v1.size() == 8);
     assert(sizeof(v1) == sizeof(size_t) + sizeof(int) * 8);
+
+    v1.clear();
+    assert(v1.empty());
+    for(int i = 0; i < 5; ++i)
+    {
+        v1.push_back(i);
+    }
+    ahl::stack_vector<int, 6> v2 = v1;
+
+    assert(v1.size() == 5);
+    v1.erase(2);
+    v1.erase(0);
+    v1.erase(2);
+    assert(v1.size() == 2);
+    assert(v1[0] == 1 && v1[1] == 3);
+    v1.insert(0, 0);
+    v1.insert(3, 4);
+    v1.insert(2, 2);
+    assert(v1 == v2);
 }
 
 void runDynVectorTests()
@@ -93,6 +120,23 @@ void runDynVectorTests()
     assert(v3 == v2);
     assert(v.empty());
     assert(v.data() == nullptr);
+
+    for(int i = 0; i < 5; ++i)
+    {
+        v.push_back(i);
+    }
+    v2 = v;
+
+    assert(v.size() == 5);
+    v.erase(2);
+    v.erase(0);
+    v.erase(2);
+    assert(v.size() == 2);
+    assert(v[0] == 1 && v[1] == 3);
+    v.insert(0, 0);
+    v.insert(3, 4);
+    v.insert(2, 2);
+    assert(v == v2);
 }
 
 void runConsistentVectorTests()

@@ -111,6 +111,44 @@ public:
         return retval;
     }
 
+    void insert(size_t index, const T& elem)
+    {
+        assert(index <= m_size);
+        reallocate_if_needed(m_size);
+
+        const size_t count = m_size - index;
+        for(size_t i = 0; i < count; ++i)
+        {
+            m_data[m_size - i] = std::move(m_data[m_size - i - 1]);
+        }
+        m_data[index] = elem;
+        ++m_size;
+    }
+
+    void insert(size_t index, T&& elem)
+    {
+        assert(index <= m_size);
+        reallocate_if_needed(m_size);
+        
+        const size_t count = m_size - index;
+        for(size_t i = 0; i < count; ++i)
+        {
+            m_data[m_size - i] = std::move(m_data[m_size - i - 1]);
+        }
+        m_data[index] = std::move(elem);
+        ++m_size;
+    }
+
+    void erase(size_t index)
+    {
+        assert(m_size > 0 && index < m_size);
+        --m_size;
+        for(index; index < m_size; ++index)
+        {
+            m_data[index] = std::move(m_data[index + 1]);
+        }
+    }
+
     bool operator==(const selftype& other) const
     {
         if(m_size != other.m_size)
