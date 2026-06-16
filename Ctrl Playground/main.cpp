@@ -496,7 +496,7 @@ int main(int argc, char *argv[])
 
 	// Print token list to logs
 	for(int i = 0; i < myLexer.tokenList.size(); ++i) {
-		LOG_MSG_PUSH(myLexer.tokenList[i].getTokenValue());
+		LOG_MSG_PUSH(myLexer.tokenList[i].value);
 	}
 
 	LOG_FLUSH();
