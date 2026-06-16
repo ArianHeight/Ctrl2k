@@ -488,22 +488,15 @@ int main(int argc, char *argv[])
 	LOG_MSG_PUSH("Swap in {} for view", someView);
 	LOG_FATAL_PUSH("Ded");
 
-	// Testing out the lexer (doesn't do anything)
+	// Testing out the lexer
 	scb::Lexer myLexer = scb::Lexer();
-
-	// Add tokens manually
-	myLexer.appendToken(scb::TokenPair(scb::ControlsTokenType::TEST, "This is a test token"));
 
 	// Load a file
 	myLexer.loadFile("../Resource/System/Controls_new.config");
 
 	// Print token list to logs
-	LOG_MSG_PUSH(myLexer.summary());
-	if (myLexer.raw.size() == 4) {
-		LOG_MSG_PUSH(myLexer.raw[0]);
-		LOG_MSG_PUSH(myLexer.raw[1]);
-		LOG_MSG_PUSH(myLexer.raw[2]);
-		LOG_MSG_PUSH(myLexer.raw[3]);
+	for(int i = 0; i < myLexer.tokenList.size(); ++i) {
+		LOG_MSG_PUSH(myLexer.tokenList[i].getTokenValue());
 	}
 
 	LOG_FLUSH();

@@ -14,25 +14,26 @@ namespace scb
 
 	class TokenPair {
 	public:
-		TokenPair(ControlsTokenType, const char*);
+		TokenPair(ControlsTokenType, std::string);
 		const ControlsTokenType getTokenType();
-		const char* getTokenValue();
+		std::string getTokenValue();
 
 	protected:
 		ControlsTokenType tokenType;
-		const char* tokenValue;
+		std::string tokenValue;
 	};
 
 	class Lexer {
 	public:
 		Lexer();
-		void loadFile(const char*);
-		void appendToken(TokenPair);
-		const std::string summary(); // brief information about the lexer instance
-		std::vector<std::string> raw; // unprocessed strings from a file
+		void loadFile(std::string);
+		//void appendToken(TokenPair);
+		//const std::string summary(); // brief information about the lexer instance
+		//std::vector<std::string> raw; // unprocessed strings from a file
+		std::vector<TokenPair> tokenList;
 
 	protected:
-		std::vector<int> tokenList;
+		TokenPair tokenize(std::string);
 	};
 
 }
