@@ -12,6 +12,7 @@
 #include "Core/OracleBone/obn.h"
 #include "Core/AncestralHall/ahl.h"
 #include "Core/Petra/rqm.h"
+#include "Core/Scribe/Lexer.h"
 
 #define TEST_STRING_ONE "this is a test hello"
 
@@ -486,6 +487,19 @@ int main(int argc, char *argv[])
 	obn::view_string someView = "Hello View!";
 	LOG_MSG_PUSH("Swap in {} for view", someView);
 	LOG_FATAL_PUSH("Ded");
+
+	// Testing out the lexer
+	scb::Lexer myLexer = scb::Lexer();
+
+	// Load a file
+	myLexer.loadFile("../Resource/System/Controls_new.config");
+
+	// Print token list to logs
+	for(int i = 0; i < myLexer.tokenList.size(); ++i)
+	{
+		LOG_MSG_PUSH(myLexer.tokenList[i].value);
+	}
+
 	LOG_FLUSH();
 
     return 0;
