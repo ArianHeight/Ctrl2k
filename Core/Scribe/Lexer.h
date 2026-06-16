@@ -4,17 +4,20 @@
 
 namespace scb
 {
-	enum class ConfigTokenType {
+	enum class ConfigTokenType
+	{
 		KEY,
 		VALUE
 	};
 
-	struct Token {
+	struct Token
+	{
 		std::string value;
 		ConfigTokenType type;
 	};
 
-	class Lexer {
+	class Lexer
+	{
 	public:
 		Lexer();
 		void loadFile(std::string);

@@ -495,7 +495,8 @@ int main(int argc, char *argv[])
 	myLexer.loadFile("../Resource/System/Controls_new.config");
 
 	// Print token list to logs
-	for(int i = 0; i < myLexer.tokenList.size(); ++i) {
+	for(int i = 0; i < myLexer.tokenList.size(); ++i)
+	{
 		LOG_MSG_PUSH(myLexer.tokenList[i].value);
 	}
 
