@@ -14,6 +14,9 @@ A vector allocated on the stack with a fixed max capacity.
 template <typename T, size_t _capacity>
 class stack_vector
 {
+    template <typename T2, size_t _capacity2>
+    friend class stack_vector;
+
 private:
     using selftype = stack_vector<T, _capacity>;
 
@@ -48,6 +51,40 @@ public:
         T& retval = m_data[m_size];
         m_size++;
         return retval;
+    }
+
+    void insert(size_t index, const T& elem)
+    {
+        assert(m_size < _capacity&& index <= m_size);
+        const size_t count = m_size - index;
+        for(size_t i = 0; i < count; ++i)
+        {
+            m_data[m_size - i] = std::move(m_data[m_size - i - 1]);
+        }
+        m_data[index] = elem;
+        ++m_size;
+    }
+
+    void insert(size_t index, T&& elem)
+    {
+        assert(m_size < _capacity && index <= m_size);
+        const size_t count = m_size - index;
+        for(size_t i = 0; i < count; ++i)
+        {
+            m_data[m_size - i] = std::move(m_data[m_size - i - 1]);
+        }
+        m_data[index] = std::move(elem);
+        ++m_size;
+    }
+
+    void erase(size_t index)
+    {
+        assert(m_size > 0 && index < m_size);
+        --m_size;
+        for(index; index < m_size; ++index)
+        {
+            m_data[index] = std::move(m_data[index + 1]);
+        }
     }
 
     //TODO maybe use memcpy??
@@ -111,6 +148,23 @@ public:
     stack_vector(selftype&& other) : m_size(0) { *this = std::move(other); }
     template<size_t _other_capacity>
     stack_vector(stack_vector<T, _other_capacity>&& other) : m_size(0) { *this = std::move(other); }
+
+    template<size_t _other_capacity>
+    inline bool operator==(const stack_vector<T, _other_capacity>& other) const
+    {
+        if(m_size != other.m_size)
+            return false;
+
+        for(size_t i = 0; i < m_size; ++i)
+        {
+            if(m_data[i] != other.m_data[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     inline const T& at(size_t i) const { return m_data[i]; }
     inline T& at(size_t i) { return m_data[i]; }

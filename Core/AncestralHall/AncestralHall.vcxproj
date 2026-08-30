@@ -22,10 +22,12 @@
     <ClInclude Include="ahl.h" />
     <ClInclude Include="bit_vector.h" />
     <ClInclude Include="consistent_vector.h" />
+    <ClInclude Include="stack_set.h" />
     <ClInclude Include="stack_vector.h" />
     <ClInclude Include="threadsafe.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="ThreadSafeVector.h" />
+    <ClInclude Include="dyn_vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Monument\Monument.vcxproj">

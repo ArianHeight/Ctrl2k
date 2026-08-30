@@ -36,6 +36,12 @@
     <ClInclude Include="bit_vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dyn_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stack_set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ahl.cpp">

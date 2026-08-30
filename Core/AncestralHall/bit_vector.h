@@ -40,12 +40,17 @@ A bit vector/array allocated on the stack with a fixed max capacity.
 
 */
 
-template <size_t _data_capacity>
+template <size_t _capacity>
+requires (_capacity > 0)
 class bit_vector : public abstract_bit_vector
 {
+    template <size_t _capacity2>
+    requires (_capacity2 > 0)
+    friend class bit_vector;
+
 private:
-    using selftype = bit_vector<_data_capacity>;
-    static constexpr size_t _capacity = _data_capacity * BITS_PER_DATA_TYPE;
+    using selftype = bit_vector<_capacity>;
+    static constexpr size_t _data_capacity = (_capacity + BITS_PER_DATA_TYPE - 1) / BITS_PER_DATA_TYPE;
 
     datatype m_data[_data_capacity];
     size_t m_size;
@@ -144,8 +149,8 @@ public:
     {
         if(this != &other)
         {
-            mem_copy(m_data, other.data(), sizeof(datatype) * _data_capacity);
-            m_size = other.size();
+            mem_copy(m_data, other.m_data, sizeof(datatype) * _data_capacity);
+            m_size = other.m_size;
         }
         return *this;
     }
@@ -153,9 +158,9 @@ public:
     template<size_t _other_data_capacity>
     selftype& operator=(const bit_vector<_other_data_capacity>& other)
     {
-        assert(other.size() <= _capacity);
-        m_size = other.size();
-        mem_copy(m_data, other.data(), sizeof(datatype) * (other.data_capacity() > _data_capacity ? _data_capacity : other.data_capacity()));
+        assert(other.m_size <= _capacity);
+        m_size = other.m_size;
+        mem_copy(m_data, other.m_data, sizeof(datatype) * (other._data_capacity > _data_capacity ? _data_capacity : other._data_capacity));
         return *this;
     }
 
@@ -190,11 +195,11 @@ public:
         if(empty() || other.empty())
             return retval;
 
-        retval.m_size = (m_size > other.size()) ? other.size() : m_size;
+        retval.m_size = (m_size > other.m_size) ? other.m_size : m_size;
         const size_t data_size = get_data_index(retval.m_size - 1) + 1;
         for(size_t i = 0; i < data_size; i++)
         {
-            retval.m_data[i] = m_data[i] & other.data()[i];
+            retval.m_data[i] = m_data[i] & other.m_data[i];
         }
         return retval;
     }
@@ -206,11 +211,11 @@ public:
         if(empty() || other.empty())
             return retval;
 
-        retval.m_size = (m_size > other.size()) ? other.size() : m_size;
+        retval.m_size = (m_size > other.m_size) ? other.m_size : m_size;
         const size_t data_size = get_data_index(retval.m_size - 1) + 1;
         for(size_t i = 0; i < data_size; i++)
         {
-            retval.m_data[i] = m_data[i] | other.data()[i];
+            retval.m_data[i] = m_data[i] | other.m_data[i];
         }
         return retval;
     }
@@ -222,11 +227,11 @@ public:
         if(empty() || other.empty())
             return retval;
 
-        retval.m_size = (m_size > other.size()) ? other.size() : m_size;
+        retval.m_size = (m_size > other.m_size) ? other.m_size : m_size;
         const size_t data_size = get_data_index(retval.m_size - 1) + 1;
         for(size_t i = 0; i < data_size; i++)
         {
-            retval.m_data[i] = m_data[i] ^ other.data()[i];
+            retval.m_data[i] = m_data[i] ^ other.m_data[i];
         }
         return retval;
     }
@@ -237,11 +242,11 @@ public:
         if(empty() || other.empty())
             return *this;
 
-        m_size = (m_size > other.size()) ? other.size() : m_size;
+        m_size = (m_size > other.m_size) ? other.m_size : m_size;
         const size_t data_size = get_data_index(m_size - 1) + 1;
         for(size_t i = 0; i < data_size; i++)
         {
-            m_data[i] &= other.data()[i];
+            m_data[i] &= other.m_data[i];
         }
         return *this;
     }
@@ -252,11 +257,11 @@ public:
         if(empty() || other.empty())
             return *this;
 
-        m_size = (m_size > other.size()) ? other.size() : m_size;
+        m_size = (m_size > other.m_size) ? other.m_size : m_size;
         const size_t data_size = get_data_index(m_size - 1) + 1;
         for(size_t i = 0; i < data_size; i++)
         {
-            m_data[i] |= other.data()[i];
+            m_data[i] |= other.m_data[i];
         }
         return *this;
     }
@@ -267,11 +272,11 @@ public:
         if(empty() || other.empty())
             return *this;
 
-        m_size = (m_size > other.size()) ? other.size() : m_size;
+        m_size = (m_size > other.m_size) ? other.m_size : m_size;
         const size_t data_size = get_data_index(m_size - 1) + 1;
         for(size_t i = 0; i < data_size; i++)
         {
-            m_data[i] ^= other.data()[i];
+            m_data[i] ^= other.m_data[i];
         }
         return *this;
     }
@@ -279,7 +284,7 @@ public:
     template<size_t _other_data_capacity>
     bool operator==(const bit_vector<_other_data_capacity>& other) const
     {
-        if(m_size != other.size())
+        if(m_size != other.m_size)
             return false;
         else if(empty())
             return true;
@@ -289,13 +294,13 @@ public:
         {
             for(size_t i = 0; i < last_index - 1; i++)
             {
-                if((m_data[i] ^ other.data()[i]) != 0)
+                if((m_data[i] ^ other.m_data[i]) != 0)
                     return false;
             }
         }
 
         const datatype bitmask = get_index_zero_bitmask(m_size - 1);
-        return ((m_data[last_index] & bitmask) ^ (other.data()[last_index] & bitmask)) == 0;
+        return ((m_data[last_index] & bitmask) ^ (other.m_data[last_index] & bitmask)) == 0;
     }
 
     inline void set_all_false() { mem_set_zero(m_data, sizeof(datatype) * ((get_data_index(m_size - 1) + 1) < _data_capacity ? (get_data_index(m_size - 1) + 1) : _data_capacity)); }
@@ -305,8 +310,6 @@ public:
 
     inline bool at(size_t i) const { return get_val(i); }
     inline bool operator[](size_t i) const { return get_val(i); }
-    inline const datatype* data() const { return m_data; } // underlying data here is a uint
-    inline datatype* data() { return m_data; } // underlying data here is a uint
     inline bool front() const { return get_val(0); }
     inline bool back() const { return get_val(m_size - 1); }
 };

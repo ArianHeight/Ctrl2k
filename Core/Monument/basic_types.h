@@ -80,6 +80,17 @@ public:
     inline T& operator[](const size_t i) { return m_data[i]; }
 };
 
+template <typename K, typename V>
+struct key_value_pair
+{
+    K key;
+    V value;
+
+    key_value_pair() = default;
+    
+    inline bool operator<(const key_value_pair<K, V>& other) const { return key < other.key; }
+    inline bool operator==(const key_value_pair<K, V>& other) const { return key == other.key; }
+};
 
 template <typename T> constexpr bool TYPE_CHAR = false;
 template <typename T> constexpr bool TYPE_INTEGER = false;
