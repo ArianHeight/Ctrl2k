@@ -53,6 +53,7 @@ void runSearchTests()
     std::cout << subtestPretext << "Testing binary_search_position\n";
     for(int i = 0; i < 32; i++)
     {
+        size_t pos = binary_search_position(vals, i);
         assert(binary_search_position(vals, i) == i);
         assert(binary_search_position(vals.data(), vals.size(), i) == i);
     }
@@ -62,10 +63,12 @@ void runSearchTests()
     std::vector<int> vals2 = { 1, 3, 3, 3, 6, 6, 7 };
     assert(binary_search_position(vals2, 2) == 1);
     assert(binary_search_position(vals2, 5) == 4);
-    assert(binary_search_position(vals2, 3) == 1);
-    assert(binary_search_position(vals2, 6) == 4);
+    assert(binary_search_position(vals2, 3) == 3);
+    assert(binary_search_position(vals2, 6) == 5);
     assert(binary_search_position(vals2, 0) == 0);
+    assert(binary_search_position(vals2, 7) == 6);
     assert(binary_search_position(vals2, 8) == 7);
+    assert(binary_search_position(vals2, 4) == 4);
 
     std::vector<int> vals3;
     assert(binary_search_position(vals3, 5) == 0);
