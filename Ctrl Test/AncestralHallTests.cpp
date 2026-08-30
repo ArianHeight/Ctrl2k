@@ -66,6 +66,39 @@ void runFixedVectorTests()
     assert(v1 == v2);
 }
 
+void runStackSetTests()
+{
+    std::cout << subtestPretext << "Testing stack set\n";
+
+    ahl::stack_set<int, 8> set1;
+    assert(set1.empty());
+    assert(set1.capacity() == 8);
+    set1.insert(5);
+    set1.insert(2);
+    set1.insert(7);
+    set1.insert(7);
+    assert(set1.size() == 3);
+    assert(!set1.empty());
+    assert(set1.contains(7));
+    assert(set1.contains(5));
+    assert(set1.contains(2));
+    assert(set1.at(1) == 5);
+    assert(set1[2] == 7);
+    assert(!set1.contains(3));
+    set1.erase(3);
+    assert(set1.size() == 3);
+    set1.erase(2);
+    assert(set1.size() == 2);
+    assert(!set1.contains(2));
+
+    ahl::stack_set<int, 16> set2 = set1;
+    assert(!set1.empty());
+    assert(set1 == set2);
+    ahl::stack_set<int, 12> set3 = std::move(set2);
+    assert(set2.empty());
+    assert(set3 == set1);
+}
+
 void runDynVectorTests()
 {
     std::cout << subtestPretext << "Testing dyn vector\n";
@@ -273,6 +306,7 @@ void runSTLTests()
 {
     std::cout << "\n***********************************\nRunning Tests For AncestralHall...\n";
     runFixedVectorTests();
+    runStackSetTests();
     runDynVectorTests();
     runConsistentVectorTests();
     runBitVectorTests();

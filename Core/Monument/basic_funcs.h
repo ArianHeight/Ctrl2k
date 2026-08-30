@@ -8,8 +8,20 @@ consteval inline size_t most_significant_bit(size_t val)
     return bit;
 }
 
-template <typename T, typename V>
-size_t binary_search(const T* arr, size_t len, const V& val)
+// DONOT CREATE THIS
+template <typename T>
+struct _sort_compare_functor
+{
+    _sort_compare_functor() = default;
+
+    FORCE_INLINE bool operator()(const T& v1, const T& v2) const
+    {
+        return v1 < v2;
+    }
+};
+
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+size_t binary_search(const T* arr, size_t len, const T& val, _compare_functor compare = _sort_compare_functor<T>())
 {
     size_t start = 0;
     size_t end = len;
@@ -21,7 +33,7 @@ size_t binary_search(const T* arr, size_t len, const V& val)
             return i;
         }
 
-        if(arr[i] < val)
+        if(compare(arr[i], val))
         {
             start = i + 1;
         }
@@ -40,16 +52,16 @@ inline size_t binary_search(const T& arr, const V& val)
     return binary_search(arr.data(), arr.size(), val);
 }
 
-template <typename T, typename V>
-size_t binary_search_nearest(const T* arr, size_t len, const V& val)
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+size_t binary_search_position(const T* arr, size_t len, const T& val, _compare_functor compare = _sort_compare_functor<T>())
 {
     size_t start = 0;
     size_t end = len;
     size_t i = len >> 1;
     while(start < end)
     {
-        const bool smaller = arr[i] < val;
-        if(!smaller && (i == 0 || arr[i - 1] < val))
+        const bool smaller = compare(arr[i], val);
+        if(!smaller && (i == 0 || compare(arr[i - 1], val)))
         {
             return i;
         }
@@ -72,13 +84,13 @@ size_t binary_search_nearest(const T* arr, size_t len, const V& val)
 }
 
 template <typename T, typename V>
-inline size_t binary_search_nearest(const T& arr, const V& val)
+inline size_t binary_search_position(const T& arr, const V& val)
 {
-    return binary_search_nearest(arr.data(), arr.size(), val);
+    return binary_search_position(arr.data(), arr.size(), val);
 }
 
-template <typename T, typename V>
-size_t linear_search(const T* arr, size_t len, const V& val)
+template <typename T>
+size_t linear_search(const T* arr, size_t len, const T& val)
 {
     for(size_t i = 0; i < len; ++i)
     {
@@ -105,18 +117,6 @@ FORCE_INLINE void _sort_swap(T& v1, T& v2)
     v1 = std::move(v2);
     v2 = std::move(temp);
 }
-
-// DONOT CREATE THIS
-template <typename T>
-struct _sort_compare_functor
-{
-    _sort_compare_functor() = default;
-
-    FORCE_INLINE bool operator()(const T& v1, const T& v2) const
-    {
-        return v1 < v2;
-    }
-};
 
 constexpr size_t SORT_AUX_BUFFER_BYTES = 1024; // in bytes
 

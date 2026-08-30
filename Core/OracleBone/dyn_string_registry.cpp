@@ -77,7 +77,7 @@ string_registry_id dyn::string_registry::register_string(const string_pool_chart
     }
 
     const hash64_t hash = simple_hash(str, len);
-    size_t idx = binary_search_nearest(m_views, hash);
+    size_t idx = binary_search_position(m_views.data(), m_views.size(), string_registry_view(hash));
 
     for(; idx < m_views.size() && m_views[idx].hash == hash; ++idx)
     {
@@ -113,7 +113,7 @@ string_registry_id dyn::string_registry::find_registered_string(const string_poo
     }
 
     const hash64_t hash = simple_hash(str, len);
-    size_t idx = binary_search_nearest(m_views.data(), m_views.size(), hash);
+    size_t idx = binary_search_position(m_views.data(), m_views.size(), string_registry_view(hash));
 
     for(; idx < m_views.size() && m_views[idx].hash == hash; ++idx)
     {

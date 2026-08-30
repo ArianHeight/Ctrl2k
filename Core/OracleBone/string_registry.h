@@ -72,7 +72,11 @@ struct string_registry_view
     string_registry_id id;
     uint32_t len;
 
-    inline bool operator<(const hash64_t& hash_val) const { return hash < hash_val; }
+    string_registry_view() = default;
+    string_registry_view(hash64_t hash_val) : hash(hash_val), id(INVALID_STRING_REGISTRY_ID), len(0) {}
+    string_registry_view(hash64_t hash_val, string_registry_id id_val, uint32_t len_val) : hash(hash_val), id(id_val), len(len_val) {}
+
+    inline bool operator<(const string_registry_view& other) const { return hash < other.hash; }
 };
 
 class string_registry_base
@@ -120,7 +124,7 @@ public:
         }
 
         const hash64_t hash = simple_hash(str, len);
-        size_t idx = binary_search_nearest(m_views, m_num_views, hash);
+        size_t idx = binary_search_position(m_views, m_num_views, string_registry_view(hash));
 
         for(; idx < m_num_views && m_views[idx].hash == hash; ++idx)
         {
@@ -164,7 +168,7 @@ public:
         }
 
         const hash64_t hash = simple_hash(str, len);
-        size_t idx = binary_search_nearest(m_views, m_num_views, hash);
+        size_t idx = binary_search_position(m_views, m_num_views, string_registry_view(hash));
 
         for(; idx < m_num_views && m_views[idx].hash == hash; ++idx)
         {
