@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <utility>
+#include "basic_defines.h"
 
 // null-terminated c-string, please do not use non null-terminated char* buffers if we're specifiying a c_string
 typedef const char* c_string;
@@ -86,10 +87,33 @@ struct key_value_pair
     K key;
     V value;
 
-    key_value_pair() = default;
-    
-    inline bool operator<(const key_value_pair<K, V>& other) const { return key < other.key; }
-    inline bool operator==(const key_value_pair<K, V>& other) const { return key == other.key; }
+    inline bool operator==(const key_value_pair<K, V>& other) const { return key == other.key && value == other.value; }
+};
+
+template <typename K, typename V>
+struct key_value_pair_ref
+{
+    const K& key;
+    V& value;
+};
+
+template <typename K, typename V>
+struct key_value_pair_const_ref
+{
+    const K& key;
+    const V& value;
+};
+
+// DONOT CREATE THIS
+template <typename K, typename V, class _compare_functor>
+struct _kvp_key_compare_functor
+{
+    _compare_functor compare_func;
+
+    _kvp_key_compare_functor() = default;
+
+    FORCE_INLINE bool operator()(const key_value_pair<K, V>& kvp, const K& key) const { return compare_func(kvp.key, key); }
+    FORCE_INLINE bool operator()(const K& key, const key_value_pair<K, V>& kvp) const { return compare_func(key, kvp.key); }
 };
 
 template <typename T> constexpr bool TYPE_CHAR = false;

@@ -142,10 +142,8 @@ public:
 
     // cstrs
     stack_vector() : m_size(0) {}
-    stack_vector(const selftype& other) : m_size(0) { *this = other; }
     template<size_t _other_capacity>
     stack_vector(const stack_vector<T, _other_capacity>& other) : m_size(0) { *this = other; }
-    stack_vector(selftype&& other) : m_size(0) { *this = std::move(other); }
     template<size_t _other_capacity>
     stack_vector(stack_vector<T, _other_capacity>&& other) : m_size(0) { *this = std::move(other); }
 

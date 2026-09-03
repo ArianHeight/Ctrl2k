@@ -126,6 +126,18 @@ static hash64_t simple_hash_string(const T* str, size_t len, hash64_t seed)
     }
 
     seed.val += len;
+    
+    // if we somehow managed to hash to the invalid hash, do another hash step with len
+    if(seed == INVALID_HASH64)
+    {
+        seed.val += len * hash_primes[hash_index % NUM_HASH_PRIMES]; // could use bitshifting rather than modulus
+
+        // if we still match, just add 1 and give up
+        if(seed == INVALID_HASH64)
+        {
+            ++seed.val;
+        }
+    }
 
     return seed;
 }

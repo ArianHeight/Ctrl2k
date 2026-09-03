@@ -82,8 +82,8 @@ void runStackSetTests()
     assert(set1.contains(7));
     assert(set1.contains(5));
     assert(set1.contains(2));
-    assert(set1.at(1) == 5);
-    assert(set1[2] == 7);
+    assert(set1.at_index(1) == 5);
+    assert(set1.at_index(2) == 7);
     assert(!set1.contains(3));
     set1.erase(3);
     assert(set1.size() == 3);
@@ -97,6 +97,46 @@ void runStackSetTests()
     ahl::stack_set<int, 12> set3 = std::move(set2);
     assert(set2.empty());
     assert(set3 == set1);
+
+    set3.clear();
+    assert(set3.empty());
+}
+
+void runStackMapTests()
+{
+    std::cout << subtestPretext << "Testing stack map\n";
+
+    ahl::stack_map<int, int, 16> map1;
+    assert(map1.empty());
+    assert(map1.size() == 0);
+
+    assert(map1.insert(26, 12) != INVALID_SIZE_T);
+    assert(map1.insert(-1, 200) != INVALID_SIZE_T);
+    assert(map1.insert(100, 0) != INVALID_SIZE_T);
+    assert(map1.insert(100, 20) == INVALID_SIZE_T);
+    assert(map1.find_index(100) == 2);
+    assert(map1[100] == 0);
+    assert(map1.at(-1) == 200);
+    assert(map1.insert_or_assign(100, 30) != INVALID_SIZE_T);
+    assert(map1.size() == 3);
+    assert(map1[100] == 30);
+    assert(map1.insert_or_assign(50, 64) != INVALID_SIZE_T);
+    assert(map1.size() == 4);
+    
+    assert(map1.at_index(0).key == -1 && map1.at_index(0).value == 200);
+    assert(map1.at_index(1).key == 26 && map1.at_index(1).value == 12);
+    assert(map1.at_index(2).key == 50 && map1.at_index(2).value == 64);
+    assert(map1.at_index(3).key == 100 && map1.at_index(3).value == 30);
+
+    ahl::stack_map<int, int, 8> map2;
+    map2 = map1;
+    assert(map2 == map1);
+    ahl::stack_map<int, int, 8> map3 = std::move(map2);
+    assert(map2.empty());
+    assert(map1 == map3);
+
+    map3.clear();
+    assert(map3.empty());
 }
 
 void runDynVectorTests()
@@ -307,6 +347,7 @@ void runSTLTests()
     std::cout << "\n***********************************\nRunning Tests For AncestralHall...\n";
     runFixedVectorTests();
     runStackSetTests();
+    runStackMapTests();
     runDynVectorTests();
     runConsistentVectorTests();
     runBitVectorTests();

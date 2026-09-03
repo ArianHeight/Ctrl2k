@@ -30,15 +30,16 @@ union hash64_t
     uint64_t val;
 
     hash64_t() = default;
-    hash64_t(uint64_t a) : val(a) {}
+    constexpr hash64_t(uint64_t a) : val(a) {}
 
     inline bool operator==(const hash64_t& other) const { return val == other.val; }
     inline bool operator!=(const hash64_t& other) const { return !(*this == other); }
     inline bool operator<(const hash64_t& other) const { return val < other.val; }
     inline bool operator<=(const hash64_t& other) const { return (*this == other) || (*this < other); }
 
-    static inline hash64_t get_zero() { return 0; }
+    static consteval hash64_t get_zero() { return 0; }
 };
+constexpr hash64_t INVALID_HASH64 = hash64_t::get_zero();
 
 union hash128_t
 {

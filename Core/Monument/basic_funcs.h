@@ -14,22 +14,29 @@ struct _sort_compare_functor
 {
     _sort_compare_functor() = default;
 
-    FORCE_INLINE bool operator()(const T& v1, const T& v2) const
-    {
-        return v1 < v2;
-    }
+    FORCE_INLINE bool operator()(const T& v1, const T& v2) const { return v1 < v2; }
 };
 
-template <typename T, class _compare_functor = _sort_compare_functor<T>>
-size_t binary_search(const T* arr, size_t len, const T& val, _compare_functor compare = _sort_compare_functor<T>())
+// DONOT CREATE THIS
+template <typename T, typename K>
+struct _search_key_compare_functor
+{
+    _search_key_compare_functor() = default;
+
+    FORCE_INLINE bool operator()(const T& v1, const K& v2) const { return v1 < v2; }
+    FORCE_INLINE bool operator()(const K& v1, const T& v2) const { return v2 > v1; }
+};
+
+template <typename T, typename K, class _compare_functor = _search_key_compare_functor<T, K>>
+size_t binary_search_key(const T* arr, size_t len, const K& val, _compare_functor compare = _search_key_compare_functor<T, K>())
 {
     size_t start = 0;
     size_t chunk_len = len;
     for(size_t i = chunk_len >> 1; chunk_len > 1; i = start + (chunk_len >> 1))
     {
-        if(arr[i] == val)
-            return i;
         const bool smaller = compare(val, arr[i]);
+        if(!smaller && !compare(arr[i], val))
+            return i;
         const size_t left_len = i - start;
         const size_t right_len = chunk_len - (chunk_len >> 1) - 1;
         chunk_len = smaller ? left_len : right_len;
@@ -37,10 +44,16 @@ size_t binary_search(const T* arr, size_t len, const T& val, _compare_functor co
         start = smaller ? start : right_start;
     }
 
-    if(start < len && arr[start] == val)
+    if(start < len && !compare(arr[start], val) && !compare(val, arr[start]))
         return start;
 
     return INVALID_SIZE_T;
+}
+
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+inline size_t binary_search(const T* arr, size_t len, const T& val, _compare_functor compare = _sort_compare_functor<T>())
+{
+    return binary_search_key(arr, len, val, compare);
 }
 
 template <typename T, typename V>
@@ -49,8 +62,8 @@ inline size_t binary_search(const T& arr, const V& val)
     return binary_search(arr.data(), arr.size(), val);
 }
 
-template <typename T, class _compare_functor = _sort_compare_functor<T>>
-size_t binary_search_position(const T* arr, size_t len, const T& val, _compare_functor compare = _sort_compare_functor<T>())
+template <typename T, typename K, class _compare_functor = _search_key_compare_functor<T, K>>
+size_t binary_search_key_position(const T* arr, size_t len, const K& val, _compare_functor compare = _search_key_compare_functor<T, K>())
 {
     if(len == 0)
         return 0;
@@ -72,6 +85,12 @@ size_t binary_search_position(const T* arr, size_t len, const T& val, _compare_f
         --start;
 
     return start;
+}
+
+template <typename T, class _compare_functor = _sort_compare_functor<T>>
+inline size_t binary_search_position(const T* arr, size_t len, const T& val, _compare_functor compare = _sort_compare_functor<T>())
+{
+    return binary_search_key_position(arr, len, val, compare);
 }
 
 template <typename T, typename V>
