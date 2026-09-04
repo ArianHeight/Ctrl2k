@@ -11,7 +11,7 @@ Shared code for all bit vectors
 
 */
 
-class abstract_bit_vector
+class abstract_bitvector
 {
 public:
     // defining all constexprs in terms of the datatype being used to prevent resizing when used with operators.
@@ -19,7 +19,7 @@ public:
     static constexpr datatype BITS_PER_DATA_TYPE = NUM_BITS_PER_BYTE * sizeof(datatype);
 
 protected:
-    abstract_bit_vector() = default;
+    abstract_bitvector() = default;
 
     // defining all constexprs in terms of the datatype being used to prevent resizing when used with operators.
     static constexpr datatype DATA_TYPE_MAX = UINT32_MAX;
@@ -42,14 +42,14 @@ A bit vector/array allocated on the stack with a fixed max capacity.
 
 template <size_t _capacity>
 requires (_capacity > 0)
-class bit_vector : public abstract_bit_vector
+class stack_bitvector : public abstract_bitvector
 {
     template <size_t _capacity2>
     requires (_capacity2 > 0)
-    friend class bit_vector;
+    friend class stack_bitvector;
 
 private:
-    using selftype = bit_vector<_capacity>;
+    using selftype = stack_bitvector<_capacity>;
     static constexpr size_t _data_capacity = (_capacity + BITS_PER_DATA_TYPE - 1) / BITS_PER_DATA_TYPE;
 
     datatype m_data[_data_capacity];
@@ -86,7 +86,7 @@ public:
 
     void resize(size_t new_size, bool val = false)
     {
-        index_assert(new_size, _capacity);
+        assert(new_size <= _capacity);
         if(new_size <= m_size)
         {
             m_size = new_size;
@@ -156,7 +156,7 @@ public:
     }
 
     template<size_t _other_data_capacity>
-    selftype& operator=(const bit_vector<_other_data_capacity>& other)
+    selftype& operator=(const stack_bitvector<_other_data_capacity>& other)
     {
         assert(other.m_size <= _capacity);
         m_size = other.m_size;
@@ -165,10 +165,10 @@ public:
     }
 
     // cstrs
-    bit_vector() : m_size(0) {}
-    bit_vector(const selftype& other) : m_size(0) { *this = other; }
+    stack_bitvector() : m_size(0) {}
+    stack_bitvector(const selftype& other) : m_size(0) { *this = other; }
     template<size_t _other_data_capacity>
-    bit_vector(const bit_vector<_other_data_capacity>& other) : m_size(0) { *this = other; }
+    stack_bitvector(const stack_bitvector<_other_data_capacity>& other) : m_size(0) { *this = other; }
 
     selftype operator~()
     {
@@ -189,7 +189,7 @@ public:
     // TODO how do we want to deal with doing these operations on different sized bit vectors?
     // Currently it just only applies the operation to the min set of the two.
     template<size_t _other_data_capacity>
-    selftype operator&(const bit_vector<_other_data_capacity>& other) const
+    selftype operator&(const stack_bitvector<_other_data_capacity>& other) const
     {
         selftype retval;
         if(empty() || other.empty())
@@ -205,7 +205,7 @@ public:
     }
 
     template<size_t _other_data_capacity>
-    selftype operator|(const bit_vector<_other_data_capacity>& other) const
+    selftype operator|(const stack_bitvector<_other_data_capacity>& other) const
     {
         selftype retval;
         if(empty() || other.empty())
@@ -221,7 +221,7 @@ public:
     }
 
     template<size_t _other_data_capacity>
-    selftype operator^(const bit_vector<_other_data_capacity>& other) const
+    selftype operator^(const stack_bitvector<_other_data_capacity>& other) const
     {
         selftype retval;
         if(empty() || other.empty())
@@ -237,7 +237,7 @@ public:
     }
 
     template<size_t _other_data_capacity>
-    selftype& operator&=(const bit_vector<_other_data_capacity>& other)
+    selftype& operator&=(const stack_bitvector<_other_data_capacity>& other)
     {
         if(empty() || other.empty())
             return *this;
@@ -252,7 +252,7 @@ public:
     }
 
     template<size_t _other_data_capacity>
-    selftype& operator|=(const bit_vector<_other_data_capacity>& other)
+    selftype& operator|=(const stack_bitvector<_other_data_capacity>& other)
     {
         if(empty() || other.empty())
             return *this;
@@ -267,7 +267,7 @@ public:
     }
 
     template<size_t _other_data_capacity>
-    selftype& operator^=(const bit_vector<_other_data_capacity>& other)
+    selftype& operator^=(const stack_bitvector<_other_data_capacity>& other)
     {
         if(empty() || other.empty())
             return *this;
@@ -282,7 +282,7 @@ public:
     }
 
     template<size_t _other_data_capacity>
-    bool operator==(const bit_vector<_other_data_capacity>& other) const
+    bool operator==(const stack_bitvector<_other_data_capacity>& other) const
     {
         if(m_size != other.m_size)
             return false;

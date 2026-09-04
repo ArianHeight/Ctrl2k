@@ -1,11 +1,24 @@
 #pragma once
 #include <utility>
 
-consteval inline size_t most_significant_bit(size_t val)
+consteval size_t most_significant_bit(size_t val)
 {
     size_t bit = 0;
     while(val >>= 1) { ++bit; }
     return bit;
+}
+
+consteval size_t num_bits_on(size_t val)
+{
+    size_t bits = 0;
+    do { bits += (val & 1); }
+    while(val >>= 1);
+    return bits;
+}
+
+consteval bool is_exp_of_two(size_t val)
+{
+    return num_bits_on(val) <= 1;
 }
 
 // DONOT CREATE THIS

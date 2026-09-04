@@ -93,6 +93,24 @@ public:
         return index >= m_data.size() ? INVALID_SIZE_T : index;
     }
 
+    inline selftype& operator=(const selftype& other)
+    {
+        if(this != &other)
+        {
+            m_data = other.m_data;
+        }
+        return *this;
+    }
+
+    inline selftype& operator=(selftype&& other)
+    {
+        if(this != &other)
+        {
+            m_data = std::move(other.m_data);
+        }
+        return *this;
+    }
+
     template <size_t _other_capacity>
     inline selftype& operator=(const stack_map<K, V, _other_capacity, _compare_functor>& other)
     {

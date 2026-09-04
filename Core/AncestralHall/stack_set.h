@@ -69,6 +69,24 @@ public:
             m_data.erase(index);
     }
 
+    inline selftype& operator=(const selftype& other)
+    {
+        if(this != &other)
+        {
+            m_data = other.m_data;
+        }
+        return *this;
+    }
+
+    inline selftype& operator=(selftype&& other)
+    {
+        if(this != &other)
+        {
+            m_data = std::move(other.m_data);
+        }
+        return *this;
+    }
+
     template <size_t _other_capacity>
     inline selftype& operator=(const stack_set<T, _other_capacity, _compare_functor>& other)
     {

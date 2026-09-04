@@ -488,6 +488,7 @@ int main(int argc, char *argv[])
 	LOG_MSG_PUSH("Swap in {} for view", someView);
 	LOG_FATAL_PUSH("Ded");
 
+#if 0
 	// Testing out the lexer
 	scb::Lexer myLexer = scb::Lexer();
 
@@ -499,6 +500,14 @@ int main(int argc, char *argv[])
 	{
 		LOG_MSG_PUSH(myLexer.tokenList[i].value);
 	}
+#endif
+
+	LOG_MSG_PUSH("{} == 1", num_bits_on(0b1));
+	LOG_MSG_PUSH("{} == 2", num_bits_on(0b11));
+	LOG_MSG_PUSH("{} == 3", num_bits_on(0b111));
+	LOG_MSG_PUSH("{} == 3", num_bits_on(0b1110));
+	LOG_MSG_PUSH("{} == 3", num_bits_on(0b11100));
+	LOG_MSG_PUSH("{} == 4", num_bits_on(0b1011001));
 
 	LOG_FLUSH();
 

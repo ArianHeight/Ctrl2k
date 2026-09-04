@@ -110,7 +110,7 @@ public:
                 m_data[i] = std::move(other.m_data[i]);
             }
             m_size = other.m_size;
-            other.clear();
+            other.m_size = 0;
         }
         return *this;
     }
@@ -136,7 +136,7 @@ public:
             m_data[i] = std::move(other.m_data[i]);
         }
         m_size = other.m_size;
-        other.clear();
+        other.m_size = 0;
         return *this;
     }
 

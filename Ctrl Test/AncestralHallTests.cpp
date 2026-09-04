@@ -4,6 +4,43 @@
 
 #include "Core/AncestralHall/ahl.h"
 
+void runStackMaskedArrayTests()
+{
+    std::cout << subtestPretext << "Testing stack masked array\n";
+
+    ahl::stack_maskedarray<int, 16> arr1;
+    assert(arr1.empty());
+    assert(arr1.size() == 0);
+    assert(arr1.fill(3, 15));
+    assert(arr1.fill(15, 2));
+    assert(arr1.fill(6, 5));
+    assert(!arr1.fill(6, 10));
+    assert(arr1.size() == 3);
+    assert(arr1[6] == 5);
+    assert(arr1.at(15) == 2);
+    arr1.fill_or_overwrite(8, 8);
+    arr1.fill_or_overwrite(6, 12);
+    assert(arr1.size() == 4);
+    assert(arr1[6] == 12);
+    assert(arr1[8] == 8);
+    assert(!arr1.empty());
+    arr1.erase(6);
+    arr1.erase(7);
+    assert(arr1.size() == 3);
+    assert(!arr1.is_filled(6));
+    assert(arr1.is_filled(8));
+
+    ahl::stack_maskedarray<int, 16> arr2 = arr1;
+    assert(arr2 == arr1);
+    ahl::stack_maskedarray<int, 16> arr3;
+    arr3 = std::move(arr2);
+    assert(arr2.empty());
+    assert(arr1 == arr3);
+    arr3.clear();
+    assert(arr3.empty());
+    assert(arr1 != arr3);
+}
+
 void runFixedVectorTests()
 {
     std::cout << subtestPretext << "Testing fixed vector\n";
@@ -268,7 +305,7 @@ void runBitVectorTests()
 {
     std::cout << subtestPretext << "Testing bit vector\n";
 
-    ahl::bit_vector<32> bitset1;
+    ahl::stack_bitvector<32> bitset1;
     assert(bitset1.size() == 0);
     assert(bitset1.capacity() == 32);
     assert(bitset1.data_capacity() == 1);
@@ -278,7 +315,7 @@ void runBitVectorTests()
     assert(bitset1.capacity() == 32);
     assert(bitset1.data_capacity() == 1);
 
-    ahl::bit_vector<128> bitset2;
+    ahl::stack_bitvector<128> bitset2;
     assert(bitset2.capacity() == 128);
     for(int i = 0; i < 6; i++)
     {
@@ -292,13 +329,13 @@ void runBitVectorTests()
     bitset2.resize(120);
     bitset2.set_bit(0, true);
     bitset2.set_bit(100, true);
-    ahl::bit_vector<5 * 33> bitset3 = bitset2;
+    ahl::stack_bitvector<5 * 33> bitset3 = bitset2;
     assert(bitset3 == bitset2);
     bitset3.set_bit(110, true);
     bitset3.set_bit(24, true);
     assert((bitset3 & bitset2) == bitset2);
     assert((bitset2 | bitset3) == bitset3);
-    ahl::bit_vector<5 * 32 + 7> bitset4;
+    ahl::stack_bitvector<5 * 32 + 7> bitset4;
     bitset4.resize(bitset3.size());
     bitset4.set_bit(110, true);
     bitset4.set_bit(24, true);
@@ -307,7 +344,7 @@ void runBitVectorTests()
     bitset4 = bitset4;
     assert(bitset4 == (bitset3 ^ bitset2));
 
-    ahl::bit_vector<4 * 32 + 3> bitset5;
+    ahl::stack_bitvector<4 * 32 + 3> bitset5;
     bitset5 = bitset3;
     bitset5 |= bitset2;
     assert(bitset5 == bitset3);
@@ -345,6 +382,7 @@ void runBitVectorTests()
 void runSTLTests()
 {
     std::cout << "\n***********************************\nRunning Tests For AncestralHall...\n";
+    runStackMaskedArrayTests();
     runFixedVectorTests();
     runStackSetTests();
     runStackMapTests();
