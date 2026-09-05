@@ -110,7 +110,7 @@ public:
                 m_data[i] = std::move(other.m_data[i]);
             }
             m_size = other.m_size;
-            other.clear();
+            other.m_size = 0;
         }
         return *this;
     }
@@ -136,16 +136,14 @@ public:
             m_data[i] = std::move(other.m_data[i]);
         }
         m_size = other.m_size;
-        other.clear();
+        other.m_size = 0;
         return *this;
     }
 
     // cstrs
     stack_vector() : m_size(0) {}
-    stack_vector(const selftype& other) : m_size(0) { *this = other; }
     template<size_t _other_capacity>
     stack_vector(const stack_vector<T, _other_capacity>& other) : m_size(0) { *this = other; }
-    stack_vector(selftype&& other) : m_size(0) { *this = std::move(other); }
     template<size_t _other_capacity>
     stack_vector(stack_vector<T, _other_capacity>&& other) : m_size(0) { *this = std::move(other); }
 

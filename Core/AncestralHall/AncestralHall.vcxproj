@@ -20,8 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ahl.h" />
-    <ClInclude Include="bit_vector.h" />
+    <ClInclude Include="stack_bitvector.h" />
     <ClInclude Include="consistent_vector.h" />
+    <ClInclude Include="stack_hashset.h" />
+    <ClInclude Include="stack_map.h" />
+    <ClInclude Include="stack_maskedarray.h" />
     <ClInclude Include="stack_set.h" />
     <ClInclude Include="stack_vector.h" />
     <ClInclude Include="threadsafe.h" />

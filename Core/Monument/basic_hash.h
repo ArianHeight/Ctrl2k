@@ -30,15 +30,16 @@ union hash64_t
     uint64_t val;
 
     hash64_t() = default;
-    hash64_t(uint64_t a) : val(a) {}
+    constexpr hash64_t(uint64_t a) : val(a) {}
 
     inline bool operator==(const hash64_t& other) const { return val == other.val; }
     inline bool operator!=(const hash64_t& other) const { return !(*this == other); }
     inline bool operator<(const hash64_t& other) const { return val < other.val; }
     inline bool operator<=(const hash64_t& other) const { return (*this == other) || (*this < other); }
 
-    static inline hash64_t get_zero() { return 0; }
+    static consteval hash64_t get_zero() { return 0; }
 };
+constexpr hash64_t INVALID_HASH64 = hash64_t::get_zero();
 
 union hash128_t
 {
@@ -130,3 +131,46 @@ uint32_t checksum32(c_string str, size_t len);
 uint32_t checksum32(wc_string str, size_t len);
 uint64_t checksum64(c_string str, size_t len);
 uint64_t checksum64(wc_string str, size_t len);
+
+template <typename T>
+struct _generic_hash_functor
+{
+    inline hash64_t operator()(const T& val) const
+    {
+        compile_assert_msg(false, "please implement a specific hash function for this data type");
+        return INVALID_HASH64;
+    }
+};
+
+// DONOT use this outside of this file pls
+#define DEFAULT_HASH_DEF(type) \
+template <>\
+struct _generic_hash_functor<type>\
+{\
+    inline hash64_t operator()(const type& val) const\
+    {\
+        return (size_t)val;\
+    }\
+};
+
+DEFAULT_HASH_DEF(signed char);
+DEFAULT_HASH_DEF(short);
+DEFAULT_HASH_DEF(int);
+DEFAULT_HASH_DEF(long);
+DEFAULT_HASH_DEF(long long);
+
+DEFAULT_HASH_DEF(unsigned char);
+DEFAULT_HASH_DEF(unsigned short);
+DEFAULT_HASH_DEF(unsigned int);
+DEFAULT_HASH_DEF(unsigned long);
+DEFAULT_HASH_DEF(unsigned long long);
+
+DEFAULT_HASH_DEF(float);
+DEFAULT_HASH_DEF(double);
+DEFAULT_HASH_DEF(long double);
+
+DEFAULT_HASH_DEF(char);
+DEFAULT_HASH_DEF(wchar_t);
+DEFAULT_HASH_DEF(char8_t);
+DEFAULT_HASH_DEF(char16_t);
+DEFAULT_HASH_DEF(char32_t);

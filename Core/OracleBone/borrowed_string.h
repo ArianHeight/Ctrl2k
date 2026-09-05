@@ -184,3 +184,12 @@ typedef borrowed_string<char> view_string;
 typedef borrowed_string<wchar_t> view_wstring;
 
 }
+
+template <typename T>
+struct _generic_hash_functor<obn::borrowed_string<T>>
+{
+    inline hash64_t operator()(const obn::borrowed_string<T>& val) const
+    {
+        return simple_hash(val.c_str(), val.length());
+    }
+};

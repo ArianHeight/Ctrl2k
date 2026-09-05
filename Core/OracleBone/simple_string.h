@@ -359,3 +359,12 @@ public:
 };
 
 }
+
+template <template <typename U, size_t N> typename S, typename T, size_t _num, bool _dyn>
+struct _generic_hash_functor<obn::simple_string<S, T, _num, _dyn>>
+{
+    inline hash64_t operator()(const obn::simple_string<S, T, _num, _dyn>& val) const
+    {
+        return simple_hash(val.c_str(), val.length());
+    }
+};

@@ -33,13 +33,22 @@
     <ClInclude Include="ahl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bit_vector.h">
+    <ClInclude Include="stack_bitvector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dyn_vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stack_set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stack_map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stack_hashset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stack_maskedarray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

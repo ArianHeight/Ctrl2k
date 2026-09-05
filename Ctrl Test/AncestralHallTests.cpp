@@ -2,7 +2,45 @@
 
 #include <iostream>
 
+#include "Core/OracleBone/obn.h"
 #include "Core/AncestralHall/ahl.h"
+
+void runStackMaskedArrayTests()
+{
+    std::cout << subtestPretext << "Testing stack masked array\n";
+
+    ahl::stack_maskedarray<int, 16> arr1;
+    assert(arr1.empty());
+    assert(arr1.size() == 0);
+    assert(arr1.fill(3, 15));
+    assert(arr1.fill(15, 2));
+    assert(arr1.fill(6, 5));
+    assert(!arr1.fill(6, 10));
+    assert(arr1.size() == 3);
+    assert(arr1[6] == 5);
+    assert(arr1.at(15) == 2);
+    arr1.fill_or_overwrite(8, 8);
+    arr1.fill_or_overwrite(6, 12);
+    assert(arr1.size() == 4);
+    assert(arr1[6] == 12);
+    assert(arr1[8] == 8);
+    assert(!arr1.empty());
+    arr1.erase(6);
+    arr1.erase(7);
+    assert(arr1.size() == 3);
+    assert(!arr1.is_filled(6));
+    assert(arr1.is_filled(8));
+
+    ahl::stack_maskedarray<int, 16> arr2 = arr1;
+    assert(arr2 == arr1);
+    ahl::stack_maskedarray<int, 16> arr3;
+    arr3 = std::move(arr2);
+    assert(arr2.empty());
+    assert(arr1 == arr3);
+    arr3.clear();
+    assert(arr3.empty());
+    assert(arr1 != arr3);
+}
 
 void runFixedVectorTests()
 {
@@ -82,8 +120,8 @@ void runStackSetTests()
     assert(set1.contains(7));
     assert(set1.contains(5));
     assert(set1.contains(2));
-    assert(set1.at(1) == 5);
-    assert(set1[2] == 7);
+    assert(set1.at_index(1) == 5);
+    assert(set1.at_index(2) == 7);
     assert(!set1.contains(3));
     set1.erase(3);
     assert(set1.size() == 3);
@@ -97,6 +135,85 @@ void runStackSetTests()
     ahl::stack_set<int, 12> set3 = std::move(set2);
     assert(set2.empty());
     assert(set3 == set1);
+
+    set3.clear();
+    assert(set3.empty());
+}
+
+void runStackMapTests()
+{
+    std::cout << subtestPretext << "Testing stack map\n";
+
+    ahl::stack_map<int, int, 16> map1;
+    assert(map1.empty());
+    assert(map1.size() == 0);
+
+    assert(map1.insert(26, 12) != INVALID_SIZE_T);
+    assert(map1.insert(-1, 200) != INVALID_SIZE_T);
+    assert(map1.insert(100, 0) != INVALID_SIZE_T);
+    assert(map1.insert(100, 20) == INVALID_SIZE_T);
+    assert(map1.find_index(100) == 2);
+    assert(map1[100] == 0);
+    assert(map1.at(-1) == 200);
+    assert(map1.insert_or_assign(100, 30) != INVALID_SIZE_T);
+    assert(map1.size() == 3);
+    assert(map1[100] == 30);
+    assert(map1.insert_or_assign(50, 64) != INVALID_SIZE_T);
+    assert(map1.size() == 4);
+    
+    assert(map1.at_index(0).key == -1 && map1.at_index(0).value == 200);
+    assert(map1.at_index(1).key == 26 && map1.at_index(1).value == 12);
+    assert(map1.at_index(2).key == 50 && map1.at_index(2).value == 64);
+    assert(map1.at_index(3).key == 100 && map1.at_index(3).value == 30);
+
+    ahl::stack_map<int, int, 8> map2;
+    map2 = map1;
+    assert(map2 == map1);
+    ahl::stack_map<int, int, 8> map3 = std::move(map2);
+    assert(map2.empty());
+    assert(map1 == map3);
+
+    map3.clear();
+    assert(map3.empty());
+}
+
+void runStackHashSetTests()
+{
+    std::cout << subtestPretext << "Testing stack hashset\n";
+    
+    ahl::stack_hashset<obn::small_string16, 16> set1;
+    c_string val1 = "blue";
+    c_string val2 = "red";
+    c_string val3 = "green";
+    assert(set1.empty());
+    assert(set1.size() == 0);
+    set1.insert(val1);
+    set1.insert(val1);
+    assert(!set1.empty());
+    assert(set1.size() == 1);
+    assert(set1.contains(val1));
+    assert(!set1.contains(val2));
+    set1.insert(val2);
+    set1.insert(val3);
+    assert(set1.size() == 3);
+    assert(set1.contains(val3));
+    assert(set1.contains(val2));
+    
+    ahl::stack_hashset<obn::small_string16, 16> set2 = set1;
+    assert(set2 == set1);
+    assert(!set2.empty());
+    ahl::stack_hashset<obn::small_string16, 16> set3;
+    set3 = std::move(set2);
+    assert(set2.empty());
+    assert(set1 == set3);
+    set3.clear();
+    assert(set3.empty());
+    set3.insert(val1);
+    set3.insert(val2);
+    assert(set3.contains(val2));
+    set3.erase(val2);
+    set3.erase(val2);
+    assert(set3.size() == 1);
 }
 
 void runDynVectorTests()
@@ -228,7 +345,7 @@ void runBitVectorTests()
 {
     std::cout << subtestPretext << "Testing bit vector\n";
 
-    ahl::bit_vector<32> bitset1;
+    ahl::stack_bitvector<32> bitset1;
     assert(bitset1.size() == 0);
     assert(bitset1.capacity() == 32);
     assert(bitset1.data_capacity() == 1);
@@ -238,7 +355,7 @@ void runBitVectorTests()
     assert(bitset1.capacity() == 32);
     assert(bitset1.data_capacity() == 1);
 
-    ahl::bit_vector<128> bitset2;
+    ahl::stack_bitvector<128> bitset2;
     assert(bitset2.capacity() == 128);
     for(int i = 0; i < 6; i++)
     {
@@ -252,13 +369,13 @@ void runBitVectorTests()
     bitset2.resize(120);
     bitset2.set_bit(0, true);
     bitset2.set_bit(100, true);
-    ahl::bit_vector<5 * 33> bitset3 = bitset2;
+    ahl::stack_bitvector<5 * 33> bitset3 = bitset2;
     assert(bitset3 == bitset2);
     bitset3.set_bit(110, true);
     bitset3.set_bit(24, true);
     assert((bitset3 & bitset2) == bitset2);
     assert((bitset2 | bitset3) == bitset3);
-    ahl::bit_vector<5 * 32 + 7> bitset4;
+    ahl::stack_bitvector<5 * 32 + 7> bitset4;
     bitset4.resize(bitset3.size());
     bitset4.set_bit(110, true);
     bitset4.set_bit(24, true);
@@ -267,7 +384,7 @@ void runBitVectorTests()
     bitset4 = bitset4;
     assert(bitset4 == (bitset3 ^ bitset2));
 
-    ahl::bit_vector<4 * 32 + 3> bitset5;
+    ahl::stack_bitvector<4 * 32 + 3> bitset5;
     bitset5 = bitset3;
     bitset5 |= bitset2;
     assert(bitset5 == bitset3);
@@ -305,8 +422,11 @@ void runBitVectorTests()
 void runSTLTests()
 {
     std::cout << "\n***********************************\nRunning Tests For AncestralHall...\n";
+    runStackMaskedArrayTests();
     runFixedVectorTests();
     runStackSetTests();
+    runStackMapTests();
+    runStackHashSetTests();
     runDynVectorTests();
     runConsistentVectorTests();
     runBitVectorTests();
