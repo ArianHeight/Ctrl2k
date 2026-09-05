@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Core/OracleBone/obn.h"
 #include "Core/AncestralHall/ahl.h"
 
 void runStackMaskedArrayTests()
@@ -174,6 +175,45 @@ void runStackMapTests()
 
     map3.clear();
     assert(map3.empty());
+}
+
+void runStackHashSetTests()
+{
+    std::cout << subtestPretext << "Testing stack hashset\n";
+    
+    ahl::stack_hashset<obn::small_string16, 16> set1;
+    c_string val1 = "blue";
+    c_string val2 = "red";
+    c_string val3 = "green";
+    assert(set1.empty());
+    assert(set1.size() == 0);
+    set1.insert(val1);
+    set1.insert(val1);
+    assert(!set1.empty());
+    assert(set1.size() == 1);
+    assert(set1.contains(val1));
+    assert(!set1.contains(val2));
+    set1.insert(val2);
+    set1.insert(val3);
+    assert(set1.size() == 3);
+    assert(set1.contains(val3));
+    assert(set1.contains(val2));
+    
+    ahl::stack_hashset<obn::small_string16, 16> set2 = set1;
+    assert(set2 == set1);
+    assert(!set2.empty());
+    ahl::stack_hashset<obn::small_string16, 16> set3;
+    set3 = std::move(set2);
+    assert(set2.empty());
+    assert(set1 == set3);
+    set3.clear();
+    assert(set3.empty());
+    set3.insert(val1);
+    set3.insert(val2);
+    assert(set3.contains(val2));
+    set3.erase(val2);
+    set3.erase(val2);
+    assert(set3.size() == 1);
 }
 
 void runDynVectorTests()
@@ -386,6 +426,7 @@ void runSTLTests()
     runFixedVectorTests();
     runStackSetTests();
     runStackMapTests();
+    runStackHashSetTests();
     runDynVectorTests();
     runConsistentVectorTests();
     runBitVectorTests();

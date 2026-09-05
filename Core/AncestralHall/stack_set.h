@@ -62,11 +62,12 @@ public:
         return index;
     }
 
-    void erase(const T& val)
+    size_t erase(const T& val)
     {
-        const size_t index = find_index(val);
+        size_t index = find_index(val);
         if(index != INVALID_SIZE_T)
             m_data.erase(index);
+        return index;
     }
 
     inline selftype& operator=(const selftype& other)
