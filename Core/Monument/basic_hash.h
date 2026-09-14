@@ -137,7 +137,7 @@ struct _generic_hash_functor
 {
     inline hash64_t operator()(const T& val) const
     {
-        compile_assert_msg(false, "please implement a specific hash function for this data type");
+        compile_assert_msg(false, "please implement a specific hash functor for this data type");
         return INVALID_HASH64;
     }
 };

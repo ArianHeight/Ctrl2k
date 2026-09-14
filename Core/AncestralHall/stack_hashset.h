@@ -7,16 +7,20 @@ namespace ahl
 /*
 
 This is a set implementation that uses hashing instead of sorting.
-This uses stack_vector as the underlying data container, so it has a max capacity.
+This uses stack_maskedarray as the underlying data container, so it has a max capacity.
 
 Because this uses hashing, collisions should be avoided if possible by having a capacity around 2x what is needed.
 
 */
 
-template<typename T, size_t _capacity, class _hash_functor = _generic_hash_functor<T>>
+template <typename T, size_t _capacity, class _hash_functor = _generic_hash_functor<T>>
 requires (_capacity > 0 && is_exp_of_two(_capacity)) // needed to use bitmasking instead of modulus
 class stack_hashset
 {
+    template <typename T2, size_t _capacity2, class _hash_functor2>
+    requires (_capacity2 > 0 && is_exp_of_two(_capacity2))
+    friend class stack_hashset;
+
 private:
     using selftype = stack_hashset<T, _capacity, _hash_functor>;
 
@@ -79,8 +83,10 @@ public:
         return index;
     }
 
-    // TODO this isn't actually so simple. we need to compare element-wise instead since different order insertions
-    // will cause different orderings in case of hash conflicts
+    inline size_t begin_index() const { return m_data.begin_index(); }
+
+    inline size_t next_index(size_t index) const { return m_data.next_index(index); }
+
     inline selftype& operator=(const selftype& other)
     {
         if(this != &other)
@@ -99,14 +105,51 @@ public:
         return *this;
     }
 
+    template <size_t _other_capacity>
+    selftype& operator=(const stack_hashset<T, _other_capacity, _hash_functor>& other)
+    {
+        assert(_capacity >= other.size());
+        clear();
+        for(size_t index = other.begin_index(); index < other.capacity(); index = other.next_index(index))
+        {
+            insert(other.m_data[index]);
+        }
+        return *this;
+    }
+
+    template <size_t _other_capacity>
+    selftype& operator=(stack_hashset<T, _other_capacity, _hash_functor>&& other)
+    {
+        assert(_capacity >= other.size());
+        clear();
+        for(size_t index = other.begin_index(); index < other.capacity(); index = other.next_index(index))
+        {
+            insert(std::move(other.m_data[index]));
+        }
+        other.clear();
+        return *this;
+    }
+
     // cstrs
     stack_hashset() = default;
     stack_hashset(const selftype& other) : m_data(other.m_data) {}
     stack_hashset(selftype&& other) : m_data(std::move(other.m_data)) {}
+    template <size_t _other_capacity>
+    stack_hashset(const stack_hashset<T, _other_capacity, _hash_functor>& other) { *this = other; }
+    template <size_t _other_capacity>
+    stack_hashset(stack_hashset<T, _other_capacity, _hash_functor>&& other) { *this = std::move(other); }
 
-    inline bool operator==(const selftype& other) const
+    template <size_t _other_capacity>
+    bool operator==(const stack_hashset<T, _other_capacity, _hash_functor>& other) const
     {
-        return m_data == other.m_data;
+        if(m_data.size() != other.m_data.size())
+            return false;
+        for(size_t index = begin_index(); index < _capacity; index = next_index(index))
+        {
+            if(!other.contains(m_data[index]))
+                return false;
+        }
+        return true;
     }
 
     inline const T& at_index(size_t i) const { return m_data[i]; }

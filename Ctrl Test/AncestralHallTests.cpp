@@ -202,7 +202,7 @@ void runStackHashSetTests()
     ahl::stack_hashset<obn::small_string16, 16> set2 = set1;
     assert(set2 == set1);
     assert(!set2.empty());
-    ahl::stack_hashset<obn::small_string16, 16> set3;
+    ahl::stack_hashset<obn::small_string16, 32> set3;
     set3 = std::move(set2);
     assert(set2.empty());
     assert(set1 == set3);

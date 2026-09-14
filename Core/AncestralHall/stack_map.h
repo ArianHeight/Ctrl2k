@@ -16,11 +16,13 @@ class stack_map
     template <typename K2, typename V2, size_t _capacity2, class _compare_functor2>
     friend class stack_map;
 
-private:
-    using selftype = stack_map<K, V, _capacity, _compare_functor>;
+public:
     using kvptype = key_value_pair<K, V>;
     using kvpref = key_value_pair_ref<K, V>;
     using kvpcref = key_value_pair_const_ref<K, V>;
+
+private:
+    using selftype = stack_map<K, V, _capacity, _compare_functor>;
     using kvpcompare = _kvp_key_compare_functor<K, V, _compare_functor>;
 
     stack_vector<kvptype, _capacity> m_data;
