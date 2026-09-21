@@ -57,7 +57,7 @@ public:
 
     size_t insert(const T& val)
     {
-        assert(m_data.size() < m_data.capacity());
+        assert(m_data.size() < _max_load_factor);
         size_t index = find_insert_pos(val);
         if(m_data.is_filled(index))
             return INVALID_SIZE_T;
@@ -67,7 +67,7 @@ public:
 
     size_t insert(T&& val)
     {
-        assert(m_data.size() < m_data.capacity());
+        assert(m_data.size() < _max_load_factor);
         size_t index = find_insert_pos(val);
         if(m_data.is_filled(index))
             return INVALID_SIZE_T;
@@ -75,12 +75,27 @@ public:
         return index;
     }
 
-    size_t erase(const T& val)
+    size_t erase_index(size_t index)
     {
-        size_t index = find_index(val);
-        if(index != INVALID_SIZE_T)
-            m_data.erase(index);
+        if(index >= _capacity || index == INVALID_SIZE_T || !m_data.is_filled(index))
+            return INVALID_SIZE_T;
+        m_data.erase(index);
+        // reorder the remaining items in the block
+        for(size_t i = (index + 1) & _index_mask; m_data.is_filled(i); i = (i + 1) & _index_mask)
+        {
+            const size_t new_index = find_insert_pos(m_data[i]);
+            if(new_index != i && !m_data.is_filled(i))
+            {
+                m_data.fill(new_index, std::move(m_data[i]));
+                m_data.erase(i);
+            }
+        }
         return index;
+    }
+
+    inline size_t erase(const T& val)
+    {
+        return erase_index(find_index(val));
     }
 
     inline size_t begin_index() const { return m_data.begin_index(); }
@@ -108,7 +123,7 @@ public:
     template <size_t _other_capacity>
     selftype& operator=(const stack_hashset<T, _other_capacity, _hash_functor>& other)
     {
-        assert(_capacity >= other.size());
+        assert(_max_load_factor >= other.size());
         clear();
         for(size_t index = other.begin_index(); index < other.capacity(); index = other.next_index(index))
         {
@@ -120,7 +135,7 @@ public:
     template <size_t _other_capacity>
     selftype& operator=(stack_hashset<T, _other_capacity, _hash_functor>&& other)
     {
-        assert(_capacity >= other.size());
+        assert(_max_load_factor >= other.size());
         clear();
         for(size_t index = other.begin_index(); index < other.capacity(); index = other.next_index(index))
         {

@@ -140,8 +140,18 @@ public:
         return m_data == other.m_data;
     }
 
-    inline kvpcref at_index(size_t i) const { return { m_data[i].key, m_data[i].value }; }
-    inline kvpref at_index(size_t i) { return { m_data[i].key, m_data[i].value }; }
+    inline kvpcref at_index(size_t i) const
+    {
+        assert(i < _capacity);
+        return { m_data[i].key, m_data[i].value };
+    }
+
+    inline kvpref at_index(size_t i)
+    {
+        assert(i < _capacity);
+        return { m_data[i].key, m_data[i].value };
+    }
+
     const V& at(const K& key) const
     {
         const size_t index = find_index(key);
