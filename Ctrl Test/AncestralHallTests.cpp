@@ -216,6 +216,43 @@ void runStackHashSetTests()
     assert(set3.size() == 1);
 }
 
+void runStackHashMapTests()
+{
+    std::cout << subtestPretext << "Testing stack hashmap\n";
+
+    ahl::stack_hashmap<obn::small_string16, int, 16> map1;
+    c_string val1 = "blue";
+    c_string val2 = "red";
+    c_string val3 = "green";
+
+    assert(map1.empty());
+    assert(map1.size() == 0);
+    assert(!map1.max_load_factor_exceeded());
+    map1.insert(val1, 10);
+    map1.insert(val2, 5);
+    assert(map1.find_index(val1) != INVALID_SIZE_T);
+    assert(map1[val1] == 10);
+    map1[val2] = 20;
+    assert(map1.at(val2) == 20);
+    assert(map1.size() == 2);
+    assert(map1.find_index(val3) == INVALID_SIZE_T);
+    assert(map1.insert_or_assign(val1, 0));
+    assert(map1[val1] == 0);
+    assert(map1.insert_or_assign(val3, 30));
+    assert(map1.size() == 3);
+
+    ahl::stack_hashmap<obn::small_string16, int, 16> map2 = map1;
+    assert(map2 == map1);
+    ahl::stack_hashmap<obn::small_string16, int, 32> map3;
+    map3 = std::move(map2);
+    assert(map2.empty());
+    assert(map1 == map3);
+
+    map3.erase(val1);
+    assert(map3.size() == 2);
+    assert(map3.find_index(val1) == INVALID_SIZE_T);
+}
+
 void runDynVectorTests()
 {
     std::cout << subtestPretext << "Testing dyn vector\n";
@@ -427,6 +464,7 @@ void runSTLTests()
     runStackSetTests();
     runStackMapTests();
     runStackHashSetTests();
+    runStackHashMapTests();
     runDynVectorTests();
     runConsistentVectorTests();
     runBitVectorTests();
