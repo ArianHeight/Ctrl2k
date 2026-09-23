@@ -76,6 +76,21 @@ public:
         }
     }
 
+    size_t begin_index() const
+    {
+        size_t index = 0;
+        for(; index < m_filled.size() && !m_filled[index]; ++index);
+        index = index >= m_filled.size() ? INVALID_SIZE_T : index;
+        return index;
+    }
+
+    size_t next_index(size_t index) const
+    {
+        for(++index; index < m_filled.size() && !m_filled[index]; ++index);
+        index = index >= m_filled.size() ? INVALID_SIZE_T : index;
+        return index;
+    }
+
     selftype& operator=(const selftype& other)
     {
         if(this != &other)

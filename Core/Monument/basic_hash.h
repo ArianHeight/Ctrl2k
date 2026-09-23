@@ -137,7 +137,7 @@ struct _generic_hash_functor
 {
     inline hash64_t operator()(const T& val) const
     {
-        compile_assert_msg(false, "please implement a specific hash function for this data type");
+        compile_assert_msg(false, "please implement a specific hash functor for this data type");
         return INVALID_HASH64;
     }
 };
@@ -149,7 +149,16 @@ struct _generic_hash_functor<type>\
 {\
     inline hash64_t operator()(const type& val) const\
     {\
-        return (size_t)val;\
+        if constexpr(sizeof(type) == 1)\
+            return (uint64_t)reinterpret_cast<const uint8_t&>(val);\
+        else if constexpr(sizeof(type) == 2)\
+            return (uint64_t)reinterpret_cast<const uint16_t&>(val);\
+        else if constexpr(sizeof(type) == 4)\
+            return (uint64_t)reinterpret_cast<const uint32_t&>(val);\
+        else if constexpr(sizeof(type) == 8)\
+            return reinterpret_cast<const uint64_t&>(val);\
+        else\
+            return INVALID_HASH64;\
     }\
 };
 
