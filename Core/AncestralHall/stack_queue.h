@@ -212,7 +212,7 @@ public:
     inline bool empty() const { return m_data.empty(); }
 
     inline void clear() { m_data.clear(); }
-    inline const T& peek() const { m_data.peek_front(); }
+    inline const T& peek() const { return m_data.peek_front(); }
     inline void pop() { m_data.pop_front(); }
 
     inline void push(const T& elem) { m_data.push_back(elem); }
@@ -229,16 +229,16 @@ public:
     inline selftype& operator=(const stack_queue<T, _other_capacity>& other) { m_data = other.m_data; return *this; }
 
     template<size_t _other_capacity>
-    inline selftype& operator=(stack_dequeue<T, _other_capacity>&& other) { m_data = std::move(other.m_data); return *this; }
+    inline selftype& operator=(stack_queue<T, _other_capacity>&& other) { m_data = std::move(other.m_data); return *this; }
 
     // cstrs
     stack_queue() = default;
     stack_queue(const selftype& other) : m_data(other.m_data) {}
-    stack_queue(selftype&& other) : m_data(other.m_data) {}
+    stack_queue(selftype&& other) : m_data(std::move(other.m_data)) {}
     template<size_t _other_capacity>
     stack_queue(const stack_queue<T, _other_capacity>& other) : m_data(other.m_data) {}
     template<size_t _other_capacity>
-    stack_queue(stack_queue<T, _other_capacity>&& other) : m_data(other.m_data) {}
+    stack_queue(stack_queue<T, _other_capacity>&& other) : m_data(std::move(other.m_data)) {}
 
     template<size_t _other_capacity>
     inline bool operator==(const stack_queue<T, _other_capacity>& other) const { return m_data == other.m_data; }
