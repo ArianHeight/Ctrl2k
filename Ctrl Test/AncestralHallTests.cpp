@@ -253,6 +253,119 @@ void runStackHashMapTests()
     assert(map3.find_index(val1) == INVALID_SIZE_T);
 }
 
+void runStackDequeueTests()
+{
+    std::cout << subtestPretext << "Testing stack dequeue\n";
+    ahl::stack_dequeue<int, 16> queue1;
+    assert(queue1.empty());
+    assert(queue1.size() == 0);
+    queue1.push_back(1);
+    queue1.push_back(2);
+    queue1.push_back(3);
+    assert(queue1.size() == 3);
+    assert(queue1.peek_back() == 3);
+    assert(queue1.peek_front() == 1);
+    queue1.pop_front();
+    assert(queue1.peek_front() == 2);
+    queue1.pop_front();
+    assert(queue1.peek_front() == 3);
+    queue1.pop_front();
+    assert(queue1.size() == 0);
+    queue1.push_back(4);
+    queue1.push_back(5);
+    queue1.push_back(6);
+    assert(queue1.peek_back() == 6);
+    queue1.pop_back();
+    assert(queue1.peek_back() == 5);
+    queue1.push_front(7);
+    assert(queue1.peek_front() == 7);
+    queue1.pop_back();
+    assert(queue1.peek_back() == 4);
+    queue1.pop_back();
+    assert(queue1.peek_back() == 7);
+    queue1.push_front(8);
+    assert(queue1.peek_front() == 8);
+    queue1.pop_back();
+    assert(queue1.peek_back() == 8);
+    queue1.pop_back();
+    assert(queue1.empty());
+
+    for(int i = 0; i < 12; ++i)
+    {
+        queue1.push_front(i);
+    }
+
+    ahl::stack_dequeue<int, 16> queue2 = queue1;
+    assert(queue2 == queue1);
+    ahl::stack_dequeue<int, 32> queue3;
+    queue3 = std::move(queue2);
+    assert(queue2.empty());
+    assert(queue1 == queue3);
+
+    for(int i = 0; i < 12; ++i)
+    {
+        assert(queue1.peek_front() == (11 - i));
+        queue1.pop_front();
+    }
+    assert(queue1.empty());
+}
+
+void runStackQueueTests()
+{
+    std::cout << subtestPretext << "Testing stack queue\n";
+    ahl::stack_queue<int, 16> queue1;
+    assert(queue1.empty());
+    assert(queue1.size() == 0);
+    queue1.push(1);
+    queue1.push(2);
+    queue1.push(3);
+    assert(queue1.size() == 3);
+    assert(queue1.peek() == 1);
+    queue1.pop();
+    assert(queue1.peek() == 2);
+    queue1.pop();
+    assert(queue1.peek() == 3);
+    queue1.pop();
+    assert(queue1.size() == 0);
+    queue1.push(4);
+    queue1.push(5);
+    queue1.push(6);
+    assert(queue1.peek() == 4);
+    queue1.pop();
+    assert(queue1.peek() == 5);
+    queue1.push(7);
+    assert(queue1.peek() == 5);
+    queue1.pop();
+    assert(queue1.peek() == 6);
+    queue1.pop();
+    assert(queue1.peek() == 7);
+    queue1.push(8);
+    assert(queue1.peek() == 7);
+    queue1.pop();
+    assert(queue1.peek() == 8);
+    queue1.pop();
+    assert(queue1.empty());
+
+    for(int i = 0; i < 12; ++i)
+    {
+        queue1.push(i);
+    }
+
+    ahl::stack_queue<int, 16> queue2 = queue1;
+    assert(queue2 == queue1);
+    ahl::stack_queue<int, 32> queue3;
+    queue3 = std::move(queue2);
+    assert(queue2.empty());
+    assert(queue1 == queue3);
+
+    for(int i = 0; i < 12; ++i)
+    {
+        assert(queue1.peek() == i);
+        queue1.pop();
+    }
+    assert(queue1.empty());
+}
+
 void runDynVectorTests()
 {
     std::cout << subtestPretext << "Testing dyn vector\n";
@@ -465,6 +578,8 @@ void runSTLTests()
     runStackMapTests();
     runStackHashSetTests();
     runStackHashMapTests();
+    runStackDequeueTests();
+    runStackQueueTests();
     runDynVectorTests();
     runConsistentVectorTests();
     runBitVectorTests();

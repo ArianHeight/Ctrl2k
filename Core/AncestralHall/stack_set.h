@@ -104,6 +104,8 @@ public:
 
     // cstrs
     stack_set() = default;
+    stack_set(const selftype& other) : m_data(other.m_data) {}
+    stack_set(selftype&& other) : m_data(std::move(other.m_data)) {}
     template <size_t _other_capacity>
     stack_set(const stack_set<T, _other_capacity, _compare_functor>& other) : m_data(other.m_data) {}
     template <size_t _other_capacity>

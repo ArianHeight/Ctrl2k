@@ -129,6 +129,8 @@ public:
 
     // cstrs
     stack_map() = default;
+    stack_map(const selftype& other) : m_data(other.m_data) {}
+    stack_map(selftype&& other) : m_data(std::move(other.m_data)) {}
     template <size_t _other_capacity>
     stack_map(const stack_map<K, V, _other_capacity, _compare_functor>&other) : m_data(other.m_data) {}
     template <size_t _other_capacity>
