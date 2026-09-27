@@ -7,6 +7,7 @@
 #include "stack_map.h"
 #include "stack_hashset.h"
 #include "stack_hashmap.h"
+#include "stack_queue.h"
 #include "dyn_vector.h"
 #include "consistent_vector.h"
 #include "threadsafe.h"

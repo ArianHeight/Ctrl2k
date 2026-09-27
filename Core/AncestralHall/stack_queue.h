@@ -82,7 +82,7 @@ public:
     {
         assert(m_size < _capacity);
         m_head = (m_head - 1) & _index_mask;
-        T& retval = m_data[m_head] = elem;
+        T& retval = m_data[m_head];
         ++m_size;
         return retval;
     }
@@ -155,10 +155,12 @@ public:
 
     // cstrs
     stack_dequeue() : m_head(0), m_size(0) {}
+    stack_dequeue(const selftype& other) { *this = other; }
+    stack_dequeue(selftype&& other) { *this = std::move(other); }
     template<size_t _other_capacity>
-    stack_dequeue(const stack_dequeue<T, _other_capacity>& other) : m_size(0) { *this = other; }
+    stack_dequeue(const stack_dequeue<T, _other_capacity>& other) { *this = other; }
     template<size_t _other_capacity>
-    stack_dequeue(stack_dequeue<T, _other_capacity>&& other) : m_size(0) { *this = std::move(other); }
+    stack_dequeue(stack_dequeue<T, _other_capacity>&& other) { *this = std::move(other); }
 
     template<size_t _other_capacity>
     bool operator==(const stack_dequeue<T, _other_capacity>& other) const
