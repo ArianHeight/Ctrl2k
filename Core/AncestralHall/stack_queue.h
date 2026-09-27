@@ -10,6 +10,8 @@ This is an implementation of a dequeue on the stack, with a fixed max capacity.
 
 Requires a size of a power of 2(so we don't need to use mod)
 
+This file also has two wrappers, queue and stack, that use the dequeue implementation.
+
 */
 
 template <typename T, size_t _capacity>
@@ -183,6 +185,68 @@ public:
     inline T& at(size_t i) { index_assert(i, m_size); return m_data[(m_head + i) & _index_mask]; }
     inline const T& operator[](size_t i) const { return at(i); }
     inline T& operator[](size_t i) { return at(i); }
+};
+
+/*
+
+This is the queue wrapper that has push and pop functions corresponding to push_back() and pop_front().
+
+*/
+
+template <typename T, size_t _capacity>
+requires (_capacity > 0 && is_exp_of_two(_capacity)) // needed to use bitmasking instead of modulus
+class stack_queue
+{
+    template <typename T2, size_t _capacity2>
+    requires (_capacity2 > 0 && is_exp_of_two(_capacity2))
+    friend class stack_queue;
+
+private:
+    using selftype = stack_queue<T, _capacity>;
+
+    stack_dequeue<T, _capacity> m_data;
+
+public:
+    inline size_t size() const { return m_data.size(); }
+    inline size_t capacity() const { return m_data.capacity(); }
+    inline bool empty() const { return m_data.empty(); }
+
+    inline void clear() { m_data.clear(); }
+    inline const T& peek() const { m_data.peek_front(); }
+    inline void pop() { m_data.pop_front(); }
+
+    inline void push(const T& elem) { m_data.push_back(elem); }
+    inline void push(T&& elem) { m_data.push_back(elem); }
+    inline T& emplace() { return m_data.emplace_back(); }
+
+    inline size_t begin_index() const { return m_data.begin_index(); }
+    inline size_t next_index(size_t index) const { return m_data.next_index(index); }
+
+    inline selftype& operator=(const selftype& other) { m_data = other.m_data; return *this; }
+    inline selftype& operator=(selftype&& other) { m_data = std::move(other.m_data); return *this; }
+
+    template<size_t _other_capacity>
+    inline selftype& operator=(const stack_queue<T, _other_capacity>& other) { m_data = other.m_data; return *this; }
+
+    template<size_t _other_capacity>
+    inline selftype& operator=(stack_dequeue<T, _other_capacity>&& other) { m_data = std::move(other.m_data); return *this; }
+
+    // cstrs
+    stack_queue() = default;
+    stack_queue(const selftype& other) : m_data(other.m_data) {}
+    stack_queue(selftype&& other) : m_data(other.m_data) {}
+    template<size_t _other_capacity>
+    stack_queue(const stack_queue<T, _other_capacity>& other) : m_data(other.m_data) {}
+    template<size_t _other_capacity>
+    stack_queue(stack_queue<T, _other_capacity>&& other) : m_data(other.m_data) {}
+
+    template<size_t _other_capacity>
+    inline bool operator==(const stack_queue<T, _other_capacity>& other) const { return m_data == other.m_data; }
+
+    inline const T& at(size_t i) const { return m_data.at(i); }
+    inline T& at(size_t i) { return m_data.at(i); }
+    inline const T& operator[](size_t i) const { return m_data[i]; }
+    inline T& operator[](size_t i) { return m_data[i]; }
 };
 
 }
