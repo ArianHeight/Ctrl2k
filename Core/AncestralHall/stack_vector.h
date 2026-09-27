@@ -148,7 +148,7 @@ public:
     stack_vector(stack_vector<T, _other_capacity>&& other) : m_size(0) { *this = std::move(other); }
 
     template<size_t _other_capacity>
-    inline bool operator==(const stack_vector<T, _other_capacity>& other) const
+    bool operator==(const stack_vector<T, _other_capacity>& other) const
     {
         if(m_size != other.m_size)
             return false;
@@ -164,16 +164,16 @@ public:
         return true;
     }
 
-    inline const T& at(size_t i) const { return m_data[i]; }
-    inline T& at(size_t i) { return m_data[i]; }
-    inline const T& operator[](size_t i) const { return m_data[i]; }
-    inline T& operator[](size_t i) { return m_data[i]; }
+    inline const T& at(size_t i) const { index_assert(i, m_size); return m_data[i]; }
+    inline T& at(size_t i) { index_assert(i, m_size); return m_data[i]; }
+    inline const T& operator[](size_t i) const { return at(i); }
+    inline T& operator[](size_t i) { return at(i); }
     inline const T* data() const { return m_data; }
     inline T* data() { return m_data; }
-    inline const T& front() const { return m_data[0]; }
-    inline T& front() { return m_data[0]; }
-    inline const T& back() const { return m_data[m_size - 1]; }
-    inline T& back() { return m_data[m_size - 1]; }
+    inline const T& front() const { assert(m_size > 0); return m_data[0]; }
+    inline T& front() { assert(m_size > 0); return m_data[0]; }
+    inline const T& back() const { assert(m_size > 0); return m_data[m_size - 1]; }
+    inline T& back() { assert(m_size > 0); return m_data[m_size - 1]; }
 };
 
 }
