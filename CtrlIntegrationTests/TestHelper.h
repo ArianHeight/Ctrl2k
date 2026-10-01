@@ -5,11 +5,13 @@ static inline constexpr const char* ANY_ASSERT_REGEX = "Assertion failed.*";
 
 struct MoveTester
 {
+    typedef unsigned int id_t;
+
     int val;
 
 private:
-    unsigned int id;
-    static inline std::atomic_uint current_id = 0;
+    id_t id;
+    static inline std::atomic<id_t> current_id = 0;
 
 public:
     MoveTester() : val(0), id(++current_id) {}
@@ -49,5 +51,7 @@ public:
         return val == other.val;
     }
 
-    inline unsigned int get_id() const { return id; }
+    inline id_t get_id() const { return id; }
 };
+
+int genRandInt(int lower = -2048, int upper = 2048);
