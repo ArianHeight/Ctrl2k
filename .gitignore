@@ -84,6 +84,11 @@ StyleCopReport.xml
 *.lib.recipe
 *.idb
 
+# GTest Generated Files
+*.vcxproj.CopyComplete
+*.vcxproj.FileListAbsolute.txt
+*.exe.recipe
+
 # Chutzpah Test files
 _Chutzpah*
 
