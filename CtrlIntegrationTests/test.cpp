@@ -1,6 +1,5 @@
 #include "pch.h"
 
-TEST(TestCaseName, TestName) {
-  EXPECT_EQ(1, 1);
+TEST(SmokeTest, sanity) {
   EXPECT_TRUE(true);
 }

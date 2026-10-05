@@ -53,6 +53,16 @@ public:
         return retval;
     }
 
+    void resize(size_t new_size, const T& default_elem = {})
+    {
+        assert(new_size <= _capacity);
+        for(; m_size < new_size; ++m_size)
+        {
+            m_data[m_size] = default_elem;
+        }
+        m_size = new_size;
+    }
+
     void insert(size_t index, const T& elem)
     {
         assert(m_size < _capacity&& index <= m_size);

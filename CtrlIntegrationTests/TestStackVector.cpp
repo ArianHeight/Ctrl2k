@@ -163,6 +163,31 @@ TEST(stack_vector, failed_cstr_assign)
     EXPECT_DEBUG_DEATH(move_assign(std::move(vbase)), ANY_ASSERT_REGEX);
 }
 
+TEST(stack_vector, equals)
+{
+    ahl::stack_vector<int, 16> vbase;
+    for(int i = 0; i < 16; ++i)
+    {
+        vbase.push_back(genRandInt());
+    }
+
+    ahl::stack_vector<int, 16> v1 = vbase;
+    int randIndex = genRandInt(0, 15);
+    EXPECT_EQ(v1, vbase);
+    v1[randIndex]++;
+    EXPECT_NE(v1, vbase);
+
+    ahl::stack_vector<int, 16> v2;
+    for(int i = 0; i < 16; ++i)
+    {
+        v2.push_back(genRandInt());
+    }
+
+    randIndex = genRandInt(0, 15);
+    v2[randIndex] = vbase[randIndex] + 1;
+    EXPECT_NE(v2, vbase);
+}
+
 TEST(stack_vector, misc)
 {
     ahl::stack_vector<MoveTester, 16> vbase;
@@ -337,4 +362,44 @@ TEST(stack_vector, insertion)
 
     EXPECT_DEBUG_DEATH(v1.insert(11, 1000), ANY_ASSERT_REGEX);
     EXPECT_DEBUG_DEATH(v1.erase(12), ANY_ASSERT_REGEX);
+}
+
+TEST(stack_vector, resize)
+{
+    ahl::stack_vector<int, 16> v1;
+
+    v1.resize(10, 5);
+    EXPECT_EQ(v1.size(), 10);
+    for(int i = 0; i < 10; ++i)
+    {
+        EXPECT_EQ(v1[i], 5);
+    }
+
+    v1.resize(16, 12);
+    EXPECT_EQ(v1.size(), 16);
+    for(int i = 0; i < 10; ++i)
+    {
+        EXPECT_EQ(v1[i], 5);
+    }
+    for(int i = 10; i < 16; ++i)
+    {
+        EXPECT_EQ(v1[i], 12);
+    }
+
+    v1.resize(3);
+    EXPECT_EQ(v1.size(), 3);
+    for(int i = 0; i < 3; ++i)
+    {
+        EXPECT_EQ(v1[i], 5);
+    }
+    
+    v1.clear();
+    v1.resize(12);
+    EXPECT_EQ(v1.size(), 12);
+    for(int i = 0; i < 12; ++i)
+    {
+        EXPECT_EQ(v1[i], int{});
+    }
+
+    EXPECT_DEBUG_DEATH(v1.resize(17), ANY_ASSERT_REGEX);
 }

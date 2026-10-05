@@ -23,13 +23,13 @@ protected:
 
     // defining all constexprs in terms of the datatype being used to prevent resizing when used with operators.
     static constexpr datatype DATA_TYPE_MAX = UINT32_MAX;
-    static constexpr datatype DATA_INDEX_MASK = MASK_5_BIT;
+    static constexpr datatype DATA_INDEX_MASK = BITS_PER_DATA_TYPE - 1;
 
     static inline size_t get_data_index(size_t i) { return i / BITS_PER_DATA_TYPE; }
     // example i == 3, returns 00001000
     static inline datatype get_index_bitmask(size_t i) { return 1 << (i & DATA_INDEX_MASK); }
     // example i == 3, returns 11110000
-    static inline datatype get_index_one_bitmask(size_t i) { return DATA_TYPE_MAX << ((i & DATA_INDEX_MASK) + 1); }
+    static inline datatype get_index_one_bitmask(size_t i) { return (size_t)DATA_TYPE_MAX << ((i & DATA_INDEX_MASK) + 1); }
     // example i == 3, returns 00001111
     static inline datatype get_index_zero_bitmask(size_t i) { return ~get_index_one_bitmask(i); }
 };
@@ -65,6 +65,12 @@ private:
         const datatype bitmask = get_index_bitmask(i);
         const datatype valmask = bitval ? DATA_TYPE_MAX : 0;
         m_data[get_data_index(i)] = (m_data[get_data_index(i)] & ~bitmask) | (valmask & bitmask);
+    }
+
+    inline void flip_val(size_t i)
+    {
+        const datatype bitmask = get_index_bitmask(i);
+        m_data[get_data_index(i)] ^= bitmask;
     }
 
 public:
@@ -290,23 +296,30 @@ public:
             return true;
 
         const size_t last_index = get_data_index(m_size - 1);
-        if(last_index > 0)
+        for(size_t i = 0; i < last_index; ++i)
         {
-            for(size_t i = 0; i < last_index - 1; i++)
-            {
-                if((m_data[i] ^ other.m_data[i]) != 0)
-                    return false;
-            }
+            if((m_data[i] ^ other.m_data[i]) != 0)
+                return false;
         }
 
         const datatype bitmask = get_index_zero_bitmask(m_size - 1);
         return ((m_data[last_index] & bitmask) ^ (other.m_data[last_index] & bitmask)) == 0;
     }
 
-    inline void set_all_false() { mem_set_zero(m_data, sizeof(datatype) * ((get_data_index(m_size - 1) + 1) < _data_capacity ? (get_data_index(m_size - 1) + 1) : _data_capacity)); }
-    inline void set_all_true() { mem_set_one(m_data, sizeof(datatype) * ((get_data_index(m_size - 1) + 1) < _data_capacity ? (get_data_index(m_size - 1) + 1) : _data_capacity)); }
+    void flip_all_bits()
+    {
+        const size_t data_size = get_data_index(m_size - 1) + 1;
+        for(size_t i = 0; i < data_size; ++i)
+        {
+            m_data[i] ^= DATA_TYPE_MAX;
+        }
+    }
+
+    inline void set_all_false() { mem_set_zero(m_data, sizeof(datatype) * (get_data_index(m_size - 1) + 1)); }
+    inline void set_all_true() { mem_set_one(m_data, sizeof(datatype) * (get_data_index(m_size - 1) + 1)); }
     inline void set_bit(size_t i, bool val) { set_val(i, val); }
     inline bool get_bit(size_t i) const { return get_val(i); }
+    inline void flip_bit(size_t i) { flip_val(i); }
 
     inline bool at(size_t i) const { return get_val(i); }
     inline bool operator[](size_t i) const { return get_val(i); }

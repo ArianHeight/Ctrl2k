@@ -14,11 +14,11 @@ Because this uses hashing, collisions should be avoided if possible by having a 
 */
 
 template <typename T, size_t _capacity, class _hash_functor = _generic_hash_functor<T>>
-requires (_capacity > 0 && is_exp_of_two(_capacity)) // needed to use bitmasking instead of modulus
+requires (_capacity >= 8 && is_exp_of_two(_capacity)) // needed to use bitmasking instead of modulus
 class stack_hashset
 {
     template <typename T2, size_t _capacity2, class _hash_functor2>
-    requires (_capacity2 > 0 && is_exp_of_two(_capacity2))
+    requires (_capacity2 >= 8 && is_exp_of_two(_capacity2))
     friend class stack_hashset;
 
 private:
