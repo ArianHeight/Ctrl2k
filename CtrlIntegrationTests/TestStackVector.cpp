@@ -2,7 +2,7 @@
 
 static void genRandomTestVector(ahl::stack_vector<MoveTester, 16>& base, ahl::stack_vector<MoveTester::id_t, 16>& ids, int count)
 {
-    for(int i = 0; i < 12; ++i)
+    for(int i = 0; i < 16 && i < count; ++i)
     {
         base.push_back(genRandInt());
         ids.push_back(base.back().get_id());

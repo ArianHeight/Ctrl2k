@@ -68,6 +68,7 @@
     </ClCompile>
     <ClCompile Include="TestStackBitVector.cpp" />
     <ClCompile Include="TestHelper.cpp" />
+    <ClCompile Include="TestStackQueue.cpp" />
     <ClCompile Include="TestStackVector.cpp" />
   </ItemGroup>
   <ItemGroup>
